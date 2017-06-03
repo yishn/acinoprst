@@ -1,6 +1,5 @@
 import {h, Component} from 'preact'
 
-import * as outline from '../outline'
 import Outliner from './Outliner'
 
 export default class App extends Component {
@@ -11,7 +10,7 @@ export default class App extends Component {
             content: [
                 '- [ ] Hello World!',
                 '    - [x] Hello',
-                '          With some description',
+                '      With some description',
                 '    - [ ] World!'
             ].join('\n')
         }

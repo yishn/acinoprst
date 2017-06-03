@@ -1,3 +1,8 @@
+function indent(content, spaces) {
+    let prefix = Array(spaces).fill(' ').join('')
+    return content.split('\n').map(l => prefix + l).join('\n')
+}
+
 function getSuccessiveLines(lines, index, predicate) {
     let result = []
 
@@ -18,11 +23,6 @@ function parseTask(line) {
     let content = line.slice(indent + 5).trim()
 
     return {indent, done, content}
-}
-
-function indent(content, spaces) {
-    let prefix = Array(spaces).fill(' ').join('')
-    return content.split('\n').map(l => prefix + l).join('\n')
 }
 
 export function getLines(content) {
@@ -47,17 +47,18 @@ export function parseLines(lines, start = 0, length = Infinity) {
     return lines.filter((x, i) => i < start + length && x[1] === 'task' && x[2].indent === indent)
     .map(([i, type, x]) => {
         let comments = getSuccessiveLines(lines, i + 1, y => y[1] === 'comment')
-        let sublist = getSuccessiveLines(lines, i + 1 + comments.length, y => y[1] === 'comment'
+        let sublistStart = i + 1 + comments.length
+        let sublist = getSuccessiveLines(lines, sublistStart, y => y[1] === 'comment'
             || y[1] === 'task'
             && y[2].indent !== indent
-            && y[2].indent === lines[i + 1 + comments.length][2].indent)
+            && y[2].indent === lines[sublistStart][2].indent)
 
         return {
             line: i,
             done: x.done,
             content: x.content,
             comment: comments.map(y => y[2].content).join('\n'),
-            sublist: parseLines(lines, i + 1 + comments.length, sublist.length)
+            sublist: parseLines(lines, sublistStart, sublist.length)
         }
     })
 }
@@ -74,4 +75,8 @@ export function stringify(list) {
             indent(stringify(task.sublist), 4)
         ].filter(x => x.trim() !== '').join('\n').trim()
     }).join('\n')
+}
+
+export function reformat(content) {
+    return stringify(parse(content))
 }
