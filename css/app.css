@@ -1,0 +1,45 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font: menu;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+input, button, select, option, textarea {
+    font: inherit;
+    line-height: inherit;
+}
+
+body, a {
+    cursor: default;
+    overflow: hidden;
+    outline: 0;
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+pre, code {
+    font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+}
+
+a, img {
+    user-drag: none;
+    -webkit-user-drag: none;
+    object-fit: contain;
+}
+
+img {
+    vertical-align: bottom;
+}

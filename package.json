@@ -1,0 +1,38 @@
+{
+  "name": "acinoprst",
+  "version": "0.1.0",
+  "description": "A simple outliner synchronizing with Gist.",
+  "main": "dist/bundle.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yishn/acinoprst.git"
+  },
+  "keywords": [
+    "outliner",
+    "notes",
+    "todo",
+    "task",
+    "gist"
+  ],
+  "author": "Yichuan Shen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yishn/acinoprst/issues"
+  },
+  "homepage": "https://github.com/yishn/acinoprst",
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "preact": "^8.1.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^2.4.1"
+  },
+  "scripts": {
+    "build": "webpack -p",
+    "watch": "webpack --progress --watch"
+  }
+}
