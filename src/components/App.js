@@ -1,5 +1,6 @@
 import {h, Component} from 'preact'
 
+import * as outline from '../outline'
 import Outliner from './Outliner'
 
 export default class App extends Component {
@@ -8,8 +9,6 @@ export default class App extends Component {
 
         this.state = {
             content: [
-                '# Title',
-                '',
                 '- [ ] Hello World!',
                 '    - [x] Hello',
                 '          With some description',
