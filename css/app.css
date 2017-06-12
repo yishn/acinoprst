@@ -31,7 +31,8 @@ body, a {
 }
 
 pre, code {
-    font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+    font: inherit;
+    font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
 }
 
 a, img {

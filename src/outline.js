@@ -74,7 +74,7 @@ export function stringify(list) {
             indent(task.comment, 6),
             indent(stringify(task.sublist), 4)
         ].filter(x => x.trim() !== '').join('\n').trim()
-    }).join('\n')
+    }).join('\n') + '\n'
 }
 
 export function reformat(content) {

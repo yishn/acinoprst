@@ -1,0 +1,13 @@
+#outliner, #outliner textarea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #outliner textarea {
+        padding: 1em;
+        border: none;
+        font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+        white-space: pre;
+    }
