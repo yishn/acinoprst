@@ -1,12 +1,12 @@
 import {h, Component} from 'preact'
 import {reformat} from '../outline'
 
-import Textarea from './Textarea'
+import CodeTextarea from './CodeTextarea'
 
 export default class Outliner extends Component {
     render() {
         return <section id="outliner">
-            <Textarea
+            <CodeTextarea
                 value={this.props.content}
                 onChange={this.props.onChange}
             />

@@ -29,7 +29,7 @@ function rangedIndexOf(haystack, needle, start, end) {
     return indices
 }
 
-export default class Textarea extends Component {
+export default class CodeTextarea extends Component {
     constructor() {
         super()
 
@@ -109,8 +109,8 @@ export default class Textarea extends Component {
                 let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
                 let indent = getIndent(value, lineStart + 1)
                 let chunks = [value.slice(0, selectionStart), value.slice(selectionEnd)]
-
                 let newValue = chunks.join('\n' + Array(indent).fill(' ').join(''))
+
                 selectionStart = selectionEnd = chunks[0].length + indent + 1
 
                 onChange({element: this.element, value: newValue, selectionStart, selectionEnd})

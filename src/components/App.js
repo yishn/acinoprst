@@ -1,4 +1,5 @@
 import {h, Component} from 'preact'
+import {reformat} from '../outline'
 
 import Outliner from './Outliner'
 
@@ -7,13 +8,12 @@ export default class App extends Component {
         super()
 
         this.state = {
-            content: [
+            content: reformat([
                 '- [ ] Hello World!',
                 '    - [x] Hello',
-                '          With some description',
-                '    - [ ] World!',
-                ''
-            ].join('\n')
+                '      - With some description',
+                '    - [ ] World!'
+            ].join('\n'))
         }
 
         this.handleOutlinerChange = evt => {

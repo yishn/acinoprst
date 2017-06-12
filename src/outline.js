@@ -25,6 +25,17 @@ function parseTask(line) {
     return {indent, done, content}
 }
 
+function parseComment(line) {
+    let match = line.match(/^(\s*)-/)
+    if (match == null) return null
+
+    let indent = match[1].length
+    let done = false
+    let content = line.slice(indent + 1).trim()
+
+    return {indent, done, content}
+}
+
 export function getLines(content) {
     let lines = content
         .replace(/\r/g, '')
@@ -32,9 +43,9 @@ export function getLines(content) {
         .split('\n')
 
     return lines.map((x, i) => {
-        let task = x.trim()[0] === '-'
+        let task = x.trim().slice(0, 3) === '- ['
 
-        if (!task) return [i, 'comment', {content: x.trim()}]
+        if (!task) return [i, 'comment', parseComment(x)]
         else return [i, 'task', parseTask(x)]
 
         return [i, 'invalid']
@@ -44,23 +55,18 @@ export function getLines(content) {
 export function parseLines(lines, start = 0, length = Infinity) {
     if (length <= 0) return []
 
-    let firstTaskIndex = start + getSuccessiveLines(lines, start, x => x[1] === 'comment').length
-    let [, , {indent}] = lines[firstTaskIndex]
+    let [, , {indent}] = lines[start]
 
-    return lines.filter((x, i) => i < start + length && x[1] === 'task' && x[2].indent === indent)
+    return lines.filter((x, i) => i < start + length && x[2].indent === indent)
     .map(([i, type, x]) => {
-        let comments = getSuccessiveLines(lines, i + 1, y => y[1] === 'comment')
-        let sublistStart = i + 1 + comments.length
-        let sublist = getSuccessiveLines(lines, sublistStart, y => y[1] === 'comment'
-            || y[1] === 'task'
-            && y[2].indent !== indent
-            && y[2].indent === lines[sublistStart][2].indent)
-
+        let sublistStart = i + 1
+        let sublist = getSuccessiveLines(lines, sublistStart, y => y[2].indent > indent)
+        
         return {
             line: i,
+            type,
             done: x.done,
             content: x.content,
-            comment: comments.map(y => y[2].content).join('\n'),
             sublist: parseLines(lines, sublistStart, sublist.length)
         }
     })
@@ -72,9 +78,10 @@ export function parse(content) {
 
 export function stringify(list) {
     return list.map(task => {
+        let done = task.type === 'task' ? `[${task.done ? 'x' : ' '}] ` : ''
+
         return [
-            `- [${task.done ? 'x' : ' '}] ${task.content}`,
-            indent(task.comment, 6),
+            `- ${done}${task.content}`,
             indent(stringify(task.sublist), 4)
         ].filter(x => x.trim() !== '').join('\n').trim()
     }).join('\n') + '\n'
