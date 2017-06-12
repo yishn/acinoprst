@@ -10,19 +10,26 @@ export default class App extends Component {
             content: [
                 '- [ ] Hello World!',
                 '    - [x] Hello',
-                '      With some description',
-                '    - [ ] World!'
+                '          With some description',
+                '    - [ ] World!',
+                ''
             ].join('\n')
         }
 
         this.handleOutlinerChange = evt => {
-            this.setState({content: evt.content})
+            this.setState({content: evt.value}, () => {
+                evt.element.selectionStart = evt.selectionStart
+                evt.element.selectionEnd = evt.selectionEnd
+            })
         }
     }
 
     render() {
         return <section id="app">
-            <Outliner content={this.state.content} onChange={this.handleOutlinerChange} />
+            <Outliner
+                content={this.state.content}
+                onChange={this.handleOutlinerChange}
+            />
         </section>
     }
 }

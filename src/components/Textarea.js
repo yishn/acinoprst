@@ -19,7 +19,7 @@ function getIndent(haystack, index) {
     return indent
 }
 
-function rangedFilter(haystack, needle, start, end) {
+function rangedIndexOf(haystack, needle, start, end) {
     let indices = []
 
     for (let i = Math.max(start, 0); i < Math.min(haystack.length, end); i++) {
@@ -33,15 +33,23 @@ export default class Textarea extends Component {
     constructor() {
         super()
 
+        this.handleInput = evt => {
+            let {onChange = () => {}} = this.props
+            let {value, selectionStart, selectionEnd} = evt.currentTarget
+
+            onChange({element: evt.currentTarget, value, selectionStart, selectionEnd})
+        }
+
         this.handleKeyDown = evt => {
             if ([9, 13, 36].includes(evt.keyCode)) evt.preventDefault()
 
-            let {value, selectionStart, selectionEnd} = this.element
+            let {value, onChange = () => {}} = this.props
+            let {selectionStart, selectionEnd} = this.element
 
             if (evt.keyCode === 9) {
                 // Tab
 
-                let newlines = rangedFilter(value, '\n', selectionStart, selectionEnd)
+                let newlines = rangedIndexOf(value, '\n', selectionStart, selectionEnd)
                 let prevLineStart = reverseIndexOf(value, '\n', selectionStart - 1)
 
                 if (newlines[0] !== prevLineStart)
@@ -61,22 +69,23 @@ export default class Textarea extends Component {
                 )
 
                 let newValue = chunks.join('')
-                this.element.value = newValue
 
                 // Correct cursor position
 
                 if (selectionStart !== selectionEnd) {
-                    let selectionLineStart = newValue.length - chunks[chunks.length - 1].length
-                    let selectionLineEnd = selectionLineStart + newValue.slice(selectionLineStart).indexOf('\n')
+                    let endLineStart = newValue.length - chunks[chunks.length - 1].length
+                    let endLineEnd = endLineStart + newValue.slice(endLineStart).indexOf('\n')
 
-                    this.element.selectionStart = chunks[0].length
-                    this.element.selectionEnd = selectionLineEnd
+                    selectionStart = chunks[0].length
+                    selectionEnd = endLineEnd
                 } else {
                     let sign = evt.shiftKey ? -1 : 1
                     let diff = evt.shiftKey ? Math.min(getIndent(value, newlines[0] + 1), 4) : 4
 
-                    this.element.selectionStart = this.element.selectionEnd = selectionStart + sign * diff
+                    selectionStart = selectionEnd = selectionStart + sign * diff
                 }
+
+                onChange({element: this.element, value: newValue, selectionStart, selectionEnd})
             } else if (evt.keyCode === 36) {
                 // Home
 
@@ -90,11 +99,10 @@ export default class Textarea extends Component {
                     if (caretPosition === selectionStart) caretPosition = lineStart + 1
                 }
 
-                this.element.selectionStart = caretPosition
+                selectionStart = caretPosition
+                if (!evt.shiftKey) selectionEnd = caretPosition
 
-                if (!evt.shiftKey) {
-                    this.element.selectionEnd = caretPosition
-                }
+                onChange({element: this.element, value, selectionStart, selectionEnd})
             } else if (evt.keyCode === 13) {
                 // Enter
 
@@ -102,8 +110,10 @@ export default class Textarea extends Component {
                 let indent = getIndent(value, lineStart + 1)
                 let chunks = [value.slice(0, selectionStart), value.slice(selectionEnd)]
 
-                this.element.value = chunks.join('\n' + Array(indent).fill(' ').join(''))
-                this.element.selectionStart = this.element.selectionEnd = chunks[0].length + indent + 1
+                let newValue = chunks.join('\n' + Array(indent).fill(' ').join(''))
+                selectionStart = selectionEnd = chunks[0].length + indent + 1
+
+                onChange({element: this.element, value: newValue, selectionStart, selectionEnd})
             }
 
             let {onKeyDown = () => {}} = this.props
@@ -111,12 +121,14 @@ export default class Textarea extends Component {
         }
     }
 
-    render(props) {
+    render() {
         return <textarea
-            {...props}
+            {...this.props}
 
             ref={el => this.element = el}
+            onChange={null}
             onKeyDown={this.handleKeyDown}
+            onInput={this.handleInput}
         />
     }
 }
