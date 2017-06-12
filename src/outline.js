@@ -26,7 +26,10 @@ function parseTask(line) {
 }
 
 export function getLines(content) {
-    let lines = content.replace(/\r/g, '').split('\n')
+    let lines = content
+        .replace(/\r/g, '')
+        .replace(/\t/g, '    ')
+        .split('\n')
 
     return lines.map((x, i) => {
         let task = x.trim()[0] === '-'
