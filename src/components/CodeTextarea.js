@@ -44,8 +44,9 @@ export default class CodeTextarea extends Component {
             if ([9, 13, 36].includes(evt.keyCode)) evt.preventDefault()
             else return
 
+            let element = evt.currentTarget
             let {value, onChange = () => {}} = this.props
-            let {selectionStart, selectionEnd} = this.element
+            let {selectionStart, selectionEnd} = element
 
             if (evt.keyCode === 9) {
                 // Tab
@@ -86,7 +87,7 @@ export default class CodeTextarea extends Component {
                     selectionStart = selectionEnd = selectionStart + sign * diff
                 }
 
-                onChange({element: this.element, value: newValue, selectionStart, selectionEnd})
+                onChange({element, value: newValue, selectionStart, selectionEnd})
             } else if (evt.keyCode === 36) {
                 // Home
 
@@ -103,7 +104,7 @@ export default class CodeTextarea extends Component {
                 selectionStart = caretPosition
                 if (!evt.shiftKey) selectionEnd = caretPosition
 
-                onChange({element: this.element, value, selectionStart, selectionEnd})
+                onChange({element, value, selectionStart, selectionEnd})
             } else if (evt.keyCode === 13) {
                 // Enter
 
@@ -114,7 +115,7 @@ export default class CodeTextarea extends Component {
 
                 selectionStart = selectionEnd = chunks[0].length + indent + 1
 
-                onChange({element: this.element, value: newValue, selectionStart, selectionEnd})
+                onChange({element, value: newValue, selectionStart, selectionEnd})
             }
 
             let {onKeyDown = () => {}} = this.props
@@ -126,7 +127,6 @@ export default class CodeTextarea extends Component {
         return <textarea
             {...this.props}
 
-            ref={el => this.element = el}
             onChange={null}
             onKeyDown={this.handleKeyDown}
             onInput={this.handleInput}

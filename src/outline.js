@@ -14,42 +14,26 @@ function getSuccessiveLines(lines, index, predicate) {
     return result
 }
 
-function parseTask(line) {
+function parseLine(line, i) {
+    let task = line.trim().slice(0, 3) === '- ['
+    let type = task ? 'task' : 'comment'
+    let done = task && line.trim().slice(2, 5) === '[x]'
     let match = line.match(/^(\s*)-/)
+
     if (match == null) return null
 
     let indent = match[1].length
-    let done = line[indent + 3].toLowerCase() === 'x'
-    let content = line.slice(indent + 5).trim()
+    let content = line.slice(indent + (task ? 5 : 1)).trim()
 
-    return {indent, done, content}
-}
-
-function parseComment(line) {
-    let match = line.match(/^(\s*)-/)
-    if (match == null) return null
-
-    let indent = match[1].length
-    let done = false
-    let content = line.slice(indent + 1).trim()
-
-    return {indent, done, content}
+    return [i, type, {indent, done, content}]
 }
 
 export function getLines(content) {
-    let lines = content
+    return content
         .replace(/\r/g, '')
         .replace(/\t/g, '    ')
         .split('\n')
-
-    return lines.map((x, i) => {
-        let task = x.trim().slice(0, 3) === '- ['
-
-        if (!task) return [i, 'comment', parseComment(x)]
-        else return [i, 'task', parseTask(x)]
-
-        return [i, 'invalid']
-    })
+        .map(parseLine)
 }
 
 export function parseLines(lines, start = 0, length = Infinity) {
@@ -57,11 +41,11 @@ export function parseLines(lines, start = 0, length = Infinity) {
 
     let [, , {indent}] = lines[start]
 
-    return lines.filter((x, i) => i < start + length && x[2].indent === indent)
+    return lines.filter((x, i) => i >= start && i < start + length && x[2].indent === indent)
     .map(([i, type, x]) => {
         let sublistStart = i + 1
-        let sublist = getSuccessiveLines(lines, sublistStart, y => y[2].indent > indent)
-        
+        let sublist = getSuccessiveLines(lines, sublistStart, y => y[2].indent > x.indent)
+
         return {
             line: i,
             type,

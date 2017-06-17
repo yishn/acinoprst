@@ -11,8 +11,10 @@ export default class App extends Component {
             content: reformat([
                 '- [ ] Hello World!',
                 '    - [x] Hello',
-                '      - With some description',
-                '    - [ ] World!'
+                '        - With some description',
+                '    - [ ] World!',
+                '        - With some more description',
+                '        - With some more description 2'
             ].join('\n'))
         }
 
