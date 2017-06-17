@@ -42,6 +42,7 @@ export default class CodeTextarea extends Component {
 
         this.handleKeyDown = evt => {
             if ([9, 13, 36].includes(evt.keyCode)) evt.preventDefault()
+            else return
 
             let {value, onChange = () => {}} = this.props
             let {selectionStart, selectionEnd} = this.element

@@ -17,17 +17,18 @@ export default class App extends Component {
         }
 
         this.handleOutlinerChange = evt => {
-            this.setState({content: evt.value}, () => {
-                evt.element.selectionStart = evt.selectionStart
-                evt.element.selectionEnd = evt.selectionEnd
-            })
+            evt.element.value = evt.value
+            evt.element.selectionStart = evt.selectionStart
+            evt.element.selectionEnd = evt.selectionEnd
+
+            this.setState({content: evt.value})
         }
     }
 
     render() {
         return <section id="app">
             <Outliner
-                content={this.state.content}
+                value={this.state.content}
                 onChange={this.handleOutlinerChange}
             />
         </section>
