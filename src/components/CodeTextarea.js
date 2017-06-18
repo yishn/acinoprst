@@ -51,23 +51,25 @@ export default class CodeTextarea extends Component {
             if (evt.keyCode === 9) {
                 // Tab
 
-                let newlines = rangedIndexOf(value, '\n', selectionStart, selectionEnd)
-                let prevLineStart = reverseIndexOf(value, '\n', selectionStart - 1)
+                let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
+                let prevLineStart = reverseIndexOf(value, '\n', lineStart - 1)
+                let newlines = rangedIndexOf(value, '\n', lineStart, selectionEnd)
 
-                if (newlines[0] !== prevLineStart)
-                    newlines.unshift(prevLineStart)
+                let prevIndent = getIndent(value, prevLineStart + 1)
+                let currentIndent = getIndent(value, newlines[0] + 1)
+                let diffIndent = currentIndent - prevIndent
+
                 if (newlines[newlines.length - 1] !== value.length - 1)
                     newlines.push(value.length - 1)
 
                 let chunks = newlines.reduce((acc, i, j) => [
                     ...acc,
                     value.slice((newlines[j - 1] || -1) + 1, i + 1)
-                ], []).map(
-                    evt.shiftKey
+                ], []).map((x, i) => i === 0 ? x : evt.shiftKey
                     // Deindent
-                    ? (x, i) => i === 0 ? x : x.slice(Math.min(getIndent(x, 0), 4))
+                    ? x.slice(Math.min(getIndent(x, 0), 4))
                     // Indent
-                    : (x, i) => i === 0 ? x : Array(4).fill(' ').join('') + x
+                    : Array(Math.min(4, 4 - diffIndent)).fill(' ').join('') + x
                 )
 
                 let newValue = chunks.join('')
@@ -82,7 +84,7 @@ export default class CodeTextarea extends Component {
                     selectionEnd = endLineEnd
                 } else {
                     let sign = evt.shiftKey ? -1 : 1
-                    let diff = evt.shiftKey ? Math.min(getIndent(value, newlines[0] + 1), 4) : 4
+                    let diff = evt.shiftKey ? Math.min(currentIndent, 4) : Math.min(4, 4 - diffIndent)
 
                     selectionStart = selectionEnd = selectionStart + sign * diff
                 }
