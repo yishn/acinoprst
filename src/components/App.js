@@ -23,7 +23,7 @@ export default class App extends Component {
             evt.element.selectionStart = evt.selectionStart
             evt.element.selectionEnd = evt.selectionEnd
 
-            this.setState({content: evt.value})
+            this.setState({content: evt.element.value})
         }
     }
 

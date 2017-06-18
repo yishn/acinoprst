@@ -34,6 +34,7 @@ export function getLines(content) {
         .replace(/\t/g, '    ')
         .split('\n')
         .map(parseLine)
+        .filter(x => x != null)
 }
 
 export function parseLines(lines, start = 0, length = Infinity) {
@@ -41,8 +42,9 @@ export function parseLines(lines, start = 0, length = Infinity) {
 
     let [, , {indent}] = lines[start]
 
-    return lines.filter((x, i) => i >= start && i < start + length && x[2].indent === indent)
-    .map(([i, type, x]) => {
+    return lines.filter((x, i) =>
+        i >= start && i < start + length && x[2].indent === indent
+    ).map(([i, type, x]) => {
         let sublistStart = i + 1
         let sublist = getSuccessiveLines(lines, sublistStart, y => y[2].indent > x.indent)
 

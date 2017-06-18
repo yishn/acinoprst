@@ -1,8 +1,13 @@
 import {h, Component} from 'preact'
 
-function reverseIndexOf(haystack, needle, index) {
+function reverseIndexOf(haystack, predicate, index) {
+    if (!(predicate instanceof Function)) {
+        let needle = predicate
+        predicate = x => x === needle
+    }
+
     for (let i = index; i >= 0; i--) {
-        if (haystack[i] === needle) return i
+        if (predicate(haystack[i])) return i
     }
 
     return -1
@@ -52,12 +57,7 @@ export default class CodeTextarea extends Component {
                 // Tab
 
                 let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
-                let prevLineStart = reverseIndexOf(value, '\n', lineStart - 1)
                 let newlines = rangedIndexOf(value, '\n', lineStart, selectionEnd)
-
-                let prevIndent = getIndent(value, prevLineStart + 1)
-                let currentIndent = getIndent(value, newlines[0] + 1)
-                let diffIndent = currentIndent - prevIndent
 
                 if (newlines[newlines.length - 1] !== value.length - 1)
                     newlines.push(value.length - 1)
@@ -65,7 +65,17 @@ export default class CodeTextarea extends Component {
                 let chunks = newlines.reduce((acc, i, j) => [
                     ...acc,
                     value.slice((newlines[j - 1] || -1) + 1, i + 1)
-                ], []).map((x, i) => i === 0 ? x : evt.shiftKey
+                ], [])
+
+                let prevContent = reverseIndexOf(value, x => /\S/.test(x), lineStart - 1)
+                let prevLineStart = reverseIndexOf(value, '\n', prevContent)
+                let prevIndent = getIndent(value, prevLineStart + 1)
+                let currentContentLine = chunks.find((x, i) => i > 0 && x.trim() !== '')
+                let currentIndent = getIndent(currentContentLine, 0)
+                let diffIndent = currentIndent - prevIndent
+
+                chunks = chunks.map((x, i) => i === 0 ? x :
+                    evt.shiftKey
                     // Deindent
                     ? x.slice(Math.min(getIndent(x, 0), 4))
                     // Indent

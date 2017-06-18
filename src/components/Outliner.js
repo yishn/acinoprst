@@ -15,12 +15,15 @@ export default class Outliner extends Component {
                 let {onChange = () => {}} = this.props
                 let prefix = evt.shiftKey ? '- ' : '- [ ] '
                 let chunks = [value.slice(0, selectionStart), value.slice(selectionStart)]
+                let matchSpaces = chunks[1].match(/^([^\S\n]*)- (\[[x ]\] )?/)
+                let newSelection = selectionStart + prefix.length
 
-                if (chunks[1].trim().slice(0, 2) === '- ') {
+                if (matchSpaces) {
                     // We already have bullets
-                    
+
                     prefix = ''
-                    chunks[1] = chunks[1].trim() + '\n'
+                    chunks[1] = chunks[1].slice(matchSpaces[1].length)
+                    newSelection = selectionStart + 2 + (matchSpaces[2] || '').length
                 }
 
                 let newValue = chunks.join(prefix)
@@ -28,8 +31,8 @@ export default class Outliner extends Component {
                 onChange({
                     element: evt.currentTarget,
                     value: newValue,
-                    selectionStart: selectionStart + prefix.length,
-                    selectionEnd: selectionStart + prefix.length
+                    selectionStart: newSelection,
+                    selectionEnd: newSelection
                 })
             }
         }
