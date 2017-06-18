@@ -14,11 +14,16 @@ export default class Outliner extends Component {
                 let {value, selectionStart} = evt.currentTarget
                 let {onChange = () => {}} = this.props
                 let prefix = evt.shiftKey ? '- ' : '- [ ] '
+                let chunks = [value.slice(0, selectionStart), value.slice(selectionStart)]
 
-                let newValue = [
-                    value.slice(0, selectionStart),
-                    value.slice(selectionStart)
-                ].join(prefix)
+                if (chunks[1].trim().slice(0, 2) === '- ') {
+                    // We already have bullets
+                    
+                    prefix = ''
+                    chunks[1] = chunks[1].trim() + '\n'
+                }
+
+                let newValue = chunks.join(prefix)
 
                 onChange({
                     element: evt.currentTarget,
