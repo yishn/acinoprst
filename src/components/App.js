@@ -1,6 +1,7 @@
 import {h, Component} from 'preact'
-import {reformat} from '../outline'
+import * as outline from '../outline'
 
+import Headline from './Headline'
 import Outliner from './Outliner'
 
 export default class App extends Component {
@@ -8,7 +9,8 @@ export default class App extends Component {
         super()
 
         this.state = {
-            content: reformat([
+            title: 'Sample Outline',
+            content: outline.reformat([
                 '- [ ] Hello World!',
                 '    - [x] Hello',
                 '        - With some description',
@@ -18,17 +20,28 @@ export default class App extends Component {
             ].join('\n'))
         }
 
-        this.handleOutlinerChange = evt => {
-            evt.element.value = evt.value
-            evt.element.selectionStart = evt.selectionStart
-            evt.element.selectionEnd = evt.selectionEnd
+        this.handleHeadlineChange = evt => {
+            this.setState({title: evt.value})
+        }
 
-            this.setState({content: evt.element.value})
+        this.handleOutlinerChange = evt => {
+            let {element, value, selectionStart, selectionEnd} = evt
+
+            element.value = value
+            element.selectionStart = selectionStart
+            element.selectionEnd = selectionEnd
+
+            this.setState({content: value})
         }
     }
 
     render() {
         return <section id="app">
+            <Headline
+                value={this.state.title}
+                onChange={this.handleHeadlineChange}
+            />
+
             <Outliner
                 value={this.state.content}
                 onChange={this.handleOutlinerChange}
