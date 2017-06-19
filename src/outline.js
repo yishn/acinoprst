@@ -16,13 +16,13 @@ function getSuccessiveLines(lines, index, predicate) {
 
 function parseLine(line, i) {
     let trimmedLine = line.trim()
-    let task = /^- \[[Xx ]?\]/.test(trimmedLine)
+    let checkboxMatch = trimmedLine.match(/^- \[\s*([Xx])?\s*\]/)
+    let task = checkboxMatch != null
 
     let type = task ? 'task' : 'text'
-    let done = task && trimmedLine.slice(2, 5).toLowerCase() === '[x]'
+    let done = task && checkboxMatch[1] != null
 
-    let match = line.match(/^\s*/)
-    let indent = match[0].length
+    let indent = line.match(/^\s*/)[0].length
     let content = trimmedLine[0] === '-'
         ? trimmedLine.slice(task ? trimmedLine.indexOf(']') + 1 : 1).trim()
         : trimmedLine
