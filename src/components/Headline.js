@@ -32,10 +32,12 @@ export default class Headline extends Component {
     }
 
     render() {
-        return <section id="headline">
+        let percent = Math.round(this.state.progress * 100)
+
+        return <section id="headline" title={`${percent}% done`}>
             <div
                 class="progress"
-                style={{width: `${Math.round(this.state.progress * 100)}%`}}
+                style={{width: `${percent}%`}}
             />
 
             <span class="hash">#</span>

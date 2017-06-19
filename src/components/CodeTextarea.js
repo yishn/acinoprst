@@ -70,19 +70,15 @@ export default class CodeTextarea extends Component {
                     value.slice((newlines[j - 1] || -1) + 1, i + 1)
                 ], [])
 
-                let prevContent = reverseIndexOf(value, x => /\S/.test(x), lineStart - 1)
-                let prevLineStart = reverseIndexOf(value, '\n', prevContent)
-                let prevIndent = getIndent(value, prevLineStart + 1)
                 let currentContentLine = chunks.find((x, i) => i > 0 && x.trim() !== '')
                 let currentIndent = getIndent(currentContentLine, 0)
-                let diffIndent = currentIndent - prevIndent
 
                 chunks = chunks.map((x, i) => i === 0 ? x :
                     evt.shiftKey
                     // Deindent
                     ? x.slice(Math.min(getIndent(x, 0), 4))
                     // Indent
-                    : Array(Math.min(4, 4 - diffIndent)).fill(' ').join('') + x
+                    : Array(4).fill(' ').join('') + x
                 )
 
                 let newValue = chunks.join('')
@@ -97,7 +93,7 @@ export default class CodeTextarea extends Component {
                     selectionEnd = endLineEnd
                 } else {
                     let sign = evt.shiftKey ? -1 : 1
-                    let diff = evt.shiftKey ? Math.min(currentIndent, 4) : Math.min(4, 4 - diffIndent)
+                    let diff = evt.shiftKey ? Math.min(currentIndent, 4) : 4
 
                     selectionStart = selectionEnd = selectionStart + sign * diff
                 }
