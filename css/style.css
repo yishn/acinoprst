@@ -5,9 +5,19 @@
         right: 0;
         height: 3.5em;
         padding: 0 1em;
-        background: #F8F8F8;
+        background: rgba(0, 0, 0, .05);
+    }
+    #headline .progress {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: rgba(0, 0, 0, .05);
+        transition: width .2s;
     }
     #headline .hash, #headline input {
+        position: relative;
         font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
         font-weight: bold;
         line-height: 3.5;
