@@ -91,3 +91,16 @@ export function extractComments(content) {
         .filter(([, type, x]) => type == null && x.content[0] === '#')
         .map(([, , x]) => x.content.slice(1).trim())
 }
+
+export function extractStats(content) {
+    let [tasks, done, items] = getLines(content).reduce(([t, d, i], [, type, x]) => {
+        return type !== 'task'
+        ? [t, d, +(type != null) + i]
+        : [t + 1, +x.done + d, i + 1]
+    }, [0, 0, 0])
+
+    return {
+        tasks, done, items,
+        progress: done / tasks
+    }
+}

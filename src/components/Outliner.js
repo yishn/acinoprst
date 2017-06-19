@@ -38,6 +38,11 @@ export default class Outliner extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps) {
+        return this.props.value !== nextProps.value
+            || this.props.onChange !== nextProps.onChange
+    }
+
     render() {
         return <section id="outliner">
             <CodeTextarea

@@ -39,6 +39,7 @@ export default class App extends Component {
         return <section id="app">
             <Headline
                 value={this.state.title}
+                content={this.state.content}
                 onChange={this.handleHeadlineChange}
             />
 
