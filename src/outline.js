@@ -15,15 +15,17 @@ function getSuccessiveLines(lines, index, predicate) {
 }
 
 function parseLine(line, i) {
-    let task = /^- \[[Xx ]\]/.test(line.trim())
-    let type = task ? 'task' : 'comment'
-    let done = task && line.trim().slice(2, 5).toLowerCase() === '[x]'
-    let match = line.match(/^\s*/)
-
-    let indent = match[0].length
     let trimmedLine = line.trim()
+    let task = /^- \[[Xx ]\]/.test(trimmedLine)
+
+    let type = task ? 'task' : 'text'
+    let done = task && trimmedLine.slice(2, 5).toLowerCase() === '[x]'
+
+    let match = line.match(/^\s*/)
+    let indent = match[0].length
     let content = trimmedLine[0] === '-' ? trimmedLine.slice(task ? 5 : 1).trim() : trimmedLine
 
+    if (trimmedLine.length === 0 || trimmedLine[0] === '#') return null
     return [i, type, {indent, done, content}]
 }
 
@@ -33,16 +35,21 @@ export function getLines(content) {
         .replace(/\t/g, '    ')
         .split('\n')
         .map(parseLine)
-        .filter(x => x != null)
 }
 
 export function parseLines(lines, start = 0, length = Infinity) {
     if (length <= 0) return []
 
+    while (lines[start] == null && start < Math.min(start + length, lines.length)) {
+        start++
+        length--
+    }
+
+    if (length <= 0) return []
     let [, , {indent}] = lines[start]
 
     return lines.filter((x, i) =>
-        i >= start && i < start + length && x[2].indent <= indent
+        x != null && i >= start && i < start + length && x[2].indent <= indent
     ).map(([i, type, x]) => {
         let sublistStart = i + 1
         let sublist = getSuccessiveLines(lines, sublistStart, y => y[2].indent > indent)
