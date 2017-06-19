@@ -25,7 +25,10 @@ function parseLine(line, i) {
     let indent = match[0].length
     let content = trimmedLine[0] === '-' ? trimmedLine.slice(task ? 5 : 1).trim() : trimmedLine
 
-    if (trimmedLine.length === 0 || trimmedLine[0] === '#') return null
+    if (trimmedLine.length === 0 || trimmedLine[0] === '#') {
+        return [i, null, {content: trimmedLine}]
+    }
+
     return [i, type, {indent, done, content}]
 }
 
@@ -40,7 +43,7 @@ export function getLines(content) {
 export function parseLines(lines, start = 0, length = Infinity) {
     if (length <= 0) return []
 
-    while (lines[start] == null && start < Math.min(start + length, lines.length)) {
+    while (lines[start][1] == null && start < Math.min(start + length, lines.length)) {
         start++
         length--
     }
@@ -81,4 +84,10 @@ export function stringify(list) {
 
 export function reformat(content) {
     return stringify(parse(content))
+}
+
+export function extractComments(content) {
+    return getLines(content)
+        .filter(([, type, x]) => type == null && x.content[0] === '#')
+        .map(([, , x]) => x.content.slice(1).trim())
 }
