@@ -98,6 +98,6 @@ export function extractStats(content) {
 
     return {
         tasks, done, items,
-        progress: done / tasks
+        progress: tasks === 0 ? 0 : done / tasks
     }
 }

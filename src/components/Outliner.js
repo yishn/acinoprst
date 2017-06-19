@@ -1,5 +1,4 @@
 import {h, Component} from 'preact'
-import {reformat} from '../outline'
 
 import CodeTextarea from './CodeTextarea'
 

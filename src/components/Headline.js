@@ -32,10 +32,11 @@ export default class Headline extends Component {
     }
 
     render() {
-        let progress = Math.round(this.state.progress * 100)
-
         return <section id="headline">
-            <div class="progress" style={{width: `${progress}%`}} />
+            <div
+                class="progress"
+                style={{width: `${Math.round(this.state.progress * 100)}%`}}
+            />
 
             <span class="hash">#</span>
 
