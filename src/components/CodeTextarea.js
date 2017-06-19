@@ -1,4 +1,7 @@
 import {h, Component} from 'preact'
+import {start as startSelectionChange} from 'selectionchange-polyfill'
+
+startSelectionChange()
 
 function reverseIndexOf(haystack, predicate, index) {
     if (!(predicate instanceof Function)) {
@@ -133,12 +136,44 @@ export default class CodeTextarea extends Component {
             let {onKeyDown = () => {}} = this.props
             onKeyDown(evt)
         }
+
+        this.handleSelectionChange = () => {
+            if (document.activeElement !== this.element) return
+
+            let {onSelectionChange = () => {}} = this.props
+            let {selectionStart, selectionEnd} = this.element
+
+            onSelectionChange({
+                start: this.getTextPositionFromIndex(selectionStart),
+                end: this.getTextPositionFromIndex(selectionEnd)
+            })
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener('selectionchange', this.handleSelectionChange)
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('selectionchange', this.handleSelectionChange)
+    }
+
+    getTextPositionFromIndex(index) {
+        let {value} = this.element
+        let slicedValue = [...value.slice(0, index)]
+
+        let row = slicedValue.filter(x => x === '\n').length + 1
+        let col = slicedValue.reverse().indexOf('\n')
+        if (col < 0) col = slicedValue.length
+
+        return [row, col]
     }
 
     render() {
         return <textarea
             {...this.props}
 
+            ref={el => this.element = el}
             onChange={null}
             onKeyDown={this.handleKeyDown}
             onInput={this.handleInput}

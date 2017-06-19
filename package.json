@@ -22,7 +22,8 @@
   "homepage": "https://github.com/yishn/acinoprst",
   "dependencies": {
     "classnames": "^2.2.5",
-    "preact": "^8.1.0"
+    "preact": "^8.1.0",
+    "selectionchange-polyfill": "^1.2.1"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
