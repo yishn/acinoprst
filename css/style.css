@@ -1,3 +1,70 @@
+main {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#sidebar {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        background: #2E3235;
+        color: white;
+    }
+    #sidebar nav {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        overflow: auto;
+    }
+    #sidebar h3 {
+        margin: 1em;
+        margin-bottom: .5em;
+        font-size: 1em;
+        font-weight: normal;
+        opacity: .7;
+    }
+    #sidebar ul {
+        list-style: none;
+    }
+    #sidebar ul li a {
+        display: block;
+        padding: 3px 10px 3px 20px;
+        overflow: hidden;
+        color: rgba(255, 255, 255, .8);
+        text-decoration: inherit;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #sidebar ul li img {
+        height: 16px;
+        margin-top: -2px;
+        margin-right: 8px;
+        vertical-align: middle;
+        filter: invert(100%);
+        opacity: .8;
+    }
+    #sidebar ul li.selected a {
+        background: #2989FF;
+        color: white;
+    }
+    #sidebar ul li.selected img {
+        opacity: 1;
+    }
+    #sidebar .resizer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 3px;
+        background: rgba(0, 0, 0, .2);
+        cursor: ew-resize;
+}
+
 #headline {
         position: absolute;
         top: 0;

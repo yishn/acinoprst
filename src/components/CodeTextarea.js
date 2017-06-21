@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
 import {start as startSelectionChange} from 'selectionchange-polyfill'
 
-startSelectionChange()
+// startSelectionChange()
 
 function reverseIndexOf(haystack, predicate, index) {
     if (!(predicate instanceof Function)) {
