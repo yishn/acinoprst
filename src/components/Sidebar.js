@@ -49,7 +49,7 @@ export default class Sidebar extends Component {
                     <li data-index={i} class={classNames({selected: this.props.selected === i})}>
                         <a href="#" onClick={this.handleItemClick}>
                             <img src="./node_modules/octicons/build/svg/file.svg" />
-                            {name}
+                            {name === '' ? '(Untitled)' : name}
                         </a>
                     </li>
                 )}

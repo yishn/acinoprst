@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import * as outline from '../outline'
+import * as appState from '../appState'
 
 import Headline from './Headline'
 import Outliner from './Outliner'
@@ -9,34 +9,7 @@ export default class App extends Component {
     constructor() {
         super()
 
-        this.state = {
-            current: 0,
-            files: [
-                {
-                    title: 'Sample Outline',
-                    content: outline.reformat([
-                        '- [ ] Hello World!',
-                        '    - [x] Hello',
-                        '        - With some description',
-                        '    - [ ] World!',
-                        '        - With some more description',
-                        '        - With some more description 2'
-                    ].join('\n'))
-                },
-                {
-                    title: 'Testing',
-                    content: outline.reformat([
-                        '- [ ] Hello World!',
-                        '- [x] Hello',
-                        '    - With some description',
-                        '- [x] World!',
-                        '    - With some more description',
-                        '    - With some more description 2'
-                    ].join('\n'))
-                }
-            ],
-            sidebarWidth: 200
-        }
+        this.state = appState.initState
 
         this.handleHeadlineChange = evt => {
             this.setState(({current, files}) => ({
@@ -57,7 +30,9 @@ export default class App extends Component {
         }
 
         this.handleSidebarSelectionChange = evt => {
-            this.setState({current: evt.selected})
+            if (evt.selected === this.state.current) return
+
+            this.setState(appState.openFile(this.state, evt.selected))
         }
 
         this.handleSidebarWidthChange = evt => {

@@ -45,7 +45,7 @@ export default class Headline extends Component {
             <input
                 type="text"
                 value={this.props.value}
-                placeholder="Title"
+                placeholder="(Untitled)"
 
                 onInput={this.handleInputChange}
             />
