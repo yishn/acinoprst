@@ -43,7 +43,7 @@ export function getLines(content) {
 }
 
 export function parseLines(lines, start = 0, length = Infinity) {
-    if (length <= 0) return []
+    if (length <= 0 || lines.length === 0) return []
 
     let [, , {indent}] = lines[start]
 

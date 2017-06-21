@@ -42,7 +42,13 @@ export default class Sidebar extends Component {
     render() {
         return <section id="sidebar" style={{width: this.props.width}}>
             <nav>
-                <h3>Files</h3>
+                <h3>
+                    Files
+
+                    <a href="#" title="New File" onClick={this.props.onNewFileClick}>
+                        <img src="./node_modules/octicons/build/svg/plus.svg" />
+                    </a>
+                </h3>
 
                 <ul>
                 {this.props.items.map((name, i) =>

@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
 import {start as startSelectionChange} from 'selectionchange-polyfill'
 
-// startSelectionChange()
+startSelectionChange()
 
 function reverseIndexOf(haystack, predicate, index) {
     if (!(predicate instanceof Function)) {
@@ -71,7 +71,7 @@ export default class CodeTextarea extends Component {
                 ], [])
 
                 let currentContentLine = chunks.find((x, i) => i > 0 && x.trim() !== '')
-                let currentIndent = getIndent(currentContentLine, 0)
+                let currentIndent = currentContentLine != null ? getIndent(currentContentLine, 0) : 0
 
                 chunks = chunks.map((x, i) => i === 0 ? x :
                     evt.shiftKey

@@ -26,7 +26,19 @@ main {
         margin-bottom: .5em;
         font-size: 1em;
         font-weight: normal;
+        color: rgba(255, 255, 255, .7);
+    }
+    #sidebar h3 a img {
+        position: relative;
+        top: -1px;
+        margin-left: 10px;
+        height: 16px;
+        filter: invert(100%);
         opacity: .7;
+        transition: opacity .2s;
+    }
+    #sidebar h3 a:active img {
+        opacity: 1;
     }
     #sidebar ul {
         list-style: none;
@@ -41,10 +53,10 @@ main {
         white-space: nowrap;
     }
     #sidebar ul li img {
+        position: relative;
+        top: -1px;
         height: 16px;
-        margin-top: -2px;
         margin-right: 8px;
-        vertical-align: middle;
         filter: invert(100%);
         opacity: .8;
     }

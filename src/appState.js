@@ -15,7 +15,7 @@ export const initState = {
             ].join('\n'))
         },
         {
-            title: '',
+            title: 'Testing',
             content: outline.reformat([
                 '- [ ] Hello World!',
                 '- [x] Hello',
@@ -29,14 +29,13 @@ export const initState = {
     sidebarWidth: 200
 }
 
-export function reformat(state, index) {
-    let files = state.files.slice()
-
-    files[index] = Object.assign({}, files[index], {
-        content: outline.reformat(files[index].content)
-    })
-
-    return {files}
+export function reformat(state, index = null) {
+    return {
+        files: state.files.map((x, i) => index == null || index === i
+            ? Object.assign({}, x, {content: outline.reformat(x.content)})
+            : x
+        )
+    }
 }
 
 export function openFile(state, index) {
@@ -48,4 +47,15 @@ export function newFile(state) {
         files: [...state.files, {title: '', content: ''}],
         current: state.files.length
     }
+}
+
+export function removeFile(state, index) {
+    if (state.files.length > 1) {
+        return {
+            files: state.files.filter((_, i) => i !== index),
+            current: state.current !== index ? state.current : Math.max(state.current - 1, 0)
+        }
+    }
+
+    return newFile(Object.assign({}, state, {files: []}))
 }
