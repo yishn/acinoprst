@@ -36,6 +36,8 @@ export default class App extends Component {
 
         this.handleRemoveFileClick = evt => {
             evt.preventDefault()
+
+            if (!confirm('Do you really want to remove the current file?')) return
             this.setState(appState.removeFile(this.state))
         }
 
