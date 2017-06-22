@@ -43,11 +43,15 @@ main {
     #sidebar ul {
         list-style: none;
     }
-    #sidebar ul li {
-        transition: opacity .2s;
+    #sidebar ul li.ghost {
+        position: absolute;
+        left: 0;
+        right: 0;
+        background: rgba(46, 50, 53, .5);
+        pointer-events: none;
     }
     #sidebar ul li.dragging {
-        opacity: 0.5;
+        opacity: 0;
     }
     #sidebar ul li a {
         display: block;
