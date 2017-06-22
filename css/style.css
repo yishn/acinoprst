@@ -29,10 +29,9 @@ main {
         color: rgba(255, 255, 255, .7);
     }
     #sidebar h3 a img {
-        position: relative;
-        top: -1px;
         margin-left: 10px;
         height: 16px;
+        vertical-align: -0.2em;
         filter: invert(100%);
         opacity: .7;
         transition: opacity .2s;
@@ -63,10 +62,9 @@ main {
         white-space: nowrap;
     }
     #sidebar ul li img {
-        position: relative;
-        top: -1px;
         height: 16px;
         margin-right: 8px;
+        vertical-align: -0.2em;
         filter: invert(100%);
         opacity: .8;
     }
