@@ -23,20 +23,23 @@ main {
     }
     #sidebar h3 {
         margin: 1em;
-        margin-bottom: .5em;
         font-size: 1em;
         font-weight: normal;
         color: rgba(255, 255, 255, .7);
+        overflow: hidden;
     }
-    #sidebar h3 a img {
+    #sidebar h3 .actions {
+        float: right;
+    }
+    #sidebar h3 .actions a img {
         margin-left: 10px;
         height: 16px;
         vertical-align: -0.2em;
         filter: invert(100%);
-        opacity: .7;
+        opacity: .6;
         transition: opacity .2s;
     }
-    #sidebar h3 a:active img {
+    #sidebar h3 .actions a:active img {
         opacity: 1;
     }
     #sidebar ul {
@@ -63,17 +66,17 @@ main {
     }
     #sidebar ul li img {
         height: 16px;
-        margin-right: 8px;
+        margin-right: .8em;
         vertical-align: -0.2em;
         filter: invert(100%);
-        opacity: .8;
+        opacity: .6;
     }
     #sidebar ul li.selected a {
         background: #2989FF;
         color: white;
     }
     #sidebar ul li.selected img {
-        opacity: 1;
+        opacity: .8;
     }
     #sidebar .resizer {
         position: absolute;

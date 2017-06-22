@@ -49,7 +49,9 @@ export function newFile(state) {
     }
 }
 
-export function removeFile(state, index) {
+export function removeFile(state, index = null) {
+    if (index == null) index = state.current
+
     if (state.files.length > 1) {
         return {
             files: state.files.filter((_, i) => i !== index),

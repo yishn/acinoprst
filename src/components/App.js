@@ -34,6 +34,11 @@ export default class App extends Component {
             this.setState(appState.newFile(this.state))
         }
 
+        this.handleRemoveFileClick = evt => {
+            evt.preventDefault()
+            this.setState(appState.removeFile(this.state))
+        }
+
         this.handleSidebarSelectionChange = evt => {
             if (evt.selected === this.state.current) return
 
@@ -59,6 +64,7 @@ export default class App extends Component {
                 selected={this.state.current}
 
                 onNewFileClick={this.handleNewFileClick}
+                onRemoveFileClick={this.handleRemoveFileClick}
                 onSelectionChange={this.handleSidebarSelectionChange}
                 onOrderChange={this.handleSidebarOrderChange}
                 onWidthChange={this.handleSidebarWidthChange}

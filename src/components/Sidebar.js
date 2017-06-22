@@ -122,9 +122,15 @@ export default class Sidebar extends Component {
                 <h3>
                     Files
 
-                    <a href="#" title="New File" onClick={this.props.onNewFileClick}>
-                        <img src="./node_modules/octicons/build/svg/plus.svg" />
-                    </a>
+                    <span class="actions">
+                        <a href="#" title="New File" onClick={this.props.onNewFileClick}>
+                            <img src="./node_modules/octicons/build/svg/plus.svg" />
+                        </a>
+
+                        <a href="#" title="Remove File" onClick={this.props.onRemoveFileClick}>
+                            <img src="./node_modules/octicons/build/svg/trashcan.svg" />
+                        </a>
+                    </span>
                 </h3>
 
                 <ul class={classNames({dragging: this.state.dragging})}>
