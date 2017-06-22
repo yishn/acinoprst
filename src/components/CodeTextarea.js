@@ -61,6 +61,7 @@ export default class CodeTextarea extends Component {
 
                 let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
                 let newlines = rangedIndexOf(value, '\n', lineStart, selectionEnd)
+                let firstLineSelection = lineStart < 0
 
                 if (newlines[newlines.length - 1] !== value.length - 1)
                     newlines.push(value.length - 1)
@@ -73,7 +74,7 @@ export default class CodeTextarea extends Component {
                 let currentContentLine = chunks.find((x, i) => i > 0 && x.trim() !== '')
                 let currentIndent = currentContentLine != null ? getIndent(currentContentLine, 0) : 0
 
-                chunks = chunks.map((x, i) => i === 0 ? x :
+                chunks = chunks.map((x, i) => !firstLineSelection && i === 0 ? x :
                     evt.shiftKey
                     // Deindent
                     ? x.slice(Math.min(getIndent(x, 0), 4))
@@ -89,7 +90,7 @@ export default class CodeTextarea extends Component {
                     let endLineStart = newValue.length - chunks[chunks.length - 1].length
                     let endLineEnd = endLineStart + newValue.slice(endLineStart).indexOf('\n')
 
-                    selectionStart = chunks[0].length
+                    selectionStart = firstLineSelection ? 0 : chunks[0].length
                     selectionEnd = endLineEnd
                 } else {
                     let sign = evt.shiftKey ? -1 : 1

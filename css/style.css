@@ -43,6 +43,12 @@ main {
     #sidebar ul {
         list-style: none;
     }
+    #sidebar ul li {
+        transition: opacity .2s;
+    }
+    #sidebar ul li.dragging {
+        opacity: 0.5;
+    }
     #sidebar ul li a {
         display: block;
         padding: 3px 10px 3px 20px;

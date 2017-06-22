@@ -59,3 +59,10 @@ export function removeFile(state, index) {
 
     return newFile(Object.assign({}, state, {files: []}))
 }
+
+export function permutateFiles(state, permutation) {
+    return {
+        files: permutation.map(i => state.files[i]),
+        current: permutation.indexOf(state.current)
+    }
+}

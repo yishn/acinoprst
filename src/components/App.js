@@ -40,6 +40,10 @@ export default class App extends Component {
             this.setState(appState.openFile(this.state, evt.selected))
         }
 
+        this.handleSidebarOrderChange = evt => {
+            this.setState(appState.permutateFiles(this.state, evt.permutation))
+        }
+
         this.handleSidebarWidthChange = evt => {
             this.setState({sidebarWidth: evt.width})
         }
@@ -56,6 +60,7 @@ export default class App extends Component {
 
                 onNewFileClick={this.handleNewFileClick}
                 onSelectionChange={this.handleSidebarSelectionChange}
+                onOrderChange={this.handleSidebarOrderChange}
                 onWidthChange={this.handleSidebarWidthChange}
             />
 
