@@ -12,9 +12,9 @@ export default class Outliner extends Component {
 
                 let {value, selectionStart} = evt.currentTarget
                 let {onChange = () => {}} = this.props
-                let prefix = evt.shiftKey ? '- ' : '- [ ] '
+                let prefix = !evt.shiftKey ? '- ' : '- [ ] '
                 let chunks = [value.slice(0, selectionStart), value.slice(selectionStart)]
-                let matchSpaces = chunks[1].match(/^([^\S\n]*)- (\[[x ]\] )?/)
+                let matchSpaces = chunks[1].match(/^([^\S\n]*)- (\[\s*[Xx]?\s*\])?/)
                 let newSelection = selectionStart + prefix.length
 
                 if (matchSpaces) {

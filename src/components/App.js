@@ -31,24 +31,24 @@ export default class App extends Component {
 
         this.handleNewFileClick = evt => {
             evt.preventDefault()
-            this.setState(appState.newFile(this.state))
+            this.setState(state => appState.newFile(state))
         }
 
         this.handleRemoveFileClick = evt => {
             evt.preventDefault()
 
             if (!confirm('Do you really want to remove the current file?')) return
-            this.setState(appState.removeFile(this.state))
+            this.setState(state => appState.removeFile(state))
         }
 
         this.handleSidebarSelectionChange = evt => {
             if (evt.selected === this.state.current) return
 
-            this.setState(appState.openFile(this.state, evt.selected))
+            this.setState(state => appState.openFile(state, evt.selected))
         }
 
         this.handleSidebarOrderChange = evt => {
-            this.setState(appState.permutateFiles(this.state, evt.permutation))
+            this.setState(state => appState.permutateFiles(state, evt.permutation))
         }
 
         this.handleSidebarWidthChange = evt => {
