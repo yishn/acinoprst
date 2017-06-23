@@ -49,7 +49,9 @@ export default class CodeTextarea extends Component {
         }
 
         this.handleKeyDown = evt => {
-            if ([9, 13, 36].includes(evt.keyCode)) evt.preventDefault()
+            if ([9, 13, 36].includes(evt.keyCode)
+                || [38, 40].includes(evt.keyCode) && evt.ctrlKey)
+                evt.preventDefault()
             else return
 
             let element = evt.currentTarget
@@ -128,6 +130,37 @@ export default class CodeTextarea extends Component {
                 selectionStart = selectionEnd = chunks[0].length + indent + 1
 
                 onChange({element, value: newValue, selectionStart, selectionEnd})
+            } else if ([38, 40].includes(evt.keyCode) && evt.ctrlKey) {
+                // Up & down arrow
+
+                evt.preventDefault()
+
+                let sign = evt.keyCode === 38 ? -1 : 1
+                let lines = value.split('\n')
+                let [rowStart, ] = this.getTextPositionFromIndex(selectionStart)
+                let [rowEnd, ] = this.getTextPositionFromIndex(selectionEnd)
+
+                rowStart--
+                rowEnd--
+
+                let moveRow = sign > 0 ? rowEnd + 1 : rowStart - 1
+                if (moveRow < 0 || moveRow >= lines.length) return
+
+                let moveLine = lines[moveRow]
+                let selectionDiff = moveLine.length + 1
+
+                if (sign > 0) {
+                    lines.splice(rowStart, 0, moveLine)
+                    lines.splice(moveRow + 1, 1)
+                } else {
+                    lines.splice(rowEnd + 1, 0, moveLine)
+                    lines.splice(moveRow, 1)
+                }
+
+                selectionStart += sign * selectionDiff
+                selectionEnd += sign * selectionDiff
+
+                onChange({element, value: lines.join('\n'), selectionStart, selectionEnd})
             }
 
             let {onKeyDown = () => {}} = this.props
