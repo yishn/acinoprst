@@ -4,6 +4,25 @@ export const initState = {
     current: 0,
     files: [
         {
+            title: 'acinoprst todo',
+            content: outline.reformat([
+                '- [x] `CodeTextarea`',
+                '- [ ] `Outliner`',
+                '    - [ ] `Ctrl`-click to mark tasks as done',
+                '    - [ ] Automatic reformatting',
+                '- [x] Sidebar',
+                '    - [x] Reordering',
+                '- [ ] Login to GitHub',
+                '- [ ] Sync with Gist',
+                '- [ ] File toolbar in `Headline` component',
+                '    - [ ] Remove done tasks',
+                '    - [ ] Move done tasks to the bottom',
+                '    - [ ] Reformat',
+                '- [ ] Edit history',
+                '    - Undo & Redo'
+            ].join('\n'))
+        },
+        {
             title: 'Sample Outline',
             content: outline.reformat([
                 '- [ ] Hello World!',

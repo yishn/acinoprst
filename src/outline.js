@@ -70,10 +70,10 @@ export function parse(content) {
 
 export function stringify(list) {
     return list.map(task => {
-        let done = task.type === 'task' ? `[${task.done ? 'x' : ' '}] ` : ''
+        let checkbox = task.type === 'task' ? `[${task.done ? 'x' : ' '}] ` : ''
 
         return [
-            `- ${done}${task.content}`,
+            `- ${checkbox}${task.content}`,
             indent(stringify(task.sublist), 4)
         ].filter(x => x.trim() !== '').join('\n').trim()
     }).join('\n') + '\n'
@@ -100,4 +100,12 @@ export function extractStats(content) {
         tasks, done, items,
         progress: tasks === 0 ? 0 : done / tasks
     }
+}
+
+export function separate(content) {
+    let sort = list => list.map((x, i) => [i, x])
+        .sort(([i, x1], [j, x2]) => +x1.done - +x2.done || i - j)
+        .map(([, x]) => (sort(x.sublist), x))
+
+    return stringify(sort(parse(content)))
 }
