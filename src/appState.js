@@ -51,14 +51,14 @@ export const initState = {
 export function reformat(state, index = null) {
     return {
         files: state.files.map((x, i) => index == null || index === i
-            ? Object.assign({}, x, {content: outline.reformat(x.content)})
+            ? {...x, content: outline.reformat(x.content)}
             : x
         )
     }
 }
 
 export function openFile(state, index) {
-    return Object.assign(reformat(state, index), {current: index})
+    return {...reformat(state, index), current: index}
 }
 
 export function newFile(state) {
@@ -78,7 +78,7 @@ export function removeFile(state, index = null) {
         }
     }
 
-    return newFile(Object.assign({}, state, {files: []}))
+    return newFile({...state, files: []})
 }
 
 export function permutateFiles(state, permutation) {

@@ -18,7 +18,7 @@ module.exports = {
                 include: path.join(__dirname, 'src'),
                 test: /\.js$/,
                 query: {
-                    presets: ['es2015'],
+                    presets: [['es2015', {modules: false}], 'stage-1'],
                     plugins: [['transform-react-jsx', {pragma: 'h'}]]
                 }
             }
