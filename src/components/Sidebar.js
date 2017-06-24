@@ -15,44 +15,6 @@ export default class Sidebar extends Component {
             dragBefore: 0,
             dragGhostTop: 0
         }
-
-        this.handleResizerMouseDown = evt => {
-            if (evt.button !== 0) return
-
-            this.resizerMouseDown = {
-                x: evt.clientX,
-                width: this.props.width
-            }
-        }
-
-        this.handleItemMouseDown = evt => {
-            if (evt.button !== 0) return
-
-            let {currentTarget} = evt
-            let ulElement = currentTarget.parentNode.parentNode
-            let {top: itemTop, height: itemHeight} = currentTarget.getBoundingClientRect()
-            let {top, bottom} = ulElement.getBoundingClientRect()
-
-            this.itemDragged = false
-            this.itemMouseDown = {
-                index: +currentTarget.parentNode.dataset.index,
-                diff: evt.clientY - itemTop,
-                itemHeight,
-                top,
-                bottom
-            }
-        }
-
-        this.handleItemClick = evt => {
-            evt.preventDefault()
-
-            if (this.itemDragged) return
-
-            let {onSelectionChange = () => {}} = this.props
-            let {index} = evt.currentTarget.parentNode.dataset
-
-            onSelectionChange({selected: +index})
-        }
     }
 
     componentDidMount() {
@@ -107,6 +69,44 @@ export default class Sidebar extends Component {
             || this.state.dragIndex !== nextState.dragIndex
             || this.state.dragBefore !== nextState.dragBefore
             || this.state.dragGhostTop !== nextState.dragGhostTop
+    }
+
+    handleResizerMouseDown = evt => {
+        if (evt.button !== 0) return
+
+        this.resizerMouseDown = {
+            x: evt.clientX,
+            width: this.props.width
+        }
+    }
+
+    handleItemMouseDown = evt => {
+        if (evt.button !== 0) return
+
+        let {currentTarget} = evt
+        let ulElement = currentTarget.parentNode.parentNode
+        let {top: itemTop, height: itemHeight} = currentTarget.getBoundingClientRect()
+        let {top, bottom} = ulElement.getBoundingClientRect()
+
+        this.itemDragged = false
+        this.itemMouseDown = {
+            index: +currentTarget.parentNode.dataset.index,
+            diff: evt.clientY - itemTop,
+            itemHeight,
+            top,
+            bottom
+        }
+    }
+
+    handleItemClick = evt => {
+        evt.preventDefault()
+
+        if (this.itemDragged) return
+
+        let {onSelectionChange = () => {}} = this.props
+        let {index} = evt.currentTarget.parentNode.dataset
+
+        onSelectionChange({selected: +index})
     }
 
     render() {

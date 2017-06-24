@@ -9,11 +9,6 @@ export default class Headline extends Component {
             progress: 0
         }
 
-        this.handleInputChange = evt => {
-            let {onChange = () => {}} = this.props
-            onChange({value: evt.currentTarget.value})
-        }
-
         this.componentWillReceiveProps(props)
     }
 
@@ -29,6 +24,11 @@ export default class Headline extends Component {
                 progress: outline.extractStats(this.props.content).progress
             })
         }, 500)
+    }
+
+    handleInputChange = evt => {
+        let {onChange = () => {}} = this.props
+        onChange({value: evt.currentTarget.value})
     }
 
     render() {

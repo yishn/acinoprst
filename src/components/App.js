@@ -10,50 +10,50 @@ export default class App extends Component {
         super()
 
         this.state = appState.initState
+    }
 
-        this.handleHeadlineChange = evt => {
-            this.setState(({current, files}) => ({
-                files: (files[current].title = evt.value, files)
-            }))
-        }
+    handleHeadlineChange = evt => {
+        this.setState(({current, files}) => ({
+            files: (files[current].title = evt.value, files)
+        }))
+    }
 
-        this.handleOutlinerChange = evt => {
-            let {element, value, selectionStart, selectionEnd} = evt
+    handleOutlinerChange = evt => {
+        let {element, value, selectionStart, selectionEnd} = evt
 
-            element.value = value
-            element.selectionStart = selectionStart
-            element.selectionEnd = selectionEnd
+        element.value = value
+        element.selectionStart = selectionStart
+        element.selectionEnd = selectionEnd
 
-            this.setState(({current, files}) => ({
-                files: (files[current].content = value, files)
-            }))
-        }
+        this.setState(({current, files}) => ({
+            files: (files[current].content = value, files)
+        }))
+    }
 
-        this.handleNewFileClick = evt => {
-            evt.preventDefault()
-            this.setState(state => appState.newFile(state))
-        }
+    handleNewFileClick = evt => {
+        evt.preventDefault()
+        this.setState(state => appState.newFile(state))
+    }
 
-        this.handleRemoveFileClick = evt => {
-            evt.preventDefault()
+    handleRemoveFileClick = evt => {
+        evt.preventDefault()
 
-            if (!confirm('Do you really want to remove the current file?')) return
-            this.setState(state => appState.removeFile(state))
-        }
+        if (!confirm('Do you really want to remove the current file?')) return
+        this.setState(state => appState.removeFile(state))
+    }
 
-        this.handleSidebarSelectionChange = evt => {
-            if (evt.selected === this.state.current) return
+    handleSidebarSelectionChange = evt => {
+        if (evt.selected === this.state.current) return
 
-            this.setState(state => appState.openFile(state, evt.selected))
-        }
+        this.setState(state => appState.openFile(state, evt.selected))
+    }
 
-        this.handleSidebarOrderChange = evt => {
-            this.setState(state => appState.permutateFiles(state, evt.permutation))
-        }
+    handleSidebarOrderChange = evt => {
+        this.setState(state => appState.permutateFiles(state, evt.permutation))
+    }
 
-        this.handleSidebarWidthChange = evt => {
-            this.setState({sidebarWidth: evt.width})
-        }
+    handleSidebarWidthChange = evt => {
+        this.setState({sidebarWidth: evt.width})
     }
 
     render() {
