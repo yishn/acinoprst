@@ -42,7 +42,7 @@ export default class Sidebar extends Component {
                 let {x, width} = this.resizerMouseDown
                 let {clientX} = evt
 
-                onWidthChange({width: Math.max(width + clientX - x, 100)})
+                onWidthChange({width: width + clientX - x})
             } else if (this.itemMouseDown != null) {
                 evt.preventDefault()
 
@@ -106,7 +106,21 @@ export default class Sidebar extends Component {
         let {onSelectionChange = () => {}} = this.props
         let {index} = evt.currentTarget.parentNode.dataset
 
-        onSelectionChange({selected: +index})
+        onSelectionChange({...evt, selected: +index})
+    }
+
+    handleNewFileClick = evt => {
+        evt.preventDefault()
+
+        let {onNewFileClick = () => {}} = this.props
+        onNewFileClick(evt)
+    }
+
+    handleRemoveFileClick = evt => {
+        evt.preventDefault()
+
+        let {onRemoveFileClick = () => {}} = this.props
+        onRemoveFileClick(evt)
     }
 
     render() {
@@ -123,11 +137,11 @@ export default class Sidebar extends Component {
                     Files
 
                     <span class="actions">
-                        <a href="#" title="New File" onClick={this.props.onNewFileClick}>
+                        <a href="#" title="New File" onClick={this.handleNewFileClick}>
                             <img src="./node_modules/octicons/build/svg/plus.svg" />
                         </a>
 
-                        <a href="#" title="Remove File" onClick={this.props.onRemoveFileClick}>
+                        <a href="#" title="Remove File" onClick={this.handleRemoveFileClick}>
                             <img src="./node_modules/octicons/build/svg/trashcan.svg" />
                         </a>
                     </span>
@@ -135,10 +149,14 @@ export default class Sidebar extends Component {
 
                 <ul class={classNames({dragging: this.state.dragging})}>
                 {items.map(([i, name]) =>
-                    <li key={i} data-index={i} class={classNames({
-                        selected: this.props.selected === i,
-                        dragging: this.state.dragging && this.state.dragIndex === i
-                    })}>
+                    <li
+                        key={i}
+                        data-index={i}
+                        class={classNames({
+                            selected: this.props.selected === i,
+                            dragging: this.state.dragging && this.state.dragIndex === i
+                        })}
+                    >
                         <a
                             href="#"
                             onClick={this.handleItemClick}

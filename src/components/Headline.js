@@ -1,5 +1,7 @@
 import {h, Component} from 'preact'
-import * as outline from '../outline'
+import {extractStats} from '../outline'
+
+import Menu from './Menu'
 
 export default class Headline extends Component {
     constructor(props) {
@@ -15,13 +17,15 @@ export default class Headline extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return this.props.value !== nextProps.value
             || this.state.progress !== nextState.progress
+            || this.state.children !== nextState.children
     }
 
     componentWillReceiveProps() {
         clearTimeout(this.stateUpdateId)
+
         this.stateUpdateId = setTimeout(() => {
             this.setState({
-                progress: outline.extractStats(this.props.content).progress
+                progress: extractStats(this.props.content).progress
             })
         }, 500)
     }
@@ -34,7 +38,7 @@ export default class Headline extends Component {
     render() {
         let percent = Math.round(this.state.progress * 100)
 
-        return <section id="headline" title={`${percent}% done`}>
+        return <section id="headline">
             <div
                 class="progress"
                 style={{width: `${percent}%`}}
@@ -46,9 +50,14 @@ export default class Headline extends Component {
                 type="text"
                 value={this.props.value}
                 placeholder="(Untitled)"
+                title={`${percent}% done`}
 
                 onInput={this.handleInputChange}
             />
+
+            <Menu text="File Actions">
+                {this.props.children}
+            </Menu>
         </section>
     }
 }

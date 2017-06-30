@@ -12,6 +12,7 @@ export const initState = {
                 '    - [ ] Automatic reformatting',
                 '- [x] Sidebar',
                 '    - [x] Reordering',
+                '    - [ ] Scrollbar style',
                 '- [ ] Login to GitHub',
                 '- [ ] Sync with Gist',
                 '- [ ] File toolbar in `Headline` component',

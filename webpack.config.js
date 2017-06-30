@@ -15,7 +15,6 @@ module.exports = {
         loaders: [
             {
                 loader: 'babel-loader',
-                include: path.join(__dirname, 'src'),
                 test: /\.js$/,
                 query: {
                     presets: [['es2015', {modules: false}], 'stage-1'],

@@ -37,7 +37,7 @@
   },
   "scripts": {
     "start": "http-server",
-    "build": "webpack -p",
+    "build": "webpack --progress -p",
     "watch": "webpack --progress --watch"
   }
 }

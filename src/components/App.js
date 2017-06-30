@@ -4,6 +4,7 @@ import * as appState from '../appState'
 import Headline from './Headline'
 import Outliner from './Outliner'
 import Sidebar from './Sidebar'
+import {MenuItem} from './Menu'
 
 export default class App extends Component {
     constructor() {
@@ -31,20 +32,15 @@ export default class App extends Component {
     }
 
     handleNewFileClick = evt => {
-        evt.preventDefault()
-        this.setState(state => appState.newFile(state))
+        this.setState(appState.newFile)
     }
 
     handleRemoveFileClick = evt => {
-        evt.preventDefault()
-
         if (!confirm('Do you really want to remove the current file?')) return
-        this.setState(state => appState.removeFile(state))
+        this.setState(appState.removeFile)
     }
 
     handleSidebarSelectionChange = evt => {
-        if (evt.selected === this.state.current) return
-
         this.setState(state => appState.openFile(state, evt.selected))
     }
 
@@ -53,7 +49,7 @@ export default class App extends Component {
     }
 
     handleSidebarWidthChange = evt => {
-        this.setState({sidebarWidth: evt.width})
+        this.setState({sidebarWidth: Math.min(Math.max(evt.width, 100), 400)})
     }
 
     render() {
@@ -77,7 +73,13 @@ export default class App extends Component {
                     value={currentFile.title}
                     content={currentFile.content}
                     onChange={this.handleHeadlineChange}
-                />
+                >
+                    <MenuItem>Reformat</MenuItem>
+                    <MenuItem>Separate Done</MenuItem>
+                    <MenuItem>Remove Done</MenuItem>
+                    <MenuItem type="separator" />
+                    <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
+                </Headline>
 
                 <Outliner
                     value={currentFile.content}
