@@ -6,21 +6,21 @@ export const initState = {
         {
             title: 'acinoprst todo',
             content: outline.reformat([
-                '- [x] `CodeTextarea`',
                 '- [ ] `Outliner`',
                 '    - [ ] `Ctrl`-click to mark tasks as done',
                 '    - [ ] Automatic reformatting',
-                '- [x] Sidebar',
-                '    - [x] Reordering',
+                '- [ ] Sidebar',
                 '    - [ ] Scrollbar style',
+                '    - [x] Reordering',
                 '- [ ] Login to GitHub',
                 '- [ ] Sync with Gist',
-                '- [ ] File toolbar in `Headline` component',
-                '    - [ ] Remove done tasks',
-                '    - [ ] Move done tasks to the bottom',
-                '    - [ ] Reformat',
                 '- [ ] Edit history',
-                '    - Undo & Redo'
+                '    - Undo & Redo',
+                '- [x] `CodeTextarea`',
+                '- [x] File toolbar in `Headline` component',
+                '    - [x] Remove done tasks',
+                '    - [x] Move done tasks to the bottom',
+                '    - [x] Reformat'
             ].join('\n'))
         },
         {
@@ -58,10 +58,6 @@ export function reformat(state, index = null) {
     }
 }
 
-export function openFile(state, index) {
-    return {...reformat(state, index), current: index}
-}
-
 export function newFile(state) {
     return {
         files: [...state.files, {title: '', content: ''}],
@@ -69,9 +65,11 @@ export function newFile(state) {
     }
 }
 
-export function removeFile(state, index = null) {
-    if (index == null) index = state.current
+export function openFile(state, index) {
+    return {...reformat(state, index), current: index}
+}
 
+export function removeFile(state, index) {
     if (state.files.length > 1) {
         return {
             files: state.files.filter((_, i) => i !== index),
@@ -86,5 +84,23 @@ export function permutateFiles(state, permutation) {
     return {
         files: permutation.map(i => state.files[i]),
         current: permutation.indexOf(state.current)
+    }
+}
+
+export function separateItems(state, index) {
+    return {
+        files: state.files.map((x, i) => index === i
+            ? {...x, content: outline.separate(x.content)}
+            : x
+        )
+    }
+}
+
+export function removeDoneTasks(state, index) {
+    return {
+        files: state.files.map((x, i) => index === i
+            ? {...x, content: outline.removeDoneTasks(x.content)}
+            : x
+        )
     }
 }

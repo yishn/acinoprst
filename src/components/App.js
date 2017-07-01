@@ -31,13 +31,13 @@ export default class App extends Component {
         }))
     }
 
-    handleNewFileClick = evt => {
-        this.setState(appState.newFile)
+    handleNewFileClick = () => {
+        this.setState(state => appState.newFile(state))
     }
 
-    handleRemoveFileClick = evt => {
+    handleRemoveFileClick = () => {
         if (!confirm('Do you really want to remove the current file?')) return
-        this.setState(appState.removeFile)
+        this.setState(state => appState.removeFile(state, state.current))
     }
 
     handleSidebarSelectionChange = evt => {
@@ -52,6 +52,18 @@ export default class App extends Component {
         this.setState({sidebarWidth: Math.min(Math.max(evt.width, 100), 400)})
     }
 
+    handleReformatClick = () => {
+        this.setState(state => appState.reformat(state, state.current))
+    }
+
+    handleSeparateItemsClick = () => {
+        this.setState(state => appState.separateItems(state, state.current))
+    }
+
+    handleRemoveDoneClick = () => {
+        this.setState(state => appState.removeDoneTasks(state, state.current))
+    }
+
     render() {
         let currentFile = this.state.files[this.state.current]
 
@@ -62,7 +74,6 @@ export default class App extends Component {
                 selected={this.state.current}
 
                 onNewFileClick={this.handleNewFileClick}
-                onRemoveFileClick={this.handleRemoveFileClick}
                 onSelectionChange={this.handleSidebarSelectionChange}
                 onOrderChange={this.handleSidebarOrderChange}
                 onWidthChange={this.handleSidebarWidthChange}
@@ -74,9 +85,9 @@ export default class App extends Component {
                     content={currentFile.content}
                     onChange={this.handleHeadlineChange}
                 >
-                    <MenuItem>Reformat</MenuItem>
-                    <MenuItem>Separate Done</MenuItem>
-                    <MenuItem>Remove Done</MenuItem>
+                    <MenuItem onClick={this.handleReformatClick}>Reformat</MenuItem>
+                    <MenuItem onClick={this.handleSeparateItemsClick}>Separate Items</MenuItem>
+                    <MenuItem onClick={this.handleRemoveDoneClick}>Remove Done</MenuItem>
                     <MenuItem type="separator" />
                     <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
                 </Headline>

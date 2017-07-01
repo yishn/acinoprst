@@ -116,13 +116,6 @@ export default class Sidebar extends Component {
         onNewFileClick(evt)
     }
 
-    handleRemoveFileClick = evt => {
-        evt.preventDefault()
-
-        let {onRemoveFileClick = () => {}} = this.props
-        onRemoveFileClick(evt)
-    }
-
     render() {
         let items = this.props.items.map((x, i) => [i, x])
 
@@ -139,10 +132,6 @@ export default class Sidebar extends Component {
                     <span class="actions">
                         <a href="#" title="New File" onClick={this.handleNewFileClick}>
                             <img src="./node_modules/octicons/build/svg/plus.svg" />
-                        </a>
-
-                        <a href="#" title="Remove File" onClick={this.handleRemoveFileClick}>
-                            <img src="./node_modules/octicons/build/svg/trashcan.svg" />
                         </a>
                     </span>
                 </h3>

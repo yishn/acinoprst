@@ -105,7 +105,14 @@ export function extractStats(content) {
 export function separate(content) {
     let sort = list => list.map((x, i) => [i, x])
         .sort(([i, x1], [j, x2]) => +x1.done - +x2.done || i - j)
-        .map(([, x]) => (sort(x.sublist), x))
+        .map(([, x]) => (x.sublist = sort(x.sublist), x))
 
     return stringify(sort(parse(content)))
+}
+
+export function removeDoneTasks(content) {
+    let remove = list => list.filter(x => x.type !== 'task' || !x.done)
+        .map(x => (x.sublist = remove(x.sublist), x))
+
+    return stringify(remove(parse(content)))
 }
