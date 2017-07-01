@@ -13,10 +13,12 @@ export default class App extends Component {
         this.state = appState.initState
     }
 
+    updateState(reducer, ...args) {
+        this.setState(state => reducer(state, ...args))
+    }
+
     handleHeadlineChange = evt => {
-        this.setState(({current, files}) => ({
-            files: (files[current].title = evt.value, files)
-        }))
+        this.updateState(appState.updateHeadline, this.state.current, evt.value)
     }
 
     handleOutlinerChange = evt => {
@@ -26,42 +28,40 @@ export default class App extends Component {
         element.selectionStart = selectionStart
         element.selectionEnd = selectionEnd
 
-        this.setState(({current, files}) => ({
-            files: (files[current].content = value, files)
-        }))
+        this.updateState(appState.updateFileContent, this.state.current, value)
     }
 
     handleNewFileClick = () => {
-        this.setState(state => appState.newFile(state))
+        this.updateState(appState.newFile)
     }
 
     handleRemoveFileClick = () => {
         if (!confirm('Do you really want to remove the current file?')) return
-        this.setState(state => appState.removeFile(state, state.current))
+        this.updateState(appState.removeFile, this.state.current)
     }
 
     handleSidebarSelectionChange = evt => {
-        this.setState(state => appState.openFile(state, evt.selected))
+        this.updateState(appState.openFile, evt.selected)
     }
 
     handleSidebarOrderChange = evt => {
-        this.setState(state => appState.permutateFiles(state, evt.permutation))
+        this.updateState(appState.permutateFiles, evt.permutation)
     }
 
     handleSidebarWidthChange = evt => {
-        this.setState({sidebarWidth: Math.min(Math.max(evt.width, 100), 400)})
+        this.updateState(appState.updateSidebarWidth, evt.width)
     }
 
     handleReformatClick = () => {
-        this.setState(state => appState.reformat(state, state.current))
+        this.updateState(appState.reformat, this.state.current)
     }
 
     handleSeparateItemsClick = () => {
-        this.setState(state => appState.separateItems(state, state.current))
+        this.updateState(appState.separateItems, this.state.current)
     }
 
     handleRemoveDoneClick = () => {
-        this.setState(state => appState.removeDoneTasks(state, state.current))
+        this.updateState(appState.removeDoneTasks, this.state.current)
     }
 
     render() {

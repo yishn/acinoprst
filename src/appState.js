@@ -49,6 +49,22 @@ export const initState = {
     sidebarWidth: 200
 }
 
+export function updateSidebarWidth(state, width) {
+    return {sidebarWidth: Math.min(Math.max(width, 100), 400)}
+}
+
+export function updateHeadline(state, index, title) {
+    return {
+        files: state.files.map((x, i) => i === index ? {...x, title} : x)
+    }
+}
+
+export function updateFileContent(state, index, content) {
+    return {
+        files: state.files.map((x, i) => i === index ? {...x, content} : x)
+    }
+}
+
 export function reformat(state, index = null) {
     return {
         files: state.files.map((x, i) => index == null || index === i
