@@ -1,7 +1,88 @@
 import {h, Component} from 'preact'
 import {extractStats} from '../outline'
+import classNames from 'classnames'
 
-import Menu from './Menu'
+export class MenuItem extends Component {
+    shouldComponentUpdate(nextProps) {
+        return nextProps.onClick !== this.props.onClick
+            || nextProps.text !== this.props.text
+            || nextProps.type !== this.props.type
+    }
+
+    handleClick = evt => {
+        evt.preventDefault()
+
+        let {onClick = () => {}} = this.props
+        onClick(evt)
+    }
+
+    render() {
+        return <li class={this.props.type}>
+            {
+                this.props.type !== 'separator' &&
+
+                <a href="#" onClick={this.handleClick}>{this.props.children}</a>
+            }
+        </li>
+    }
+}
+
+export class ToolbarButton extends Component {
+    constructor() {
+        super()
+
+        this.state = {
+            menuOpen: false
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.text !== this.props.text
+            || nextProps.icon !== this.props.icon
+            || nextProps.children !== this.props.children
+            || nextProps.onClick !== this.props.onClick
+            || nextState.menuOpen !== this.state.menuOpen
+    }
+
+    handleClick = evt => {
+        evt.preventDefault()
+
+        if (this.props.children.length > 0) {
+            // Open menu
+
+            this.setState({menuOpen: true})
+        }
+
+        let {onClick = () => {}} = this.props
+        onClick(evt)
+    }
+
+    handleMenuClick = () => {
+        this.setState({menuOpen: false})
+    }
+
+    render() {
+        let id = this.props.text.toLowerCase().replace(/\s+/g, '-')
+
+        return <li class={classNames(id, {open: this.state.menuOpen})}>
+            <a href="#" title={this.props.text} onClick={this.handleClick}>
+                <img
+                    src={`./node_modules/octicons/build/svg/${this.props.icon}.svg`}
+                    alt={this.props.text}
+                />
+            </a>
+
+            {
+                this.props.children.length > 0 &&
+
+                <ul class="menu" onClick={this.handleMenuClick}>
+                    <li class="overlay" />
+                    {this.props.children}
+                </ul>
+            }
+        </li>
+    }
+}
 
 export default class Headline extends Component {
     constructor(props) {
@@ -55,9 +136,9 @@ export default class Headline extends Component {
                 onInput={this.handleInputChange}
             />
 
-            <Menu text="File Actions">
+            <ul class="toolbar">
                 {this.props.children}
-            </Menu>
+            </ul>
         </section>
     }
 }

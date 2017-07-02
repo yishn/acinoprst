@@ -1,10 +1,9 @@
 import {h, Component} from 'preact'
 import * as appState from '../appState'
 
-import Headline from './Headline'
+import Headline, {ToolbarButton, MenuItem} from './Headline'
 import Outliner from './Outliner'
 import Sidebar from './Sidebar'
-import {MenuItem} from './Menu'
 
 export default class App extends Component {
     constructor() {
@@ -85,11 +84,16 @@ export default class App extends Component {
                     content={currentFile.content}
                     onChange={this.handleHeadlineChange}
                 >
-                    <MenuItem onClick={this.handleReformatClick}>Reformat</MenuItem>
-                    <MenuItem onClick={this.handleSeparateItemsClick}>Separate Items</MenuItem>
-                    <MenuItem onClick={this.handleRemoveDoneClick}>Remove Done</MenuItem>
-                    <MenuItem type="separator" />
-                    <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
+                    <ToolbarButton text="Undo" icon="mail-reply" />
+                    <ToolbarButton text="Redo" icon="mail-reply" />
+
+                    <ToolbarButton text="File Actions" icon="three-bars">
+                        <MenuItem onClick={this.handleReformatClick}>Reformat</MenuItem>
+                        <MenuItem onClick={this.handleSeparateItemsClick}>Separate Items</MenuItem>
+                        <MenuItem onClick={this.handleRemoveDoneClick}>Remove Done</MenuItem>
+                        <MenuItem type="separator" />
+                        <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
+                    </ToolbarButton>
                 </Headline>
 
                 <Outliner

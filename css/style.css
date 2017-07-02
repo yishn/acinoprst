@@ -117,7 +117,7 @@ main {
         position: absolute;
         left: 0;
         top: 0;
-        width: calc(100% - 3.5em);
+        width: calc(100% - 10.5em);
         height: 100%;
         border: none;
         padding: 0 1em 0 2em;
@@ -127,63 +127,78 @@ main {
         outline: none;
 }
 
-#headline .menu {
+#headline .toolbar {
         position: absolute;
-        right: 0;
         top: 0;
-        width: 3.5em;
+        right: 0;
         height: 100%;
+        list-style: none;
     }
-    #headline .menu h2 a {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        text-indent: -9999em;
-        background: url('../node_modules/octicons/build/svg/three-bars.svg') center/1em 1em no-repeat;
+    #headline .toolbar > li {
+        position: relative;
+        display: inline-block;
     }
-    #headline .menu h2 a:hover, #headline .menu ul li a:hover {
+    #headline .toolbar > li a:hover {
         background-color: rgba(0, 0, 0, .1);
     }
-    #headline .menu h2 a:active, #headline .menu ul li a:active {
+    #headline .toolbar > li a:active, #headline .toolbar > li.open > a {
         background-color: rgba(0, 0, 0, .15);
     }
-    #headline .menu .overlay {
+    #headline .toolbar > li > a {
+        display: inline-block;
+        position: relative;
+        width: 3.5em;
+        height: 3.5em;
+    }
+    #headline .toolbar > li > a img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 22px;
+        transform: translate(-50%, -50%);
+    }
+    #headline .toolbar > li.redo > a img {
+        transform: translate(-50%, -50%) scaleX(-1);
+    }
+    #headline .toolbar .menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% - 5px);
+        width: 10em;
+        padding: 5px 0;
+        background: #F2F2F2;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
+        list-style: none;
+        transition: opacity .2s;
+    }
+    #headline .toolbar > li:not(.open) .menu {
+        opacity: 0;
+        pointer-events: none;
+    }
+    #headline .toolbar .menu li.overlay {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
+        opacity: 0;
+        z-index: 3;
     }
-    #headline .menu:not(.open) .overlay {
+    #headline .toolbar > li:not(.open) .menu li.overlay {
         display: none;
     }
-    #headline .menu ul {
-        position: absolute;
-        right: 5px;
-        top: 100%;
-        width: 10em;
-        padding: 5px 0;
-        list-style: none;
-        background: #F2F2F2;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
-        transition: opacity .2s;
-    }
-    #headline .menu:not(.open) ul {
-        opacity: 0;
-        pointer-events: none;
-    }
-    #headline .menu ul li.separator {
-        height: 2px;
-        margin: 5px 0;
-        background: #bbb;
-    }
-    #headline .menu ul li a {
+    #headline .toolbar .menu li a {
         display: block;
+        position: relative;
         padding: 5px 15px;
         color: black;
         text-decoration: none;
+        z-index: 4;
+    }
+    #headline .toolbar .menu li.separator {
+        height: 2px;
+        margin: 5px 0;
+        background: #bbb;
 }
 
 #outliner {
