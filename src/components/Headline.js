@@ -39,6 +39,8 @@ export class ToolbarButton extends Component {
     handleClick = evt => {
         evt.preventDefault()
 
+        if (this.props.disabled) return
+
         if (this.props.children.length > 0) {
             // Open menu
 
@@ -56,7 +58,12 @@ export class ToolbarButton extends Component {
     render() {
         let id = this.props.text.toLowerCase().replace(/\s+/g, '-')
 
-        return <li class={classNames(id, {open: this.state.menuOpen})}>
+        return <li
+            class={classNames(id, {
+                open: this.state.menuOpen,
+                disabled: this.props.disabled
+            })}
+        >
             <a href="#" title={this.props.text} onClick={this.handleClick}>
                 <img
                     src={`./node_modules/octicons/build/svg/${this.props.icon}.svg`}

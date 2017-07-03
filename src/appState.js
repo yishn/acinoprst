@@ -1,5 +1,7 @@
 import * as outline from './outline'
 
+let lastHistoryPointTime = new Date()
+
 export const initState = {
     current: 0,
     history: [{current: 0, files: [{title: '', content: ''}]}],
@@ -53,27 +55,19 @@ export const initState = {
 }
 
 export function updateSidebarWidth(state, width) {
-    return {
-        sidebarWidth: Math.min(Math.max(width, 100), 400)
-    }
+    return {sidebarWidth: Math.min(Math.max(width, 100), 400)}
 }
 
 export function updateFileTitle(state, index, title) {
     let files = state.files.map((x, i) => i === index ? {...x, title} : x)
 
-    return {
-        ...makeHistoryPoint(state, {files}),
-        files
-    }
+    return {...makeHistoryPoint(state, {files}), files}
 }
 
 export function updateFileContent(state, index, content) {
     let files = state.files.map((x, i) => i === index ? {...x, content} : x)
 
-    return {
-        ...makeHistoryPoint(state, {files}),
-        files
-    }
+    return {...makeHistoryPoint(state, {files}), files}
 }
 
 export function newFile(state) {
@@ -81,19 +75,13 @@ export function newFile(state) {
     let current = state.files.length
 
     return {
-        ...makeHistoryPoint(state, {files, current}),
-        files,
-        current
+        ...makeHistoryPoint(state, {current, files}),
+        current, files
     }
 }
 
 export function openFile(state, index) {
-    let current = index
-
-    return {
-        ...makeHistoryPoint(state, {current}),
-        current
-    }
+    return {current: index}
 }
 
 export function removeFile(state, index) {
@@ -102,9 +90,8 @@ export function removeFile(state, index) {
         let current = state.current !== index ? state.current : Math.max(state.current - 1, 0)
 
         return {
-            ...makeHistoryPoint(state, {files, current}),
-            files,
-            current
+            ...makeHistoryPoint(state, {current, files}),
+            current, files
         }
     }
 
@@ -116,9 +103,8 @@ export function permutateFiles(state, permutation) {
     let current = permutation.indexOf(state.current)
 
     return {
-        ...makeHistoryPoint(state, {files, current}),
-        files,
-        current
+        ...makeHistoryPoint(state, {current, files}),
+        current, files
     }
 }
 
@@ -136,6 +122,7 @@ export function removeDoneTasks(state, index) {
 
 export function makeHistoryPoint(state, {current = null, files = null}) {
     let history = state.history
+    let currentDate = new Date()
 
     if (state.historyPointer < state.history.length - 1) {
         history.splice(state.historyPointer + 1, history.length)
@@ -144,12 +131,15 @@ export function makeHistoryPoint(state, {current = null, files = null}) {
     if (current == null) current = state.current
     if (files == null) files = state.files
 
-    history.push({current, files})
-
-    return {
-        history,
-        historyPointer: state.history.length - 1
+    if (currentDate.getTime() - lastHistoryPointTime.getTime() < 500) {
+        history[history.length - 1] = {current, files}
+    } else {
+        history.push({current, files})
     }
+
+    lastHistoryPointTime = currentDate
+
+    return {history, historyPointer: history.length - 1}
 }
 
 export function traverseEditHistory(state, step) {

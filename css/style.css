@@ -138,10 +138,14 @@ main {
         position: relative;
         display: inline-block;
     }
-    #headline .toolbar > li a:hover {
+    #headline .toolbar > li.disabled {
+        opacity: .5;
+    }
+    #headline .toolbar > li:not(.disabled) a:hover {
         background-color: rgba(0, 0, 0, .1);
     }
-    #headline .toolbar > li a:active, #headline .toolbar > li.open > a {
+    #headline .toolbar > li:not(.disabled) a:active,
+    #headline .toolbar > li.open:not(.disabled) > a {
         background-color: rgba(0, 0, 0, .15);
     }
     #headline .toolbar > li > a {

@@ -100,12 +100,14 @@ export default class App extends Component {
                     <ToolbarButton
                         text="Undo"
                         icon="mail-reply"
+                        disabled={this.state.historyPointer === 0}
                         onClick={this.handleUndoClick}
                     />
 
                     <ToolbarButton
                         text="Redo"
                         icon="mail-reply"
+                        disabled={this.state.historyPointer === this.state.history.length - 1}
                         onClick={this.handleRedoClick}
                     />
 
