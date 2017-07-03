@@ -36,14 +36,6 @@ export class ToolbarButton extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.text !== this.props.text
-            || nextProps.icon !== this.props.icon
-            || nextProps.children !== this.props.children
-            || nextProps.onClick !== this.props.onClick
-            || nextState.menuOpen !== this.state.menuOpen
-    }
-
     handleClick = evt => {
         evt.preventDefault()
 
@@ -93,12 +85,6 @@ export default class Headline extends Component {
         }
 
         this.componentWillReceiveProps(props)
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.value !== nextProps.value
-            || this.state.progress !== nextState.progress
-            || this.state.children !== nextState.children
     }
 
     componentWillReceiveProps() {

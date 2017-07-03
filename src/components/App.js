@@ -41,6 +41,7 @@ export default class App extends Component {
 
     handleSidebarSelectionChange = evt => {
         this.updateState(appState.openFile, evt.selected)
+        this.updateState(appState.reformat, evt.selected)
     }
 
     handleSidebarOrderChange = evt => {
@@ -61,6 +62,14 @@ export default class App extends Component {
 
     handleRemoveDoneClick = () => {
         this.updateState(appState.removeDoneTasks, this.state.current)
+    }
+
+    handleUndoClick = () => {
+        this.updateState(appState.traverseEditHistory, -1)
+    }
+
+    handleRedoClick = () => {
+        this.updateState(appState.traverseEditHistory, 1)
     }
 
     render() {
@@ -84,8 +93,17 @@ export default class App extends Component {
                     content={currentFile.content}
                     onChange={this.handleHeadlineChange}
                 >
-                    <ToolbarButton text="Undo" icon="mail-reply" />
-                    <ToolbarButton text="Redo" icon="mail-reply" />
+                    <ToolbarButton
+                        text="Undo"
+                        icon="mail-reply"
+                        onClick={this.handleUndoClick}
+                    />
+
+                    <ToolbarButton
+                        text="Redo"
+                        icon="mail-reply"
+                        onClick={this.handleRedoClick}
+                    />
 
                     <ToolbarButton text="File Actions" icon="three-bars">
                         <MenuItem onClick={this.handleReformatClick}>Reformat</MenuItem>
