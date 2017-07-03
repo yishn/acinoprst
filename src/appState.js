@@ -58,7 +58,7 @@ export function updateSidebarWidth(state, width) {
     }
 }
 
-export function updateHeadline(state, index, title) {
+export function updateFileTitle(state, index, title) {
     let files = state.files.map((x, i) => i === index ? {...x, title} : x)
 
     return {

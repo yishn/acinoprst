@@ -21,7 +21,7 @@ export default class App extends Component {
     }
 
     handleHeadlineChange = evt => {
-        this.updateHeadline(this.state.current, evt.value)
+        this.updateFileTitle(this.state.current, evt.value)
     }
 
     handleOutlinerChange = evt => {
