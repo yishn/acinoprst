@@ -20,18 +20,34 @@ export default class App extends Component {
         }
     }
 
+    componentDidUpdate(_, prevState) {
+        let textarea = document.querySelector('#outliner textarea')
+
+        if (prevState.selectionStart !== this.state.selectionStart
+        || textarea.selectionStart !== this.state.selectionStart) {
+            textarea.selectionStart = this.state.selectionStart
+        }
+
+        if (prevState.selectionEnd !== this.state.selectionEnd
+        || textarea.selectionEnd !== this.state.selectionEnd) {
+            textarea.selectionEnd = this.state.selectionEnd
+        }
+    }
+
     handleHeadlineChange = evt => {
         this.updateFileTitle(this.state.current, evt.value)
     }
 
     handleOutlinerChange = evt => {
-        let {element, value, selectionStart, selectionEnd} = evt
+        let {value, selectionStart, selectionEnd} = evt
 
-        element.value = value
-        element.selectionStart = selectionStart
-        element.selectionEnd = selectionEnd
+        this.updateFileContent(this.state.current, value, selectionStart, selectionEnd)
+    }
 
-        this.updateFileContent(this.state.current, value)
+    handleOutlinerSelectionChange = evt => {
+        let {selectionStart, selectionEnd} = evt
+
+        this.updateSelection(selectionStart, selectionEnd)
     }
 
     handleNewFileClick = () => {
@@ -123,6 +139,7 @@ export default class App extends Component {
                 <Outliner
                     value={currentFile.content}
                     onChange={this.handleOutlinerChange}
+                    onSelectionChange={this.handleOutlinerSelectionChange}
                 />
             </main>
         </section>

@@ -54,7 +54,7 @@ export default class CodeTextarea extends Component {
         let {onChange = () => {}} = this.props
         let {value, selectionStart, selectionEnd} = evt.currentTarget
 
-        onChange({element: evt.currentTarget, value, selectionStart, selectionEnd})
+        onChange({value, selectionStart, selectionEnd})
     }
 
     handleKeyDown = evt => {
@@ -63,9 +63,8 @@ export default class CodeTextarea extends Component {
             evt.preventDefault()
         else return
 
-        let element = evt.currentTarget
         let {value, onChange = () => {}} = this.props
-        let {selectionStart, selectionEnd} = element
+        let {selectionStart, selectionEnd} = evt.currentTarget
 
         if (evt.keyCode === 9) {
             // Tab
@@ -110,7 +109,7 @@ export default class CodeTextarea extends Component {
                 selectionStart = selectionEnd = selectionStart + sign * diff
             }
 
-            onChange({element, value: newValue, selectionStart, selectionEnd})
+            onChange({value: newValue, selectionStart, selectionEnd})
         } else if (evt.keyCode === 36) {
             // Home
 
@@ -127,7 +126,7 @@ export default class CodeTextarea extends Component {
             selectionStart = caretPosition
             if (!evt.shiftKey) selectionEnd = caretPosition
 
-            onChange({element, value, selectionStart, selectionEnd})
+            onChange({value, selectionStart, selectionEnd})
         } else if (evt.keyCode === 13) {
             // Enter
 
@@ -138,7 +137,7 @@ export default class CodeTextarea extends Component {
 
             selectionStart = selectionEnd = chunks[0].length + indent + 1
 
-            onChange({element, value: newValue, selectionStart, selectionEnd})
+            onChange({value: newValue, selectionStart, selectionEnd})
         } else if ([38, 40].includes(evt.keyCode) && evt.ctrlKey) {
             // Up & down arrow
 
@@ -169,7 +168,7 @@ export default class CodeTextarea extends Component {
             selectionStart += sign * selectionDiff
             selectionEnd += sign * selectionDiff
 
-            onChange({element, value: lines.join('\n'), selectionStart, selectionEnd})
+            onChange({value: lines.join('\n'), selectionStart, selectionEnd})
         }
 
         let {onKeyDown = () => {}} = this.props
@@ -184,7 +183,8 @@ export default class CodeTextarea extends Component {
 
         onSelectionChange({
             start: this.getTextPositionFromIndex(selectionStart),
-            end: this.getTextPositionFromIndex(selectionEnd)
+            end: this.getTextPositionFromIndex(selectionEnd),
+            selectionStart, selectionEnd
         })
     }
 

@@ -10,6 +10,7 @@ export default class Outliner extends Component {
     shouldComponentUpdate(nextProps) {
         return this.props.value !== nextProps.value
             || this.props.onChange !== nextProps.onChange
+            || this.props.onSelectionChange !== nextProps.onSelectionChange
     }
 
     handleKeyDown = evt => {

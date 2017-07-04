@@ -4,7 +4,12 @@ let lastHistoryPointTime = new Date()
 
 export const initState = {
     current: 0,
-    history: [{current: 0, files: [{title: '', content: ''}]}],
+    history: [{
+        current: 0,
+        files: [{title: '', content: ''}],
+        selectionStart: 0,
+        selectionEnd: 0
+    }],
     historyPointer: 0,
     files: [
         {title: '', content: ''},
@@ -19,7 +24,7 @@ export const initState = {
                 '    - [x] Reordering',
                 '- [ ] Login to GitHub',
                 '- [ ] Sync with Gist',
-                '- [ ] Edit history',
+                '- [x] Edit history',
                 '    - Undo & Redo',
                 '- [x] `CodeTextarea`',
                 '- [x] File toolbar in `Headline` component',
@@ -51,7 +56,9 @@ export const initState = {
             ].join('\n'))
         }
     ],
-    sidebarWidth: 200
+    sidebarWidth: 200,
+    selectionStart: 0,
+    selectionEnd: 0
 }
 
 export function updateSidebarWidth(state, width) {
@@ -64,10 +71,22 @@ export function updateFileTitle(state, index, title) {
     return {...makeHistoryPoint(state, {files}), files}
 }
 
-export function updateFileContent(state, index, content) {
+export function updateFileContent(state, index, content, selectionStart, selectionEnd) {
     let files = state.files.map((x, i) => i === index ? {...x, content} : x)
 
-    return {...makeHistoryPoint(state, {files}), files}
+    return {
+        ...makeHistoryPoint(state, {files, selectionStart, selectionEnd}),
+        ...updateSelection(state, selectionStart, selectionEnd),
+        files
+    }
+}
+
+export function updateSelection(state, selectionStart, selectionEnd) {
+    return {selectionStart, selectionEnd}
+}
+
+export function openFile(state, index) {
+    return {current: index, selectionStart: 0, selectionEnd: 0}
 }
 
 export function newFile(state) {
@@ -76,12 +95,9 @@ export function newFile(state) {
 
     return {
         ...makeHistoryPoint(state, {current, files}),
-        current, files
+        ...openFile(state, current),
+        files
     }
-}
-
-export function openFile(state, index) {
-    return {current: index}
 }
 
 export function removeFile(state, index) {
@@ -91,7 +107,8 @@ export function removeFile(state, index) {
 
         return {
             ...makeHistoryPoint(state, {current, files}),
-            current, files
+            ...openFile(state, current),
+            files
         }
     }
 
@@ -120,7 +137,12 @@ export function removeDoneTasks(state, index) {
     return updateFileContent(state, index, outline.removeDoneTasks(state.files[index].content))
 }
 
-export function makeHistoryPoint(state, {current = null, files = null}) {
+export function makeHistoryPoint(state, {
+    current = null,
+    files = null,
+    selectionStart = null,
+    selectionEnd = null
+}) {
     let history = state.history
     let currentDate = new Date()
 
@@ -130,11 +152,15 @@ export function makeHistoryPoint(state, {current = null, files = null}) {
 
     if (current == null) current = state.current
     if (files == null) files = state.files
+    if (selectionStart == null) selectionStart = state.selectionStart
+    if (selectionEnd == null) selectionEnd = state.selectionEnd
+
+    let data = {current, files, selectionStart, selectionEnd}
 
     if (currentDate.getTime() - lastHistoryPointTime.getTime() < 500) {
-        history[history.length - 1] = {current, files}
+        history[history.length - 1] = data
     } else {
-        history.push({current, files})
+        history.push(data)
     }
 
     lastHistoryPointTime = currentDate
@@ -149,7 +175,7 @@ export function traverseEditHistory(state, step) {
         return state
     }
 
-    let {current, files} = state.history[historyPointer]
+    let {current, files, selectionStart, selectionEnd} = state.history[historyPointer]
 
-    return {historyPointer, current, files}
+    return {historyPointer, current, files, selectionStart, selectionEnd}
 }
