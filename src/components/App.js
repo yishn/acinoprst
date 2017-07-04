@@ -22,15 +22,22 @@ export default class App extends Component {
 
     componentDidUpdate(_, prevState) {
         let textarea = document.querySelector('#outliner textarea')
+        let selectionChanged = false
 
         if (prevState.selectionStart !== this.state.selectionStart
         || textarea.selectionStart !== this.state.selectionStart) {
             textarea.selectionStart = this.state.selectionStart
+            selectionChanged = true
         }
 
         if (prevState.selectionEnd !== this.state.selectionEnd
         || textarea.selectionEnd !== this.state.selectionEnd) {
             textarea.selectionEnd = this.state.selectionEnd
+            selectionChanged = true
+        }
+
+        if (selectionChanged) {
+            textarea.focus()
         }
     }
 
