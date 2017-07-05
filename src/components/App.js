@@ -25,13 +25,13 @@ export default class App extends Component {
         let selectionChanged = false
 
         if (prevState.selectionStart !== this.state.selectionStart
-        || textarea.selectionStart !== this.state.selectionStart) {
+        && textarea.selectionStart !== this.state.selectionStart) {
             textarea.selectionStart = this.state.selectionStart
             selectionChanged = true
         }
 
         if (prevState.selectionEnd !== this.state.selectionEnd
-        || textarea.selectionEnd !== this.state.selectionEnd) {
+        && textarea.selectionEnd !== this.state.selectionEnd) {
             textarea.selectionEnd = this.state.selectionEnd
             selectionChanged = true
         }
@@ -47,6 +47,14 @@ export default class App extends Component {
 
     handleOutlinerChange = evt => {
         let {value, selectionStart, selectionEnd} = evt
+
+        // This fixes weird bug where pressing enter doesn't insert new lines
+
+        let textarea = document.querySelector('#outliner textarea')
+
+        textarea.value = value
+        textarea.selectionStart = selectionStart
+        textarea.selectionEnd = selectionEnd
 
         this.updateFileContent(this.state.current, value, selectionStart, selectionEnd)
     }
