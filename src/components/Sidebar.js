@@ -49,13 +49,14 @@ export default class Sidebar extends Component {
                 this.itemDragged = true
 
                 let {diff, itemHeight, top, bottom} = this.itemMouseDown
-                let dragBefore = Math.floor((evt.clientY - top) / itemHeight)
+                let pivot = evt.clientY + this.scrollElement.scrollTop
+                let dragBefore = Math.floor((pivot - top) / itemHeight)
 
                 this.setState({
                     dragging: true,
                     dragIndex: this.itemMouseDown.index,
                     dragBefore: cap(0, this.props.items.length - 1, dragBefore),
-                    dragGhostTop: cap(top, bottom - itemHeight, evt.clientY - diff)
+                    dragGhostTop: cap(top, bottom - itemHeight, pivot - diff)
                 })
             }
         })
@@ -92,9 +93,9 @@ export default class Sidebar extends Component {
         this.itemMouseDown = {
             index: +currentTarget.parentNode.dataset.index,
             diff: evt.clientY - itemTop,
-            itemHeight,
-            top,
-            bottom
+            top: top + this.scrollElement.scrollTop,
+            bottom: bottom + this.scrollElement.scrollTop,
+            itemHeight
         }
     }
 
@@ -125,7 +126,7 @@ export default class Sidebar extends Component {
         }
 
         return <section id="sidebar" style={{width: this.props.width}}>
-            <nav>
+            <nav ref={el => this.scrollElement = el}>
                 <h3>
                     Files
 
