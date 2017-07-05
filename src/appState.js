@@ -66,12 +66,16 @@ export function updateSidebarWidth(state, width) {
 }
 
 export function updateFileTitle(state, index, title) {
+    if (state.files[index].title === title) return state
+
     let files = state.files.map((x, i) => i === index ? {...x, title} : x)
 
     return {...makeHistoryPoint(state, {files}), files}
 }
 
 export function updateFileContent(state, index, content, selectionStart, selectionEnd) {
+    if (state.files[index].content === content) return state
+
     let files = state.files.map((x, i) => i === index ? {...x, content} : x)
 
     return {
@@ -86,7 +90,14 @@ export function updateSelection(state, selectionStart, selectionEnd) {
 }
 
 export function openFile(state, index) {
-    return {current: index, selectionStart: 0, selectionEnd: 0}
+    if (index === state.current) return state
+
+    return {
+        ...makeHistoryPoint(state, {current: index}),
+        current: index,
+        selectionStart: 0,
+        selectionEnd: 0
+    }
 }
 
 export function newFile(state) {
@@ -116,6 +127,8 @@ export function removeFile(state, index) {
 }
 
 export function permutateFiles(state, permutation) {
+    if (permutation.every((x, i, a) => i === 0 || x > a[i - 1])) return state
+
     let files = permutation.map(i => state.files[i])
     let current = permutation.indexOf(state.current)
 
