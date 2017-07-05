@@ -182,9 +182,10 @@ export default class CodeTextarea extends Component {
         let {selectionStart, selectionEnd} = this.element
 
         onSelectionChange({
+            startIndex: selectionStart,
+            endIndex: selectionEnd,
             start: this.getTextPositionFromIndex(selectionStart),
-            end: this.getTextPositionFromIndex(selectionEnd),
-            selectionStart, selectionEnd
+            end: this.getTextPositionFromIndex(selectionEnd)
         })
     }
 

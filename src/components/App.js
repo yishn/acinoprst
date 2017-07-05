@@ -52,9 +52,9 @@ export default class App extends Component {
     }
 
     handleOutlinerSelectionChange = evt => {
-        let {selectionStart, selectionEnd} = evt
+        let {startIndex, endIndex} = evt
 
-        this.updateSelection(selectionStart, selectionEnd)
+        this.updateSelection(startIndex, endIndex)
     }
 
     handleNewFileClick = () => {
