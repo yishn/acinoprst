@@ -21,6 +21,20 @@ main {
         bottom: 0;
         overflow: auto;
     }
+    #sidebar nav::-webkit-scrollbar {
+        height: 10px;
+        width: 10px;
+        background: transparent;
+    }
+    #sidebar nav::-webkit-scrollbar-thumb {
+        background: #444;
+    }
+    #sidebar nav::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    #sidebar nav::-webkit-scrollbar-corner {
+        background: transparent;
+    }
     #sidebar h3 {
         margin: 1em;
         font-size: 1em;
@@ -84,7 +98,6 @@ main {
         bottom: 0;
         right: 0;
         width: 3px;
-        background: rgba(0, 0, 0, .2);
         cursor: ew-resize;
 }
 
