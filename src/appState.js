@@ -21,6 +21,7 @@ export const initState = {
                 '    - [ ] Automatic reformatting',
                 '- [ ] Login to GitHub',
                 '- [ ] Sync with Gist',
+                '- [ ] Styles for small screens',
                 '- [x] Sidebar',
                 '    - [x] Scrollbar style',
                 '    - [x] Reordering',
