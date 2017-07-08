@@ -10,12 +10,12 @@ if (query.access_token != null) {
     // Set token cookie
 
     cookies.set('access_token', query.access_token, {path: ''})
-    window.location.href = noQueryHref
+    window.location.replace(noQueryHref)
 } else if (query.logout != null) {
     // Remove token cookie
 
     cookies.remove('access_token', {path: ''})
-    window.location.href = noQueryHref
+    window.location.replace(noQueryHref)
 } else {
     render(<App/>, document.body)
 }

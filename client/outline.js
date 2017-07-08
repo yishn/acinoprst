@@ -1,5 +1,5 @@
 function indent(content, spaces) {
-    let prefix = Array(spaces).fill(' ').join('')
+    let prefix = ' '.repeat(spaces)
     return content.split('\n').map(l => prefix + l).join('\n')
 }
 

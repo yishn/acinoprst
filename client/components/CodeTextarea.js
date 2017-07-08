@@ -89,7 +89,7 @@ export default class CodeTextarea extends Component {
                 // Deindent
                 ? x.slice(Math.min(getIndent(x, 0), 4))
                 // Indent
-                : Array(4).fill(' ').join('') + x
+                : ' '.repeat(4) + x
             )
 
             let newValue = chunks.join('')
@@ -133,7 +133,7 @@ export default class CodeTextarea extends Component {
             let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
             let indent = getIndent(value, lineStart + 1)
             let chunks = [value.slice(0, selectionStart), value.slice(selectionEnd)]
-            let newValue = chunks.join('\n' + Array(indent).fill(' ').join(''))
+            let newValue = chunks.join('\n' + ' '.repeat(indent))
 
             selectionStart = selectionEnd = chunks[0].length + indent + 1
 
