@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const express = require('express')
 
 let app = express()
@@ -14,10 +15,7 @@ for (let folder of staticFolders) {
 // Serve app
 
 app.get('/', (_, res) => {
-    fs.readFile('./index.html', 'utf8', (err, data) => {
-        if (err) return
-        res.send(data)
-    })
+    res.sendFile(path.join(__dirname, '../index.html'))
 })
 
 app.listen(3000, () => {

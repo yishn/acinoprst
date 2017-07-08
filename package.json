@@ -25,6 +25,7 @@
     "express": "^4.15.3",
     "octicons": "^5.0.1",
     "preact": "^8.1.0",
+    "request": "^2.81.0",
     "selectionchange-polyfill": "^1.2.1"
   },
   "devDependencies": {
