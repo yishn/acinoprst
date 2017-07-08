@@ -110,7 +110,14 @@ export default class App extends Component {
     render() {
         let currentFile = this.state.files[this.state.current]
 
-        return <section id="app">
+        return !this.state.loggedIn
+
+        ? <section id="app">
+            <h1>Login</h1>
+            <p><a href="./login">Via GitHub</a></p>
+        </section>
+
+        : <section id="app">
             <Sidebar
                 width={this.state.sidebarWidth}
                 items={this.state.files.map(x => x.title)}

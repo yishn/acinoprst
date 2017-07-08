@@ -1,9 +1,12 @@
+import qs from 'querystring'
 import * as outline from './outline'
 
 let lastHistoryPointTime = new Date()
 
 export const initState = {
-    current: 0,
+    loggedIn: !!qs.parse(window.location.search.slice(1)).access_token,
+    sidebarWidth: 200,
+
     history: [{
         current: 0,
         files: [{title: '', content: ''}],
@@ -11,53 +14,9 @@ export const initState = {
         selectionEnd: 0
     }],
     historyPointer: 0,
-    files: [
-        {title: '', content: ''},
-        {
-            title: 'acinoprst todo',
-            content: outline.reformat([
-                '- [ ] `Outliner`',
-                '    - [ ] `Ctrl`-click to mark tasks as done',
-                '    - [ ] Automatic reformatting',
-                '- [ ] Login to GitHub',
-                '- [ ] Sync with Gist',
-                '- [ ] Styles for small screens',
-                '- [x] Sidebar',
-                '    - [x] Scrollbar style',
-                '    - [x] Reordering',
-                '- [x] Edit history',
-                '    - Undo & Redo',
-                '- [x] `CodeTextarea`',
-                '- [x] File toolbar in `Headline` component',
-                '    - [x] Remove done tasks',
-                '    - [x] Move done tasks to the bottom',
-                '    - [x] Reformat'
-            ].join('\n'))
-        },
-        {
-            title: 'Sample Outline',
-            content: outline.reformat([
-                '- [ ] Hello World!',
-                '    - [x] Hello',
-                '        - With some description',
-                '    - [ ] World!',
-                '        - With some more description',
-                '        - With some more description 2'
-            ].join('\n'))
-        },
-        {
-            title: 'Testing',
-            content: outline.reformat([
-                '- [ ] Hello World!',
-                '- [x] Hello',
-                '    - With some description',
-                '- [x] World!',
-                '    - With some more description',
-                '    - With some more description 2'
-            ].join('\n'))
-        }
-    ],
-    sidebarWidth: 200,
+
+    current: 0,
+    files: [{title: '', content: ''}],
     selectionStart: 0,
     selectionEnd: 0
 }
