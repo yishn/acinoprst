@@ -1,10 +1,10 @@
-import qs from 'querystring'
+import cookies from 'js-cookie'
 import * as outline from './outline'
 
 let lastHistoryPointTime = new Date()
 
 export const initState = {
-    loggedIn: !!qs.parse(window.location.search.slice(1)).access_token,
+    loggedIn: cookies.get('access_token') != null,
     sidebarWidth: 200,
 
     history: [{
