@@ -22,5 +22,11 @@ module.exports = {
                 }
             }
         ]
+    },
+
+    resolve: {
+        alias: {
+            'preact$': path.join(__dirname, 'node_modules/preact/dist/preact.min')
+        }
     }
 }
