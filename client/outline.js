@@ -34,15 +34,19 @@ function parseLine(line, i) {
     return [i, type, {indent, done, content}]
 }
 
-export function getLines(content) {
+function normalizeBreaks(content) {
     return content
         .replace(/\r/g, '')
         .replace(/\t/g, '    ')
+}
+
+function getLines(content) {
+    return normalizeBreaks(content)
         .split('\n')
         .map(parseLine)
 }
 
-export function parseLines(lines, start = 0, length = Infinity) {
+function parseLines(lines, start = 0, length = Infinity) {
     if (length <= 0 || lines.length === 0) return []
 
     let [, , {indent}] = lines[start]
@@ -115,4 +119,26 @@ export function removeDoneTasks(content) {
         .map(x => (x.sublist = remove(x.sublist), x))
 
     return stringify(remove(parse(content)))
+}
+
+export function parseFiles(content) {
+    let lines = normalizeBreaks(content).split('\n')
+    let breakIndices = lines.map((x, i) =>
+        x.trim() !== '' && [...x.trim()].every(y => y === '-') ? i : null
+    ).filter(x => x != null)
+
+    breakIndices.unshift(-1)
+
+    return breakIndices
+        .reduce((acc, x, i, a) => [...acc, lines.slice(x + 1, a[i + 1] || lines.length)], [])
+        .map(x => x.join('\n'))
+        .map(x => ({
+            title: extractComments(x)[0] || '',
+            content: reformat(x)
+        }))
+}
+
+export function stringifyFiles(files) {
+    return files.map(({title, content}) => [`# ${title}`, reformat(content)].join('\n\n'))
+        .join('\n---\n\n')
 }
