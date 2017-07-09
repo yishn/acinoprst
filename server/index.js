@@ -32,23 +32,17 @@ app.get('/login', (req, res) => {
 
 // Fetch and send data
 
-app.get('/markdown', (req, res) => {
-    github.getGists(req.query.access_token, {per_page: 100}, (err, data) => {
-        if (err || data.message != null) return res.status(404).send()
+app.get('/gist', (req, res) => {
+    github.getAcinoprstGist(req.query.access_token, (err, gist) => {
+        if (err) return res.status(404).send()
 
-        let gist = data.find(x => x.description === 'acinoprst')
-        if (gist == null) return res.status(404).send()
-
-        let file = gist.files[Object.keys(gist.files)[0]]
-        if (file == null) return res.status(404).send()
-
-        request.get(file.raw_url, (err, _, data) => {
-            if (err) return res.status(404).send()
-
-            res.set('Content-Type', 'text/markdown')
-            res.send(data)
-        })
+        res.set('Content-Type', 'application/json')
+        res.send(JSON.stringify(gist, null, '  '))
     })
+})
+
+app.post('/sync', (req, res) => {
+    res.send(JSON.stringify(req.body))
 })
 
 // Serve app
