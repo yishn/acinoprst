@@ -1,8 +1,7 @@
 const fs = require('fs')
 const path = require('path')
-const querystring = require('querystring')
 const express = require('express')
-const request = require('request')
+const github = require('./github')(require('../config'))
 
 let app = express()
 
@@ -17,26 +16,13 @@ for (let folder of staticFolders) {
 // Handle OAuth authentication
 
 app.get('/login', (req, res) => {
-    let {client_id, client_secret} = require('../config')
-
     if (req.query.code != null) {
-        // Retrieve OAuth token
-
-        request.post({
-            url: 'https://github.com/login/oauth/access_token',
-            form: {client_id, client_secret, code: req.query.code}
-        }, (err, data, body) => {
-            let {access_token} = querystring.parse(body)
-            res.redirect(`/?access_token=${access_token}`)
+        github.getOAuthToken(req.query.code, (err, token) => {
+            if (err) return res.redirect('/')
+            res.redirect(`/?access_token=${token}`)
         })
     } else {
-        // Redirect to GitHub
-
-        res.redirect([
-            'http://github.com/login/oauth/authorize',
-            `?client_id=${client_id}`,
-            `&scope=gist`
-        ].join(''))
+        res.redirect(github.getAuthorizationLink({scope: 'gist'}))
     }
 })
 

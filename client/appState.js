@@ -4,7 +4,7 @@ import * as outline from './outline'
 let lastHistoryPointTime = new Date()
 
 export const initState = {
-    loggedIn: cookies.get('access_token') != null,
+    loggedIn: cookies.get('oauth_token') != null,
     sidebarWidth: 200,
 
     history: [{
