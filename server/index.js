@@ -16,13 +16,13 @@ for (let folder of staticFolders) {
 // Handle OAuth authentication
 
 app.get('/login', (req, res) => {
-    if (req.query.code != null) {
+    if (req.query.code == null) {
+        res.redirect(github.getAuthorizationLink({scope: 'gist'}))
+    } else {
         github.getOAuthToken(req.query.code, (err, token) => {
             if (err) return res.redirect('/')
             res.redirect(`/?access_token=${token}`)
         })
-    } else {
-        res.redirect(github.getAuthorizationLink({scope: 'gist'}))
     }
 })
 
