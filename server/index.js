@@ -1,9 +1,13 @@
 const fs = require('fs')
 const path = require('path')
+const bodyParser = require('body-parser')
 const express = require('express')
+const request = require('request')
 const github = require('./github')(require('../config'))
 
 let app = express()
+
+app.use(bodyParser.json())
 
 // Serve static files
 
@@ -24,6 +28,27 @@ app.get('/login', (req, res) => {
             res.redirect(`/?access_token=${token}`)
         })
     }
+})
+
+// Fetch and send data
+
+app.get('/markdown', (req, res) => {
+    github.getGists(req.query.access_token, {per_page: 100}, (err, data) => {
+        if (err || data.message != null) return res.status(404).send()
+
+        let gist = data.find(x => x.description === 'acinoprst')
+        if (gist == null) return res.status(404).send()
+
+        let file = gist.files[Object.keys(gist.files)[0]]
+        if (file == null) return res.status(404).send()
+
+        request.get(file.raw_url, (err, _, data) => {
+            if (err) return res.status(404).send()
+
+            res.set('Content-Type', 'text/markdown')
+            res.send(data)
+        })
+    })
 })
 
 // Serve app
