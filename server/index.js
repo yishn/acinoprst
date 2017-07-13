@@ -35,9 +35,7 @@ app.get('/login', (req, res) => {
 app.get('/gist', (req, res) => {
     github.getAcinoprstGist(req.query.access_token, (err, gist) => {
         if (err) return res.status(404).send()
-
-        res.set('Content-Type', 'application/json')
-        res.send(JSON.stringify(gist, null, '  '))
+        res.json(gist)
     })
 })
 
