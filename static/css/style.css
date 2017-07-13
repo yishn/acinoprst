@@ -268,18 +268,19 @@ main {
 }
 
 #busy {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    cursor: wait;
-    background: rgba(0, 0, 0, .3);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .5s;
-}
-#busy.show {
-    opacity: 1;
-    pointer-events: auto;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        cursor: wait;
+        background: rgba(0, 0, 0, .3);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .5s;
+        z-index: 999;
+    }
+    #busy.show {
+        opacity: 1;
+        pointer-events: auto;
 }

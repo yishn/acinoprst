@@ -1,9 +1,8 @@
 import {h, Component} from 'preact'
 import cookies from 'js-cookie'
-import fetch from 'unfetch'
-import githubInit from '../github'
+import githubAuthorize from '../github'
 import * as appState from '../appState'
-import * as outline from '../outline'
+import {parseFiles, stringifyFiles} from '../outline'
 
 import Headline, {ToolbarButton, MenuItem} from './Headline'
 import Outliner from './Outliner'
@@ -11,7 +10,7 @@ import Sidebar from './Sidebar'
 import Login from './Login'
 import Busy from './Busy'
 
-const github = githubInit(cookies.get('oauth_token'))
+const github = githubAuthorize(cookies.get('oauth_token'))
 
 export default class App extends Component {
     constructor() {
@@ -23,25 +22,13 @@ export default class App extends Component {
             if (typeof appState[action] !== 'function') continue
 
             this[action] = (...args) => {
-                this.setState(appState[action](this.state, ...args))
+                this.setState(state => appState[action](state, ...args))
             }
         }
     }
 
     componentDidMount() {
-        if (!this.state.loggedIn) return
-
-        this.setBusy(true)
-
-        github.getAcinoprstGist()
-        .then(data => {
-            let {content} = data.file
-            let files = outline.parseFiles(content)
-
-            this.loadFiles(files)
-            this.setBusy(false)
-        })
-        .catch(this.handleLogoutClick)
+        this.pullFiles()
     }
 
     componentDidUpdate(_, prevState) {
@@ -63,6 +50,33 @@ export default class App extends Component {
         if (selectionChanged) {
             textarea.focus()
         }
+    }
+
+    pullFiles() {
+        if (!this.state.loggedIn) return
+
+        this.setBusy(true)
+
+        github.pullAcinoprstGist()
+        .then(data => {
+            this.gistId = data.id
+            this.loadFiles(parseFiles(data.file.content))
+            this.setBusy(false)
+        })
+        .catch(this.handleLogoutClick)
+    }
+
+    pushFiles() {
+        if (!this.state.loggedIn || this.gistId == null) return
+
+        this.setBusy(true)
+
+        github.pushAcinoprstGist(this.gistId, stringifyFiles(this.state.files))
+        .then(data => {
+            this.gistId = data.id
+            this.setBusy(false)
+        })
+        .catch(this.handleLogoutClick)
     }
 
     handleHeadlineChange = evt => {

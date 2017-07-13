@@ -21,7 +21,7 @@ export default token => ({
             method: 'DELETE',
             headers: this.makeHeaders(token)
         })
-        .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.json())
+        .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.text())
     },
 
     createGist(options) {
@@ -36,7 +36,7 @@ export default token => ({
         .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.json())
     },
 
-    getAcinoprstGist() {
+    pullAcinoprstGist() {
         return this.getGists({per_page: 100})
         .then(data => {
             let err = new Error('Not found')
@@ -55,7 +55,7 @@ export default token => ({
         })
     },
 
-    syncAcinoprstGist(oldId, content) {
+    pushAcinoprstGist(oldId, content) {
         return this.removeGist(oldId)
         .then(() => this.createGist({
             description: 'acinoprst',
