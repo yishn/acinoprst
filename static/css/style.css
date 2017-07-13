@@ -3,6 +3,26 @@ main {
     top: 0;
     right: 0;
     bottom: 0;
+    background: #25292B;
+    color: #eee;
+}
+
+#login {
+        position: absolute;
+        top: calc(50% - 2.25em);
+        width: 100%;
+        padding: 1em;
+        text-align: center;
+    }
+    #login h2 {
+        font-size: 2em;
+        color: #565F63;
+        letter-spacing: 7px;
+        text-transform: uppercase;
+    }
+    #login a {
+        color: inherit;
+        cursor: pointer;
 }
 
 #sidebar {
@@ -109,6 +129,7 @@ main {
         height: 3.5em;
         padding: 0 1em;
         background: #F2F2F2;
+        color: #333;
         z-index: 2;
     }
     #headline .progress {
@@ -135,6 +156,7 @@ main {
         border: none;
         padding: 0 1em 0 2em;
         background: transparent;
+        color: inherit;
     }
     #headline input:focus {
         outline: none;
@@ -224,6 +246,8 @@ main {
         top: 3.5em;
         bottom: 0;
         right: 0;
+        background: white;
+        color: #333;
         z-index: 1;
     }
     #outliner textarea {
@@ -234,6 +258,7 @@ main {
         height: 100%;
         padding: 1em;
         border: none;
+        color: inherit;
         font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
         white-space: pre;
         resize: none;

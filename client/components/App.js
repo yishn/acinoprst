@@ -116,6 +116,7 @@ export default class App extends Component {
                 width={this.state.sidebarWidth}
                 items={this.state.files.map(x => x.title)}
                 selected={this.state.current}
+                showToolbar={this.state.loggedIn}
 
                 onNewFileClick={this.handleNewFileClick}
                 onSelectionChange={this.handleSidebarSelectionChange}
