@@ -42,9 +42,7 @@ export default class App extends Component {
             this.loadFiles(files)
             this.setBusy(false)
         })
-        .catch(() => {
-            window.location.replace(`${window.location.href}?logout`)
-        })
+        .catch(this.handleLogoutClick)
     }
 
     componentDidUpdate(_, prevState) {
@@ -134,6 +132,10 @@ export default class App extends Component {
         this.traverseEditHistory(1)
     }
 
+    handleLogoutClick = () => {
+        window.location.replace(`${window.location.href}?logout`)
+    }
+
     render() {
         let currentFile = this.state.files[this.state.current]
 
@@ -177,6 +179,8 @@ export default class App extends Component {
                             <MenuItem onClick={this.handleRemoveDoneClick}>Remove Done</MenuItem>
                             <MenuItem type="separator" />
                             <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
+                            <MenuItem type="separator" />
+                            <MenuItem onClick={this.handleLogoutClick}>Logout</MenuItem>
                         </ToolbarButton>
                     </Headline>
 
