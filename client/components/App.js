@@ -5,6 +5,7 @@ import Headline, {ToolbarButton, MenuItem} from './Headline'
 import Outliner from './Outliner'
 import Sidebar from './Sidebar'
 import Login from './Login'
+import Busy from './Busy'
 
 export default class App extends Component {
     constructor() {
@@ -43,7 +44,7 @@ export default class App extends Component {
     }
 
     handleHeadlineChange = evt => {
-        this.updateFileTitle(this.state.current, evt.value)
+        this.setFileTitle(this.state.current, evt.value)
     }
 
     handleOutlinerChange = evt => {
@@ -57,13 +58,13 @@ export default class App extends Component {
         textarea.selectionStart = selectionStart
         textarea.selectionEnd = selectionEnd
 
-        this.updateFileContent(this.state.current, value, selectionStart, selectionEnd)
+        this.setFileContent(this.state.current, value, selectionStart, selectionEnd)
     }
 
     handleOutlinerSelectionChange = evt => {
         let {startIndex, endIndex} = evt
 
-        this.updateSelection(startIndex, endIndex)
+        this.setSelection(startIndex, endIndex)
     }
 
     handleNewFileClick = () => {
@@ -85,7 +86,7 @@ export default class App extends Component {
     }
 
     handleSidebarWidthChange = evt => {
-        this.updateSidebarWidth(evt.width)
+        this.setSidebarWidth(evt.width)
     }
 
     handleReformatClick = () => {
@@ -124,9 +125,7 @@ export default class App extends Component {
                 onWidthChange={this.handleSidebarWidthChange}
             />
 
-            {
-                currentFile != null
-
+            {currentFile != null && this.state.loggedIn
                 ? <main style={{left: this.state.sidebarWidth}}>
                     <Headline
                         value={currentFile.title}
@@ -164,9 +163,11 @@ export default class App extends Component {
                 </main>
 
                 : <main style={{left: this.state.sidebarWidth}}>
-                    {!this.state.loggedIn ? <Login /> : null}
+                    {!this.state.loggedIn ? <Login/> : null}
                 </main>
             }
+
+            <Busy show={this.state.busy} />
         </section>
     }
 }

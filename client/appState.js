@@ -5,6 +5,7 @@ let lastHistoryPointTime = new Date()
 
 export const initState = {
     loggedIn: cookies.get('oauth_token') != null,
+    busy: false,
     sidebarWidth: 200,
 
     history: [{
@@ -21,11 +22,11 @@ export const initState = {
     selectionEnd: 0
 }
 
-export function updateSidebarWidth(state, width) {
+export function setSidebarWidth(state, width) {
     return {sidebarWidth: Math.min(Math.max(width, 100), 400)}
 }
 
-export function updateFileTitle(state, index, title) {
+export function setFileTitle(state, index, title) {
     if (state.files[index].title === title) return state
 
     let files = state.files.map((x, i) => i === index ? {...x, title} : x)
@@ -33,19 +34,19 @@ export function updateFileTitle(state, index, title) {
     return {...makeHistoryPoint(state, {files}), files}
 }
 
-export function updateFileContent(state, index, content, selectionStart, selectionEnd) {
+export function setFileContent(state, index, content, selectionStart, selectionEnd) {
     if (state.files[index].content === content) return state
 
     let files = state.files.map((x, i) => i === index ? {...x, content} : x)
 
     return {
         ...makeHistoryPoint(state, {files, selectionStart, selectionEnd}),
-        ...updateSelection(state, selectionStart, selectionEnd),
+        ...setSelection(state, selectionStart, selectionEnd),
         files
     }
 }
 
-export function updateSelection(state, selectionStart, selectionEnd) {
+export function setSelection(state, selectionStart, selectionEnd) {
     return {selectionStart, selectionEnd}
 }
 
@@ -66,7 +67,7 @@ export function newFile(state) {
 
     return {
         ...makeHistoryPoint(state, {current, files}),
-        ...updateSelection(state, 0, 0),
+        ...setSelection(state, 0, 0),
         current, files
     }
 }
@@ -77,7 +78,7 @@ export function removeFile(state, index) {
 
     return {
         ...makeHistoryPoint(state, {current, files}),
-        ...updateSelection(state, 0, 0),
+        ...setSelection(state, 0, 0),
         current, files
     }
 }
@@ -95,15 +96,19 @@ export function permutateFiles(state, permutation) {
 }
 
 export function reformat(state, index) {
-    return updateFileContent(state, index, outline.reformat(state.files[index].content))
+    return setFileContent(state, index, outline.reformat(state.files[index].content))
 }
 
 export function separateItems(state, index) {
-    return updateFileContent(state, index, outline.separate(state.files[index].content))
+    return setFileContent(state, index, outline.separate(state.files[index].content))
 }
 
 export function removeDoneTasks(state, index) {
-    return updateFileContent(state, index, outline.removeDoneTasks(state.files[index].content))
+    return setFileContent(state, index, outline.removeDoneTasks(state.files[index].content))
+}
+
+export function setBusy(state, busy) {
+    return {busy}
 }
 
 export function makeHistoryPoint(state, {
