@@ -3,10 +3,7 @@ import fetch from 'unfetch'
 
 export default token => ({
     makeHeaders() {
-        return {
-            'Authorization': `token ${token}`,
-            'User-Agent': 'acinoprst'
-        }
+        return {'Authorization': `token ${token}`}
     },
 
     getGists(options) {
