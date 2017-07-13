@@ -11,8 +11,7 @@ import Sidebar from './Sidebar'
 import Login from './Login'
 import Busy from './Busy'
 
-const accessToken = cookies.get('oauth_token')
-const github = githubInit(accessToken)
+const github = githubInit(cookies.get('oauth_token'))
 
 export default class App extends Component {
     constructor() {
@@ -34,7 +33,7 @@ export default class App extends Component {
 
         this.setBusy(true)
 
-        github.getAcinoprstGist(accessToken)
+        github.getAcinoprstGist()
         .then(data => {
             let {content} = data.file
             let files = outline.parseFiles(content)
