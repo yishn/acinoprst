@@ -96,8 +96,8 @@ export function extractComments(content) {
 export function extractStats(content) {
     let [tasks, done, items] = getLines(content).reduce(([t, d, i], [, type, x]) => {
         return type !== 'task'
-        ? [t, d, +(type != null) + i]
-        : [t + 1, +x.done + d, i + 1]
+            ? [t, d, +(type != null) + i]
+            : [t + 1, +x.done + d, i + 1]
     }, [0, 0, 0])
 
     return {
@@ -122,20 +122,22 @@ export function removeDoneTasks(content) {
 }
 
 export function parseFiles(content) {
+    if (content.trim() === '') return []
+
     let lines = normalizeBreaks(content).split('\n')
     let breakIndices = lines.map((x, i) =>
-        x.trim() !== '' && [...x.trim()].every(y => y === '-') ? i : null
+        x.trim().length >= 3 && [...x.trim()].every(y => y === '-') ? i : null
     ).filter(x => x != null)
 
     breakIndices.unshift(-1)
 
     return breakIndices
-        .reduce((acc, x, i, a) => [...acc, lines.slice(x + 1, a[i + 1] || lines.length)], [])
-        .map(x => x.join('\n'))
-        .map(x => ({
-            title: extractComments(x)[0] || '',
-            content: reformat(x)
-        }))
+    .reduce((acc, x, i, a) => [...acc, lines.slice(x + 1, a[i + 1] || lines.length)], [])
+    .map(x => x.join('\n'))
+    .map(x => ({
+        title: extractComments(x)[0] || '',
+        content: reformat(x)
+    }))
 }
 
 export function stringifyFiles(files) {

@@ -28,11 +28,9 @@ export default class App extends Component {
     componentDidMount() {
         if (!this.state.loggedIn) return
 
-        let accessToken = cookies.get('oauth_token')
-
         this.setBusy(true)
 
-        fetch(`/gist/?access_token=${accessToken}`)
+        fetch(`/gist/?access_token=${cookies.get('oauth_token')}`)
         .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res)
         .then(res => res.json())
         .then(data => {
