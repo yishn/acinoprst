@@ -1,5 +1,8 @@
 import {h, Component} from 'preact'
+import cookies from 'js-cookie'
+import fetch from 'unfetch'
 import * as appState from '../appState'
+import * as outline from '../outline'
 
 import Headline, {ToolbarButton, MenuItem} from './Headline'
 import Outliner from './Outliner'
@@ -20,6 +23,28 @@ export default class App extends Component {
                 this.setState(appState[action](this.state, ...args))
             }
         }
+    }
+
+    componentDidMount() {
+        if (!this.state.loggedIn) return
+
+        let accessToken = cookies.get('oauth_token')
+
+        this.setBusy(true)
+
+        fetch(`/gist/?access_token=${accessToken}`)
+        .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res)
+        .then(res => res.json())
+        .then(data => {
+            let {content} = data.file
+            let files = outline.parseFiles(content)
+
+            this.loadFiles(files)
+            this.setBusy(false)
+        })
+        .catch(() => {
+            window.location.replace(`${window.location.href}?logout`)
+        })
     }
 
     componentDidUpdate(_, prevState) {

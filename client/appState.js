@@ -50,6 +50,20 @@ export function setSelection(state, selectionStart, selectionEnd) {
     return {selectionStart, selectionEnd}
 }
 
+export function loadFiles(state, files) {
+    let filesState = {
+        ...setSelection(state, 0, 0),
+        current: 0,
+        files
+    }
+
+    return {
+        ...filesState,
+        history: [filesState],
+        historyPointer: 0
+    }
+}
+
 export function openFile(state, index) {
     if (index === state.current) return state
 
