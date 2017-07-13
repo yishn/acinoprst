@@ -1,6 +1,7 @@
 import {h, Component} from 'preact'
 import cookies from 'js-cookie'
 import fetch from 'unfetch'
+import githubInit from '../github'
 import * as appState from '../appState'
 import * as outline from '../outline'
 
@@ -9,6 +10,9 @@ import Outliner from './Outliner'
 import Sidebar from './Sidebar'
 import Login from './Login'
 import Busy from './Busy'
+
+const github = githubInit(require('../../config'))
+const accessToken = cookies.get('oauth_token')
 
 export default class App extends Component {
     constructor() {
@@ -30,9 +34,7 @@ export default class App extends Component {
 
         this.setBusy(true)
 
-        fetch(`/gist/?access_token=${cookies.get('oauth_token')}`)
-        .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res)
-        .then(res => res.json())
+        github.getAcinoprstGist(accessToken)
         .then(data => {
             let {content} = data.file
             let files = outline.parseFiles(content)
