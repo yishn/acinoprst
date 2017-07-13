@@ -11,8 +11,8 @@ import Sidebar from './Sidebar'
 import Login from './Login'
 import Busy from './Busy'
 
-const github = githubInit(require('../../config'))
 const accessToken = cookies.get('oauth_token')
+const github = githubInit(accessToken)
 
 export default class App extends Component {
     constructor() {

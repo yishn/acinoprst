@@ -1,58 +1,43 @@
 import qs from 'querystring'
 import fetch from 'unfetch'
 
-let makeHeaders = token => ({
-    'Authorization': `token ${token}`,
-    'User-Agent': 'acinoprst'
-})
-
-export default ({client_id, client_secret}) => ({
-    getAuthorizationLink(options = {}) {
-        return 'http://github.com/login/oauth/authorize?'
-            + qs.stringify(Object.assign({client_id}, options))
+export default token => ({
+    makeHeaders() {
+        return {
+            'Authorization': `token ${token}`,
+            'User-Agent': 'acinoprst'
+        }
     },
 
-    getOAuthToken(code) {
-        let formData = new FormData()
-
-        formData.append('client_id', client_id)
-        formData.append('client_secret', client_secret)
-        formData.append('code', code)
-
-        return fetch('https://github.com/login/oauth/access_token', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.text())
-        .then(body => qs.parse(body).access_token)
-    },
-
-    getGists(access_token, options) {
+    getGists(options) {
         return fetch(`https://api.github.com/gists?${qs.stringify(options)}`, {
-            headers: makeHeaders(access_token)
+            headers: this.makeHeaders(token)
         })
         .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.json())
     },
 
-    removeGist(access_token, id) {
+    removeGist(id) {
         return fetch(`https://api.github.com/gists/${id}`, {
             method: 'DELETE',
-            headers: makeHeaders(access_token)
+            headers: this.makeHeaders(token)
         })
         .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.json())
     },
 
-    createGist(access_token, options) {
+    createGist(options) {
         return fetch('https://api.github.com/gists', {
             method: 'POST',
-            headers: {...makeHeaders(access_token), 'Content-Type': 'application/json'},
+            headers: {
+                ...this.makeHeaders(token),
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(options)
         })
         .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.json())
     },
 
-    getAcinoprstGist(access_token) {
-        return this.getGists(access_token, {per_page: 100})
+    getAcinoprstGist() {
+        return this.getGists({per_page: 100})
         .then(data => {
             let err = new Error('Not found')
             let gist = data.find(x => x.description === 'acinoprst')
@@ -70,9 +55,9 @@ export default ({client_id, client_secret}) => ({
         })
     },
 
-    syncAcinoprstGist(access_token, oldId, content) {
-        return this.removeGist(access_token, oldId)
-        .then(() => this.createGist(access_token, {
+    syncAcinoprstGist(oldId, content) {
+        return this.removeGist(oldId)
+        .then(() => this.createGist({
             description: 'acinoprst',
             public: false,
             files: {'acinoprst.md': {content}}
