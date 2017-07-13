@@ -9,14 +9,14 @@ export const initState = {
 
     history: [{
         current: 0,
-        files: [{title: '', content: ''}],
+        files: [],
         selectionStart: 0,
         selectionEnd: 0
     }],
     historyPointer: 0,
 
     current: 0,
-    files: [{title: '', content: ''}],
+    files: [],
     selectionStart: 0,
     selectionEnd: 0
 }
@@ -66,24 +66,20 @@ export function newFile(state) {
 
     return {
         ...makeHistoryPoint(state, {current, files}),
-        ...openFile(state, current),
-        files
+        ...updateSelection(state, 0, 0),
+        current, files
     }
 }
 
 export function removeFile(state, index) {
-    if (state.files.length > 1) {
-        let files = state.files.filter((_, i) => i !== index)
-        let current = state.current !== index ? state.current : Math.max(state.current - 1, 0)
+    let files = state.files.filter((_, i) => i !== index)
+    let current = state.current !== index ? state.current : Math.max(state.current - 1, 0)
 
-        return {
-            ...makeHistoryPoint(state, {current, files}),
-            ...openFile(state, current),
-            files
-        }
+    return {
+        ...makeHistoryPoint(state, {current, files}),
+        ...updateSelection(state, 0, 0),
+        current, files
     }
-
-    return newFile({...state, files: []})
 }
 
 export function permutateFiles(state, permutation) {

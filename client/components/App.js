@@ -4,6 +4,7 @@ import * as appState from '../appState'
 import Headline, {ToolbarButton, MenuItem} from './Headline'
 import Outliner from './Outliner'
 import Sidebar from './Sidebar'
+import Login from './Login'
 
 export default class App extends Component {
     constructor() {
@@ -15,7 +16,7 @@ export default class App extends Component {
             if (typeof appState[action] !== 'function') continue
 
             this[action] = (...args) => {
-                this.setState(state => appState[action](state, ...args))
+                this.setState(appState[action](this.state, ...args))
             }
         }
     }
@@ -110,14 +111,7 @@ export default class App extends Component {
     render() {
         let currentFile = this.state.files[this.state.current]
 
-        return !this.state.loggedIn
-
-        ? <section id="app">
-            <h1>Login</h1>
-            <p><a href="./login">Via GitHub</a></p>
-        </section>
-
-        : <section id="app">
+        return <section id="app">
             <Sidebar
                 width={this.state.sidebarWidth}
                 items={this.state.files.map(x => x.title)}
@@ -129,41 +123,49 @@ export default class App extends Component {
                 onWidthChange={this.handleSidebarWidthChange}
             />
 
-            <main style={{left: this.state.sidebarWidth}}>
-                <Headline
-                    value={currentFile.title}
-                    content={currentFile.content}
-                    onChange={this.handleHeadlineChange}
-                >
-                    <ToolbarButton
-                        text="Undo"
-                        icon="mail-reply"
-                        disabled={this.state.historyPointer === 0}
-                        onClick={this.handleUndoClick}
+            {
+                currentFile != null
+
+                ? <main style={{left: this.state.sidebarWidth}}>
+                    <Headline
+                        value={currentFile.title}
+                        content={currentFile.content}
+                        onChange={this.handleHeadlineChange}
+                    >
+                        <ToolbarButton
+                            text="Undo"
+                            icon="mail-reply"
+                            disabled={this.state.historyPointer <= 0}
+                            onClick={this.handleUndoClick}
+                        />
+
+                        <ToolbarButton
+                            text="Redo"
+                            icon="mail-reply"
+                            disabled={this.state.historyPointer >= this.state.history.length - 1}
+                            onClick={this.handleRedoClick}
+                        />
+
+                        <ToolbarButton text="File Actions" icon="three-bars">
+                            <MenuItem onClick={this.handleReformatClick}>Reformat</MenuItem>
+                            <MenuItem onClick={this.handleSeparateItemsClick}>Separate Items</MenuItem>
+                            <MenuItem onClick={this.handleRemoveDoneClick}>Remove Done</MenuItem>
+                            <MenuItem type="separator" />
+                            <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
+                        </ToolbarButton>
+                    </Headline>
+
+                    <Outliner
+                        value={currentFile.content}
+                        onChange={this.handleOutlinerChange}
+                        onSelectionChange={this.handleOutlinerSelectionChange}
                     />
+                </main>
 
-                    <ToolbarButton
-                        text="Redo"
-                        icon="mail-reply"
-                        disabled={this.state.historyPointer === this.state.history.length - 1}
-                        onClick={this.handleRedoClick}
-                    />
-
-                    <ToolbarButton text="File Actions" icon="three-bars">
-                        <MenuItem onClick={this.handleReformatClick}>Reformat</MenuItem>
-                        <MenuItem onClick={this.handleSeparateItemsClick}>Separate Items</MenuItem>
-                        <MenuItem onClick={this.handleRemoveDoneClick}>Remove Done</MenuItem>
-                        <MenuItem type="separator" />
-                        <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
-                    </ToolbarButton>
-                </Headline>
-
-                <Outliner
-                    value={currentFile.content}
-                    onChange={this.handleOutlinerChange}
-                    onSelectionChange={this.handleOutlinerSelectionChange}
-                />
-            </main>
+                : <main style={{left: this.state.sidebarWidth}}>
+                    {!this.state.loggedIn ? <Login /> : null}
+                </main>
+            }
         </section>
     }
 }
