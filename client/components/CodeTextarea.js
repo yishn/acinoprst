@@ -58,16 +58,13 @@ export default class CodeTextarea extends Component {
     }
 
     handleKeyDown = evt => {
-        if ([9, 13, 36].includes(evt.keyCode)
-        || [38, 40].includes(evt.keyCode) && evt.ctrlKey)
-            evt.preventDefault()
-        else return
-
         let {value, onChange = () => {}} = this.props
         let {selectionStart, selectionEnd} = evt.currentTarget
 
         if (evt.keyCode === 9) {
             // Tab
+
+            evt.preventDefault()
 
             let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
             let newlines = rangedIndexOf(value, '\n', lineStart, selectionEnd)
@@ -113,6 +110,8 @@ export default class CodeTextarea extends Component {
         } else if (evt.keyCode === 36) {
             // Home
 
+            evt.preventDefault()
+
             let caretPosition = 0
 
             if (!evt.ctrlKey) {
@@ -129,6 +128,8 @@ export default class CodeTextarea extends Component {
             onChange({value, selectionStart, selectionEnd})
         } else if (evt.keyCode === 13) {
             // Enter
+
+            evt.preventDefault()
 
             let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
             let indent = getIndent(value, lineStart + 1)
