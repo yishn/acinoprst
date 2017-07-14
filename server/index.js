@@ -9,7 +9,7 @@ let app = express()
 
 // Serve static files
 
-let staticFolders = ['node_modules/octicons/build/svg', 'static']
+let staticFolders = ['node_modules/octicons/build/svg', 'static', 'dist']
 
 for (let folder of staticFolders) {
     app.use('/' + folder, express.static(path.join(__dirname, '..', folder)))
