@@ -5,6 +5,27 @@ function cap(min, max, value) {
     return Math.min(max, Math.max(min, value))
 }
 
+export class SidebarButton extends Component {
+    shouldComponentUpdate(nextProps) {
+        return nextProps.text !== this.props.text
+            || nextProps.icon !== this.props.icon
+            || nextProps.onClick !== this.props.onClick
+    }
+
+    handleClick = evt => {
+        evt.preventDefault()
+
+        let {onClick = () => {}} = this.props
+        onClick(evt)
+    }
+
+    render() {
+        return <a href="#" title={this.props.text} onClick={this.handleClick}>
+            <img src={`./node_modules/octicons/build/svg/${this.props.icon}.svg`} />
+        </a>
+    }
+}
+
 export default class Sidebar extends Component {
     constructor() {
         super()
@@ -62,16 +83,6 @@ export default class Sidebar extends Component {
         })
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return this.props.width !== nextProps.width
-            || this.props.items !== nextProps.items
-            || this.props.selected !== nextProps.selected
-            || this.state.dragging !== nextState.dragging
-            || this.state.dragIndex !== nextState.dragIndex
-            || this.state.dragBefore !== nextState.dragBefore
-            || this.state.dragGhostTop !== nextState.dragGhostTop
-    }
-
     handleResizerMouseDown = evt => {
         if (evt.button !== 0) return
 
@@ -110,13 +121,6 @@ export default class Sidebar extends Component {
         onSelectionChange({...evt, selected: +index})
     }
 
-    handleNewFileClick = evt => {
-        evt.preventDefault()
-
-        let {onNewFileClick = () => {}} = this.props
-        onNewFileClick(evt)
-    }
-
     render() {
         let items = this.props.items.map((x, i) => [i, x])
 
@@ -131,9 +135,7 @@ export default class Sidebar extends Component {
                     Files
 
                     {this.props.visible && <span class="actions">
-                        <a href="#" title="New File" onClick={this.handleNewFileClick}>
-                            <img src="./node_modules/octicons/build/svg/plus.svg" />
-                        </a>
+                        {this.props.children}
                     </span>}
                 </h3>
 

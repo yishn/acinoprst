@@ -18,16 +18,14 @@ export class MenuItem extends Component {
 
     render() {
         return <li class={this.props.type}>
-            {
-                this.props.type !== 'separator' &&
-
+            {this.props.type !== 'separator' &&
                 <a href="#" onClick={this.handleClick}>{this.props.children}</a>
             }
         </li>
     }
 }
 
-export class ToolbarButton extends Component {
+export class HeadlineButton extends Component {
     constructor() {
         super()
 
@@ -71,9 +69,7 @@ export class ToolbarButton extends Component {
                 />
             </a>
 
-            {
-                this.props.children.length > 0 &&
-
+            {this.props.children.length > 0 &&
                 <ul class="menu" onClick={this.handleMenuClick}>
                     <li class="overlay" />
                     {this.props.children}

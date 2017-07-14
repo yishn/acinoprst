@@ -4,9 +4,9 @@ import githubAuthorize from '../github'
 import * as appState from '../appState'
 import {parseFiles, stringifyFiles} from '../outline'
 
-import Headline, {ToolbarButton, MenuItem} from './Headline'
+import Headline, {HeadlineButton, MenuItem} from './Headline'
 import Outliner from './Outliner'
-import Sidebar from './Sidebar'
+import Sidebar, {SidebarButton} from './Sidebar'
 import Login from './Login'
 import Busy from './Busy'
 
@@ -159,11 +159,16 @@ export default class App extends Component {
                 selected={this.state.current}
                 visible={this.state.loggedIn}
 
-                onNewFileClick={this.handleNewFileClick}
                 onSelectionChange={this.handleSidebarSelectionChange}
                 onOrderChange={this.handleSidebarOrderChange}
                 onWidthChange={this.handleSidebarWidthChange}
-            />
+            >
+                <SidebarButton
+                    text="New File"
+                    icon="plus"
+                    onClick={this.handleNewFileClick}
+                />
+            </Sidebar>
 
             {currentFile != null && this.state.loggedIn
                 ? <main style={{left: this.state.sidebarWidth}}>
@@ -172,21 +177,21 @@ export default class App extends Component {
                         content={currentFile.content}
                         onChange={this.handleHeadlineChange}
                     >
-                        <ToolbarButton
+                        <HeadlineButton
                             text="Undo"
                             icon="mail-reply"
                             disabled={this.state.historyPointer <= 0}
                             onClick={this.handleUndoClick}
                         />
 
-                        <ToolbarButton
+                        <HeadlineButton
                             text="Redo"
                             icon="mail-reply"
                             disabled={this.state.historyPointer >= this.state.history.length - 1}
                             onClick={this.handleRedoClick}
                         />
 
-                        <ToolbarButton text="File Actions" icon="three-bars">
+                        <HeadlineButton text="File Actions" icon="three-bars">
                             <MenuItem onClick={this.handleReformatClick}>Reformat</MenuItem>
                             <MenuItem onClick={this.handleSeparateItemsClick}>Separate Items</MenuItem>
                             <MenuItem onClick={this.handleRemoveDoneClick}>Remove Done</MenuItem>
@@ -194,7 +199,7 @@ export default class App extends Component {
                             <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
                             <MenuItem type="separator" />
                             <MenuItem onClick={this.handleLogoutClick}>Logout</MenuItem>
-                        </ToolbarButton>
+                        </HeadlineButton>
                     </Headline>
 
                     <Outliner
