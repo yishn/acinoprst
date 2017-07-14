@@ -130,14 +130,14 @@ export default class Sidebar extends Component {
                 <h3>
                     Files
 
-                    {this.props.showToolbar && <span class="actions">
+                    {this.props.visible && <span class="actions">
                         <a href="#" title="New File" onClick={this.handleNewFileClick}>
                             <img src="./node_modules/octicons/build/svg/plus.svg" />
                         </a>
                     </span>}
                 </h3>
 
-                <ul class={classNames({dragging: this.state.dragging})}>
+                {this.props.visible && <ul class={classNames({dragging: this.state.dragging})}>
                     {items.map(([i, name]) =>
                         <li
                             key={i}
@@ -173,7 +173,7 @@ export default class Sidebar extends Component {
                             </a>
                         </li>
                     }
-                </ul>
+                </ul>}
             </nav>
 
             <div
