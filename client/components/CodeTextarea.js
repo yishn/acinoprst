@@ -113,8 +113,8 @@ export default class CodeTextarea extends Component {
 
             let sign = evt.keyCode === 38 ? -1 : 1
             let lines = value.split('\n')
-            let [rowStart, ] = this.getTextPositionFromIndex(selectionStart)
-            let [rowEnd, ] = this.getTextPositionFromIndex(selectionEnd)
+            let [rowStart, ] = str.getPositionFromIndex(value, selectionStart)
+            let [rowEnd, ] = str.getPositionFromIndex(value, selectionEnd)
 
             rowStart--
             rowEnd--
@@ -147,25 +147,14 @@ export default class CodeTextarea extends Component {
         if (document.activeElement !== this.element) return
 
         let {onSelectionChange = () => {}} = this.props
-        let {selectionStart, selectionEnd} = this.element
+        let {value, selectionStart, selectionEnd} = this.element
 
         onSelectionChange({
             startIndex: selectionStart,
             endIndex: selectionEnd,
-            start: this.getTextPositionFromIndex(selectionStart),
-            end: this.getTextPositionFromIndex(selectionEnd)
+            start: str.getPositionFromIndex(value, selectionStart),
+            end: str.getPositionFromIndex(value, selectionEnd)
         })
-    }
-
-    getTextPositionFromIndex(index) {
-        let {value} = this.element
-        let slicedValue = [...value.slice(0, index)]
-
-        let row = slicedValue.filter(x => x === '\n').length + 1
-        let col = slicedValue.reverse().indexOf('\n')
-        if (col < 0) col = slicedValue.length
-
-        return [row, col]
     }
 
     render() {
