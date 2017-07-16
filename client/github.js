@@ -1,10 +1,11 @@
 import qs from 'querystring'
+import {Base64} from 'js-base64'
 import fetch from 'unfetch'
 
 export let authorization = null
 
 export function login(user, pass) {
-    authorization = new Buffer(`${user}:${pass}`).toString('base64')
+    authorization = Base64.encode(`${user}:${pass}`)
 }
 
 export function logout(user, pass) {
@@ -19,7 +20,7 @@ export function getGists(options) {
     if (authorization == null) return Promise.reject(new Error('Not logged in'))
 
     return fetch(`https://api.github.com/gists?${qs.stringify(options)}`, {
-        headers: this.makeHeaders()
+        headers: makeHeaders()
     })
     .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.json())
 }
@@ -29,7 +30,7 @@ export function removeGist(id) {
 
     return fetch(`https://api.github.com/gists/${id}`, {
         method: 'DELETE',
-        headers: this.makeHeaders()
+        headers: makeHeaders()
     })
     .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.text())
 }
@@ -40,7 +41,7 @@ export function createGist(options) {
     return fetch('https://api.github.com/gists', {
         method: 'POST',
         headers: {
-            ...this.makeHeaders(),
+            ...makeHeaders(),
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(options)
@@ -49,7 +50,7 @@ export function createGist(options) {
 }
 
 export function pullAcinoprstGist() {
-    return this.getGists({per_page: 100})
+    return getGists({per_page: 100})
     .then(data => {
         let err = new Error('Not found')
         let gist = data.find(x => x.description === 'acinoprst')
@@ -68,8 +69,8 @@ export function pullAcinoprstGist() {
 }
 
 export function pushAcinoprstGist(oldId, content) {
-    return this.removeGist(oldId)
-    .then(() => this.createGist({
+    return removeGist(oldId)
+    .then(() => createGist({
         description: 'acinoprst',
         public: false,
         files: {'acinoprst.md': {content}}

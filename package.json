@@ -22,6 +22,7 @@
   "homepage": "https://github.com/yishn/acinoprst",
   "dependencies": {
     "classnames": "^2.2.5",
+    "js-base64": "^2.1.9",
     "octicons": "^5.0.1",
     "preact": "^8.2.1",
     "selectionchange-polyfill": "^1.2.1",
@@ -35,7 +36,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
     "http-server": "^0.10.0",
-    "webpack": "^3.0.0"
+    "webpack": "^3.3.0"
   },
   "scripts": {
     "start": "http-server",

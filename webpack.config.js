@@ -11,6 +11,10 @@ module.exports = {
 
     devtool: 'source-map',
 
+    node: {
+        Buffer: false
+    },
+
     module: {
         loaders: [
             {
@@ -28,5 +32,9 @@ module.exports = {
         alias: {
             'preact$': path.join(__dirname, 'node_modules/preact/dist/preact.min')
         }
+    },
+
+    externals: {
+        buffer: '{Buffer:null}'
     }
 }
