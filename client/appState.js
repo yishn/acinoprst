@@ -1,10 +1,10 @@
-import cookies from 'js-cookie'
+import * as github from './github'
 import * as outline from './outline'
 
 let lastHistoryPointTime = new Date()
 
 export const initState = {
-    loggedIn: cookies.get('oauth_token') != null,
+    authorization: null,
     busy: false,
     sidebarWidth: 200,
 
@@ -20,6 +20,15 @@ export const initState = {
     files: [],
     selectionStart: 0,
     selectionEnd: 0
+}
+
+export function logout(state) {
+    return {authorization: null}
+}
+
+export function login(state, user, password) {
+    github.login(user, password)
+    return {authorization: [user, password]}
 }
 
 export function setSidebarWidth(state, width) {

@@ -1,6 +1,5 @@
 import {h, Component} from 'preact'
-import cookies from 'js-cookie'
-import githubAuthorize from '../github'
+import * as github from '../github'
 import * as appState from '../appState'
 import {parseFiles, stringifyFiles} from '../outline'
 
@@ -9,8 +8,6 @@ import Outliner from './Outliner'
 import Sidebar, {SidebarButton} from './Sidebar'
 import Login from './Login'
 import Busy from './Busy'
-
-const github = githubAuthorize(cookies.get('oauth_token'))
 
 export default class App extends Component {
     constructor() {
@@ -53,7 +50,7 @@ export default class App extends Component {
     }
 
     pullFiles() {
-        if (!this.state.loggedIn) return
+        if (this.state.authorization == null) return
 
         this.setBusy(true)
 
@@ -61,22 +58,22 @@ export default class App extends Component {
         .then(data => {
             this.gistId = data.id
             this.loadFiles(parseFiles(data.file.content))
-            this.setBusy(false)
         })
-        .catch(this.handleLogoutClick)
+        .catch(() => this.logout())
+        .finally(() => this.setBusy(false))
     }
 
     pushFiles() {
-        if (!this.state.loggedIn || this.gistId == null) return
+        if (this.state.authorization == null || this.gistId == null) return
 
         this.setBusy(true)
 
         github.pushAcinoprstGist(this.gistId, stringifyFiles(this.state.files))
         .then(data => {
             this.gistId = data.id
-            this.setBusy(false)
         })
-        .catch(this.handleLogoutClick)
+        .catch(() => this.logout())
+        .finally(() => this.setBusy(false))
     }
 
     handleHeadlineChange = evt => {
@@ -146,7 +143,7 @@ export default class App extends Component {
     }
 
     handleLogoutClick = () => {
-        window.location.replace(`${window.location.href}?logout`)
+        this.logout()
     }
 
     render() {
@@ -157,7 +154,7 @@ export default class App extends Component {
                 width={this.state.sidebarWidth}
                 items={this.state.files.map(x => x.title)}
                 selected={this.state.current}
-                visible={this.state.loggedIn}
+                visible={this.state.authorization != null}
 
                 onSelectionChange={this.handleSidebarSelectionChange}
                 onOrderChange={this.handleSidebarOrderChange}
@@ -170,7 +167,7 @@ export default class App extends Component {
                 />
             </Sidebar>
 
-            {currentFile != null && this.state.loggedIn
+            {currentFile != null && this.state.authorization != null
                 ? <main style={{left: this.state.sidebarWidth}}>
                     <Headline
                         value={currentFile.title}
@@ -210,7 +207,7 @@ export default class App extends Component {
                 </main>
 
                 : <main style={{left: this.state.sidebarWidth}}>
-                    {!this.state.loggedIn ? <Login/> : null}
+                    {this.state.authorization == null ? <Login/> : null}
                 </main>
             }
 
