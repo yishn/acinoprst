@@ -1,10 +1,11 @@
 import * as github from './github'
 import * as outline from './outline'
+import * as storage from './storage'
 
 let lastHistoryPointTime = new Date()
 
 export const initState = {
-    authorization: null,
+    authorization: storage.get('authorization'),
     busy: false,
     sidebarWidth: 200,
 
@@ -23,12 +24,16 @@ export const initState = {
 }
 
 export function logout(state) {
+    storage.remove('authorization')
     github.logout()
+
     return {authorization: null, files: []}
 }
 
 export function login(state, user, password) {
+    storage.set('authorization', [user, password])
     github.login(user, password)
+
     return {authorization: [user, password]}
 }
 

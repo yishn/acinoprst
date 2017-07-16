@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import * as github from '../github'
+import {pullAcinoprstGist, pushAcinoprstGist} from '../github'
 import * as appState from '../appState'
 import {parseFiles, stringifyFiles} from '../outline'
 
@@ -21,6 +21,13 @@ export default class App extends Component {
             this[action] = (...args) => {
                 this.setState(state => appState[action](state, ...args))
             }
+        }
+    }
+
+    componentDidMount() {
+        if (this.state.authorization != null) {
+            this.login(...this.state.authorization)
+            this.pullFiles()
         }
     }
 
@@ -48,7 +55,7 @@ export default class App extends Component {
     pullFiles() {
         this.setBusy(true)
 
-        github.pullAcinoprstGist()
+        pullAcinoprstGist()
         .then(data => {
             this.gistId = data.id
             this.loadFiles(parseFiles(data.file.content))
@@ -62,7 +69,7 @@ export default class App extends Component {
 
         this.setBusy(true)
 
-        github.pushAcinoprstGist(this.gistId, stringifyFiles(this.state.files))
+        pushAcinoprstGist(this.gistId, stringifyFiles(this.state.files))
         .then(data => {
             this.gistId = data.id
         })
