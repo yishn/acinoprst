@@ -7,6 +7,10 @@ export default class Login extends Component {
         this.state = {user: '', pass: ''}
     }
 
+    componentDidMount() {
+        this.userElement.focus()
+    }
+
     handleUserChange = evt => {
         this.setState({user: evt.currentTarget.value})
     }
@@ -27,7 +31,7 @@ export default class Login extends Component {
             <h2>Login</h2>
             <p>
                 <input
-                    autoFocus
+                    ref={el => this.userElement = el}
                     type="text"
                     placeholder="Username"
                     value={this.state.user}
