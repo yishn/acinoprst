@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import {start as startSelectionChange} from 'selectionchange-polyfill'
+import {start as startSelectionChange} from 'selectionchange-polyfill/selectionchange'
 import * as str from '../str'
 
 startSelectionChange()
