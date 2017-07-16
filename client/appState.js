@@ -23,7 +23,8 @@ export const initState = {
 }
 
 export function logout(state) {
-    return {authorization: null}
+    github.logout()
+    return {authorization: null, files: []}
 }
 
 export function login(state, user, password) {

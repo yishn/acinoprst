@@ -24,10 +24,6 @@ export default class App extends Component {
         }
     }
 
-    componentDidMount() {
-        this.pullFiles()
-    }
-
     componentDidUpdate(_, prevState) {
         let textarea = document.querySelector('#outliner textarea')
         let selectionChanged = false
@@ -50,8 +46,6 @@ export default class App extends Component {
     }
 
     pullFiles() {
-        if (this.state.authorization == null) return
-
         this.setBusy(true)
 
         github.pullAcinoprstGist()
@@ -60,11 +54,11 @@ export default class App extends Component {
             this.loadFiles(parseFiles(data.file.content))
         })
         .catch(() => this.logout())
-        .finally(() => this.setBusy(false))
+        .then(() => this.setBusy(false))
     }
 
     pushFiles() {
-        if (this.state.authorization == null || this.gistId == null) return
+        if (this.gistId == null) return
 
         this.setBusy(true)
 
@@ -73,7 +67,7 @@ export default class App extends Component {
             this.gistId = data.id
         })
         .catch(() => this.logout())
-        .finally(() => this.setBusy(false))
+        .then(() => this.setBusy(false))
     }
 
     handleHeadlineChange = evt => {
@@ -95,9 +89,7 @@ export default class App extends Component {
     }
 
     handleOutlinerSelectionChange = evt => {
-        let {startIndex, endIndex} = evt
-
-        this.setSelection(startIndex, endIndex)
+        this.setSelection(evt.startIndex, evt.endIndex)
     }
 
     handleNewFileClick = () => {
@@ -144,6 +136,11 @@ export default class App extends Component {
 
     handleLogoutClick = () => {
         this.logout()
+    }
+
+    handleLogin = (evt) => {
+        this.login(evt.user, evt.pass)
+        this.pullFiles()
     }
 
     render() {
@@ -207,7 +204,11 @@ export default class App extends Component {
                 </main>
 
                 : <main style={{left: this.state.sidebarWidth}}>
-                    {this.state.authorization == null ? <Login/> : null}
+                    {this.state.authorization == null &&
+                        <Login
+                            onLogin={this.handleLogin}
+                        />
+                    }
                 </main>
             }
 

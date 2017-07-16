@@ -9,20 +9,27 @@ main {
 
 #login {
         position: absolute;
-        top: calc(50% - 2.25em);
+        top: 50%;
         width: 100%;
         padding: 1em;
+        transform: translateY(-50%);
         text-align: center;
     }
     #login h2 {
+        margin: .5em 0;
         font-size: 2em;
         color: #565F63;
         letter-spacing: 7px;
         text-transform: uppercase;
     }
-    #login a {
-        color: inherit;
-        cursor: pointer;
+    #login p {
+        margin: .5em 0;
+    }
+    #login input {
+        padding: 2px 5px;
+    }
+    #login button {
+        padding: 0 10px;
 }
 
 #sidebar {
