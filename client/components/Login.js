@@ -41,7 +41,7 @@ export default class Login extends Component {
             <p>
                 <input
                     type="text"
-                    placeholder="Personal access token"
+                    placeholder="Personal Access Token"
                     value={this.state.pass}
                     onInput={this.handlePassChange}
                 />

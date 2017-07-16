@@ -1,41 +1,8 @@
 import {h, Component} from 'preact'
 import {start as startSelectionChange} from 'selectionchange-polyfill'
+import * as str from '../str'
 
 startSelectionChange()
-
-function reverseIndexOf(haystack, predicate, index) {
-    if (!(predicate instanceof Function)) {
-        let needle = predicate
-        predicate = x => x === needle
-    }
-
-    for (let i = index; i >= 0; i--) {
-        if (predicate(haystack[i])) return i
-    }
-
-    return -1
-}
-
-function getIndent(haystack, index) {
-    let indent = 0
-
-    for (let i = index; i < haystack.length; i++) {
-        if (haystack[i] === ' ') indent++
-        else break
-    }
-
-    return indent
-}
-
-function rangedIndexOf(haystack, needle, start, end) {
-    let indices = []
-
-    for (let i = Math.max(start, 0); i < Math.min(haystack.length, end); i++) {
-        if (haystack[i] === needle) indices.push(i)
-    }
-
-    return indices
-}
 
 export default class CodeTextarea extends Component {
     constructor() {
@@ -66,8 +33,8 @@ export default class CodeTextarea extends Component {
 
             evt.preventDefault()
 
-            let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
-            let newlines = rangedIndexOf(value, '\n', lineStart, selectionEnd)
+            let lineStart = str.reverseIndexOf(value, '\n', selectionStart - 1)
+            let newlines = str.rangedIndexOf(value, '\n', lineStart, selectionEnd)
             let firstLineSelection = lineStart < 0
 
             if (newlines[newlines.length - 1] !== value.length - 1)
@@ -79,12 +46,12 @@ export default class CodeTextarea extends Component {
             ], [])
 
             let currentContentLine = chunks.find((x, i) => i > 0 && x.trim() !== '')
-            let currentIndent = currentContentLine != null ? getIndent(currentContentLine, 0) : 0
+            let currentIndent = currentContentLine != null ? str.getIndent(currentContentLine, 0) : 0
 
             chunks = chunks.map((x, i) => !firstLineSelection && i === 0 ? x :
                 evt.shiftKey
                 // Deindent
-                ? x.slice(Math.min(getIndent(x, 0), 4))
+                ? x.slice(Math.min(str.getIndent(x, 0), 4))
                 // Indent
                 : ' '.repeat(4) + x
             )
@@ -95,7 +62,7 @@ export default class CodeTextarea extends Component {
 
             if (selectionStart !== selectionEnd) {
                 let endLineStart = newValue.length - chunks[chunks.length - 1].length
-                let endLineEnd = endLineStart + newValue.slice(endLineStart).indexOf('\n')
+                let endLineEnd = str.truncatedIndexOf(newValue, '\n', endLineStart)
 
                 selectionStart = firstLineSelection ? 0 : chunks[0].length
                 selectionEnd = endLineEnd
@@ -115,8 +82,8 @@ export default class CodeTextarea extends Component {
             let caretPosition = 0
 
             if (!evt.ctrlKey) {
-                let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
-                let indent = getIndent(value, lineStart + 1)
+                let lineStart = str.reverseIndexOf(value, '\n', selectionStart - 1)
+                let indent = str.getIndent(value, lineStart + 1)
 
                 caretPosition = lineStart + 1 + indent
                 if (caretPosition === selectionStart) caretPosition = lineStart + 1
@@ -131,8 +98,8 @@ export default class CodeTextarea extends Component {
 
             evt.preventDefault()
 
-            let lineStart = reverseIndexOf(value, '\n', selectionStart - 1)
-            let indent = getIndent(value, lineStart + 1)
+            let lineStart = str.reverseIndexOf(value, '\n', selectionStart - 1)
+            let indent = str.getIndent(value, lineStart + 1)
             let chunks = [value.slice(0, selectionStart), value.slice(selectionEnd)]
             let newValue = chunks.join('\n' + ' '.repeat(indent))
 

@@ -1,13 +1,6 @@
 import {h, Component} from 'preact'
+import * as str from '../str'
 import CodeTextarea from './CodeTextarea'
-
-function reverseIndexOf(haystack, needle, index) {
-    for (let i = index; i >= 0; i--) {
-        if (haystack[i] === needle) return i
-    }
-
-    return -1
-}
 
 export default class Outliner extends Component {
     constructor() {
@@ -50,8 +43,8 @@ export default class Outliner extends Component {
         } else if ([88, 8, 46].includes(evt.keyCode)) {
             // Reformat line when pressing x or removing x
 
-            let lineStart = reverseIndexOf(value, '\n', selectionStart - 1) + 1
-            let lineEnd = (value.slice(lineStart) + '\n').indexOf('\n') + lineStart
+            let lineStart = str.reverseIndexOf(value, '\n', selectionStart - 1) + 1
+            let lineEnd = str.truncatedIndexOf(value, '\n', lineStart)
             let line = value.slice(lineStart, lineEnd)
             let lineSelection = selectionStart - lineStart
             let checkboxMatch = line.match(/^(\s*)- \[\s*([Xx])?\s*\]/)

@@ -27,6 +27,7 @@ main {
     }
     #login input {
         padding: 2px 5px;
+        width: 200px;
     }
     #login button {
         padding: 0 10px;
