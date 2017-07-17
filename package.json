@@ -1,7 +1,7 @@
 {
   "name": "acinoprst",
   "version": "0.1.0",
-  "description": "A simple outliner synchronizing with Gist.",
+  "description": "A glorified text editor to write outlines synchronizing with Gist.",
   "main": "server/index.js",
   "repository": {
     "type": "git",
