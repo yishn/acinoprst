@@ -24,14 +24,14 @@ export default class App extends Component {
         }
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         if (this.state.authorization != null) {
             this.login(...this.state.authorization)
             this.pullFiles()
         }
     }
 
-    componentDidUpdate(_, prevState) {
+    componentDidUpdate = (_, prevState) => {
         let textarea = document.querySelector('#outliner textarea')
         let selectionChanged = false
 
@@ -52,7 +52,7 @@ export default class App extends Component {
         }
     }
 
-    async pullFiles() {
+    pullFiles = async () => {
         this.setBusy(true)
 
         try {
@@ -67,7 +67,7 @@ export default class App extends Component {
         this.setBusy(false)
     }
 
-    async pushFiles() {
+    pushFiles = async () => {
         if (this.gistId == null) return
 
         this.setBusy(true)
@@ -170,6 +170,16 @@ export default class App extends Component {
                 onOrderChange={this.handleSidebarOrderChange}
                 onWidthChange={this.handleSidebarWidthChange}
             >
+                <SidebarButton
+                    text="Pull"
+                    icon="arrow-down"
+                    onClick={this.pullFiles}
+                />
+                <SidebarButton
+                    text="Push"
+                    icon="arrow-up"
+                    onClick={this.pushFiles}
+                />
                 <SidebarButton
                     text="New File"
                     icon="plus"
