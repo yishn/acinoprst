@@ -167,18 +167,23 @@ export default class App extends Component {
                 onWidthChange={this.handleSidebarWidthChange}
             >
                 <SidebarButton
+                    key="pull"
                     text="Pull"
                     icon="arrow-down"
                     sync={this.state.busy === 'pull'}
                     onClick={this.pullFiles}
                 />
+                {this.state.needPush &&
+                    <SidebarButton
+                        key="push"
+                        text="Push"
+                        icon="arrow-up"
+                        sync={this.state.busy === 'push'}
+                        onClick={this.pushFiles}
+                    />
+                }
                 <SidebarButton
-                    text="Push"
-                    icon="arrow-up"
-                    sync={this.state.busy === 'push'}
-                    onClick={this.pushFiles}
-                />
-                <SidebarButton
+                    key="newFile"
                     text="New File"
                     icon="plus"
                     onClick={this.newFile}

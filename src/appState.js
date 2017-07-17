@@ -8,6 +8,7 @@ export const initState = {
     authorization: storage.get('authorization'),
     busy: false,
     sidebarWidth: storage.get('sidebarWidth') || 200,
+    needPush: false,
 
     history: [{
         current: 0,
@@ -40,7 +41,7 @@ export function login(state, user, password) {
 export function setSidebarWidth(state, width) {
     let sidebarWidth = Math.min(Math.max(width, 120), 400)
     storage.set('sidebarWidth', sidebarWidth)
-    
+
     return {sidebarWidth}
 }
 
@@ -49,7 +50,11 @@ export function setFileTitle(state, index, title) {
 
     let files = state.files.map((x, i) => i === index ? {...x, title} : x)
 
-    return {...makeHistoryPoint(state, {files}), files}
+    return {
+        ...makeHistoryPoint(state, {files}),
+        files,
+        needPush: true
+    }
 }
 
 export function setFileContent(state, index, content, selectionStart, selectionEnd) {
@@ -60,7 +65,8 @@ export function setFileContent(state, index, content, selectionStart, selectionE
     return {
         ...makeHistoryPoint(state, {files, selectionStart, selectionEnd}),
         ...setSelection(state, selectionStart, selectionEnd),
-        files
+        files,
+        needPush: true
     }
 }
 
@@ -78,7 +84,8 @@ export function loadFiles(state, files) {
     return {
         ...filesState,
         history: [filesState],
-        historyPointer: 0
+        historyPointer: 0,
+        needPush: false
     }
 }
 
@@ -100,7 +107,8 @@ export function newFile(state) {
     return {
         ...makeHistoryPoint(state, {current, files}),
         ...setSelection(state, 0, 0),
-        current, files
+        current, files,
+        needPush: true
     }
 }
 
@@ -111,7 +119,8 @@ export function removeFile(state, index) {
     return {
         ...makeHistoryPoint(state, {current, files}),
         ...setSelection(state, 0, 0),
-        current, files
+        current, files,
+        needPush: true
     }
 }
 
@@ -123,7 +132,8 @@ export function permutateFiles(state, permutation) {
 
     return {
         ...makeHistoryPoint(state, {current, files}),
-        current, files
+        current, files,
+        needPush: true
     }
 }
 
