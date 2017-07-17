@@ -2,7 +2,7 @@ const webpack = require('webpack')
 const path = require('path')
 
 module.exports = {
-    entry: './client/index.js',
+    entry: './src/index.js',
 
     output: {
         filename: 'bundle.js',
@@ -35,6 +35,6 @@ module.exports = {
     },
 
     externals: {
-        buffer: '{Buffer:null}'
+        buffer: '{Buffer: null}'
     }
 }
