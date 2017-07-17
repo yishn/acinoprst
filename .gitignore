@@ -1,5 +1,6 @@
-node_modules/
-!node_modules/octicons/build/svg/
+bin/
 src/
 dist/*.map
+node_modules/
+!node_modules/octicons/build/svg/
 config.json
