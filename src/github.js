@@ -13,7 +13,10 @@ export function logout(user, pass) {
 }
 
 export function makeHeaders() {
-    return {'Authorization': `Basic ${authorization}`}
+    return {
+        'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT',
+        'Authorization': `Basic ${authorization}`
+    }
 }
 
 export async function getGists(options) {
