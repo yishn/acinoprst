@@ -86,7 +86,7 @@ main {
         opacity: 1;
     }
     #sidebar h3 .actions a.sync img {
-        animation: rotate 1s linear infinite;
+        animation: rotate 1.5s linear infinite;
     }
     @keyframes rotate {
         from {

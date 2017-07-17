@@ -76,6 +76,7 @@ export default class App extends Component {
             let data = await pushAcinoprstGist(this.gistId, stringifyFiles(this.state.files))
 
             this.gistId = data.id
+            this.setNeedPush(false)
         } catch (err) {
             this.logout()
         }

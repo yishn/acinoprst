@@ -52,8 +52,8 @@ export function setFileTitle(state, index, title) {
 
     return {
         ...makeHistoryPoint(state, {files}),
-        files,
-        needPush: true
+        ...setNeedPush(state, true),
+        files
     }
 }
 
@@ -65,13 +65,21 @@ export function setFileContent(state, index, content, selectionStart, selectionE
     return {
         ...makeHistoryPoint(state, {files, selectionStart, selectionEnd}),
         ...setSelection(state, selectionStart, selectionEnd),
-        files,
-        needPush: true
+        ...setNeedPush(state, true),
+        files
     }
 }
 
 export function setSelection(state, selectionStart, selectionEnd) {
     return {selectionStart, selectionEnd}
+}
+
+export function setBusy(state, busy) {
+    return {busy}
+}
+
+export function setNeedPush(state, needPush) {
+    return {needPush}
 }
 
 export function loadFiles(state, files) {
@@ -107,8 +115,8 @@ export function newFile(state) {
     return {
         ...makeHistoryPoint(state, {current, files}),
         ...setSelection(state, 0, 0),
-        current, files,
-        needPush: true
+        ...setNeedPush(state, true),
+        current, files
     }
 }
 
@@ -119,8 +127,8 @@ export function removeFile(state, index) {
     return {
         ...makeHistoryPoint(state, {current, files}),
         ...setSelection(state, 0, 0),
-        current, files,
-        needPush: true
+        ...setNeedPush(state, true),
+        current, files
     }
 }
 
@@ -132,8 +140,8 @@ export function permutateFiles(state, permutation) {
 
     return {
         ...makeHistoryPoint(state, {current, files}),
-        current, files,
-        needPush: true
+        ...setNeedPush(state, true),
+        current, files
     }
 }
 
@@ -147,10 +155,6 @@ export function separateItems(state, index) {
 
 export function removeDoneTasks(state, index) {
     return setFileContent(state, index, outline.removeDoneTasks(state.files[index].content))
-}
-
-export function setBusy(state, busy) {
-    return {busy}
 }
 
 export function makeHistoryPoint(state, {
