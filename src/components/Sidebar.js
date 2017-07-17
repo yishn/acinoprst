@@ -9,6 +9,7 @@ export class SidebarButton extends Component {
     shouldComponentUpdate(nextProps) {
         return nextProps.text !== this.props.text
             || nextProps.icon !== this.props.icon
+            || nextProps.sync !== this.props.sync
             || nextProps.onClick !== this.props.onClick
     }
 
@@ -20,8 +21,15 @@ export class SidebarButton extends Component {
     }
 
     render() {
-        return <a href="#" title={this.props.text} onClick={this.handleClick}>
-            <img src={`./node_modules/octicons/build/svg/${this.props.icon}.svg`} />
+        let icon = this.props.sync ? 'sync' : this.props.icon
+
+        return <a
+            class={classNames({sync: this.props.sync})}
+            href="#"
+            title={this.props.text}
+            onClick={this.handleClick}
+        >
+            <img src={`./node_modules/octicons/build/svg/${icon}.svg`} />
         </a>
     }
 }

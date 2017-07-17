@@ -53,7 +53,7 @@ export default class App extends Component {
     }
 
     pullFiles = async () => {
-        this.setBusy(true)
+        this.setBusy('pull')
 
         try {
             let data = await pullAcinoprstGist()
@@ -70,7 +70,7 @@ export default class App extends Component {
     pushFiles = async () => {
         if (this.gistId == null) return
 
-        this.setBusy(true)
+        this.setBusy('push')
 
         try {
             let data = await pushAcinoprstGist(this.gistId, stringifyFiles(this.state.files))
@@ -103,10 +103,6 @@ export default class App extends Component {
 
     handleOutlinerSelectionChange = evt => {
         this.setSelection(evt.startIndex, evt.endIndex)
-    }
-
-    handleNewFileClick = () => {
-        this.newFile()
     }
 
     handleRemoveFileClick = () => {
@@ -173,17 +169,19 @@ export default class App extends Component {
                 <SidebarButton
                     text="Pull"
                     icon="arrow-down"
+                    sync={this.state.busy === 'pull'}
                     onClick={this.pullFiles}
                 />
                 <SidebarButton
                     text="Push"
                     icon="arrow-up"
+                    sync={this.state.busy === 'push'}
                     onClick={this.pushFiles}
                 />
                 <SidebarButton
                     text="New File"
                     icon="plus"
-                    onClick={this.handleNewFileClick}
+                    onClick={this.newFile}
                 />
             </Sidebar>
 
@@ -215,6 +213,7 @@ export default class App extends Component {
                             <MenuItem type="separator" />
                             <MenuItem onClick={this.handleRemoveFileClick}>Remove File</MenuItem>
                             <MenuItem type="separator" />
+                            <MenuItem disabled>{this.state.authorization[0]}</MenuItem>
                             <MenuItem onClick={this.handleLogoutClick}>Logout</MenuItem>
                         </HeadlineButton>
                     </Headline>
@@ -235,7 +234,7 @@ export default class App extends Component {
                 </main>
             }
 
-            <Busy show={this.state.busy} />
+            <Busy show={this.state.busy !== false} />
         </section>
     }
 }

@@ -17,7 +17,10 @@ export class MenuItem extends Component {
     }
 
     render() {
-        return <li class={this.props.type}>
+        return <li class={classNames({
+            [this.props.type]: !!this.props.type,
+            disabled: this.props.disabled
+        })}>
             {this.props.type !== 'separator' &&
                 <a href="#" onClick={this.handleClick}>{this.props.children}</a>
             }

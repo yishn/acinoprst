@@ -74,7 +74,8 @@ main {
         float: right;
     }
     #sidebar h3 .actions a img {
-        margin-left: 10px;
+        margin-left: 5px;
+        width: 16px;
         height: 16px;
         vertical-align: -0.2em;
         filter: invert(100%);
@@ -83,6 +84,17 @@ main {
     }
     #sidebar h3 .actions a:active img {
         opacity: 1;
+    }
+    #sidebar h3 .actions a.sync img {
+        animation: rotate 1s linear infinite;
+    }
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg)
+        }
     }
     #sidebar ul {
         list-style: none;
@@ -181,13 +193,13 @@ main {
         position: relative;
         display: inline-block;
     }
-    #headline .toolbar > li.disabled {
+    #headline .toolbar li.disabled {
         opacity: .5;
     }
-    #headline .toolbar > li:not(.disabled) a:hover {
+    #headline .toolbar li:not(.disabled) a:hover {
         background-color: rgba(0, 0, 0, .1);
     }
-    #headline .toolbar > li:not(.disabled) a:active,
+    #headline .toolbar li:not(.disabled) a:active,
     #headline .toolbar > li.open:not(.disabled) > a {
         background-color: rgba(0, 0, 0, .15);
     }
