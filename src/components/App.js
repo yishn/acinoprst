@@ -52,29 +52,35 @@ export default class App extends Component {
         }
     }
 
-    pullFiles() {
+    async pullFiles() {
         this.setBusy(true)
 
-        pullAcinoprstGist()
-        .then(data => {
+        try {
+            let data = await pullAcinoprstGist()
+
             this.gistId = data.id
             this.loadFiles(parseFiles(data.file.content))
-        })
-        .catch(() => this.logout())
-        .then(() => this.setBusy(false))
+        } catch (err) {
+            this.logout()
+        }
+
+        this.setBusy(false)
     }
 
-    pushFiles() {
+    async pushFiles() {
         if (this.gistId == null) return
 
         this.setBusy(true)
 
-        pushAcinoprstGist(this.gistId, stringifyFiles(this.state.files))
-        .then(data => {
+        try {
+            let data = await pushAcinoprstGist(this.gistId, stringifyFiles(this.state.files))
+
             this.gistId = data.id
-        })
-        .catch(() => this.logout())
-        .then(() => this.setBusy(false))
+        } catch (err) {
+            this.logout()
+        }
+
+        this.setBusy(false)
     }
 
     handleHeadlineChange = evt => {
@@ -145,7 +151,7 @@ export default class App extends Component {
         this.logout()
     }
 
-    handleLogin = (evt) => {
+    handleLogin = evt => {
         this.login(evt.user, evt.pass)
         this.pullFiles()
     }

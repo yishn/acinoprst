@@ -16,29 +16,33 @@ export function makeHeaders() {
     return {'Authorization': `Basic ${authorization}`}
 }
 
-export function getGists(options) {
-    if (authorization == null) return Promise.reject(new Error('Not logged in'))
+export async function getGists(options) {
+    if (authorization == null) throw new Error('Not logged in')
 
-    return fetch(`https://api.github.com/gists?${qs.stringify(options)}`, {
+    let res = await fetch(`https://api.github.com/gists?${qs.stringify(options)}`, {
         headers: makeHeaders()
     })
-    .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.json())
+
+    if (!res.ok) throw new Error(res.statusText)
+    return await res.json()
 }
 
-export function removeGist(id) {
-    if (authorization == null) return Promise.reject(new Error('Not logged in'))
+export async function removeGist(id) {
+    if (authorization == null) throw new Error('Not logged in')
 
-    return fetch(`https://api.github.com/gists/${id}`, {
+    let res = await fetch(`https://api.github.com/gists/${id}`, {
         method: 'DELETE',
         headers: makeHeaders()
     })
-    .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.text())
+
+    if (!res.ok) throw new Error(res.statusText)
+    return await res.text()
 }
 
-export function createGist(options) {
-    if (authorization == null) return Promise.reject(new Error('Not logged in'))
+export async function createGist(options) {
+    if (authorization == null) throw new Error('Not logged in')
 
-    return fetch('https://api.github.com/gists', {
+    let res = await fetch('https://api.github.com/gists', {
         method: 'POST',
         headers: {
             ...makeHeaders(),
@@ -46,33 +50,38 @@ export function createGist(options) {
         },
         body: JSON.stringify(options)
     })
-    .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.json())
+
+    if (!res.ok) throw new Error(res.statusText)
+    return await res.json()
 }
 
-export function pullAcinoprstGist() {
-    return getGists({per_page: 100})
-    .then(data => {
-        let err = new Error('Not found')
-        let gist = data.find(x => x.description === 'acinoprst')
-        if (gist == null) return Promise.reject(err)
+export async function pullAcinoprstGist() {
+    let data = await getGists({per_page: 100})
+    let err = new Error('Not found')
+    let gist = data.find(x => x.description === 'acinoprst')
+    if (gist == null) throw err
 
-        let file = gist.files[Object.keys(gist.files)[0]]
-        if (file == null) return Promise.reject(err)
+    let file = gist.files[Object.keys(gist.files)[0]]
+    if (file == null) throw err
 
-        delete gist.files
-        gist.file = file
+    delete gist.files
+    gist.file = file
 
-        return fetch(file.raw_url)
-        .then(res => !res.ok ? Promise.reject(new Error(res.statusText)) : res.text())
-        .then(content => (file.content = content, gist))
-    })
+    let res = await fetch(file.raw_url)
+
+    if (!res.ok) throw new Error(res.statusText)
+    let content = await res.text()
+
+    file.content = content
+    return gist
 }
 
-export function pushAcinoprstGist(oldId, content) {
-    return removeGist(oldId)
-    .then(() => createGist({
+export async function pushAcinoprstGist(oldId, content) {
+    await removeGist(oldId)
+
+    return createGist({
         description: 'acinoprst',
         public: false,
         files: {'acinoprst.md': {content}}
-    }))
+    })
 }
