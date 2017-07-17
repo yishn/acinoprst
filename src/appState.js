@@ -7,7 +7,7 @@ let lastHistoryPointTime = new Date()
 export const initState = {
     authorization: storage.get('authorization'),
     busy: false,
-    sidebarWidth: 200,
+    sidebarWidth: storage.get('sidebarWidth') || 200,
 
     history: [{
         current: 0,
@@ -38,7 +38,10 @@ export function login(state, user, password) {
 }
 
 export function setSidebarWidth(state, width) {
-    return {sidebarWidth: Math.min(Math.max(width, 100), 400)}
+    let sidebarWidth = Math.min(Math.max(width, 120), 400)
+    storage.set('sidebarWidth', sidebarWidth)
+    
+    return {sidebarWidth}
 }
 
 export function setFileTitle(state, index, title) {
