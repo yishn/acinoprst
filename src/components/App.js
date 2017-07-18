@@ -90,12 +90,12 @@ export default class App extends Component {
 
     handleOutlinerChange = evt => {
         let {value, selectionStart, selectionEnd} = evt
-
-        // This fixes weird bug where pressing enter doesn't insert new lines
-
         let textarea = document.querySelector('#outliner textarea')
 
+        textarea.value = value.slice(0, selectionEnd)
+        textarea.scrollTop = textarea.scrollHeight
         textarea.value = value
+
         textarea.selectionStart = selectionStart
         textarea.selectionEnd = selectionEnd
 
