@@ -24,6 +24,7 @@
     "classnames": "^2.2.5",
     "js-base64": "^2.1.9",
     "octicons": "^5.0.1",
+    "pinkie-promise": "^2.0.1",
     "preact": "^8.2.1",
     "regenerator-runtime": "^0.10.5",
     "selectionchange-polyfill": "^1.2.1",
