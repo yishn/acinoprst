@@ -2,6 +2,26 @@ import {h, Component} from 'preact'
 import * as str from '../str'
 import CodeTextarea from './CodeTextarea'
 
+function toggleDone(lines, indexStart, indexEnd, forceDone = null) {
+    let result = [...lines]
+
+    for (let index = indexStart; index <= indexEnd; index++) {
+        let line = lines[index]
+        let checkboxMatch = line.match(/^(\s*)- \[\s*([Xx])?\s*\]/)
+
+        if (checkboxMatch == null) continue
+
+        let done = forceDone != null ? forceDone : checkboxMatch[2] == null
+        let indent = checkboxMatch[1]
+        let checkbox = `- [${done ? 'x' : ' '}]`
+        let newLine = indent + checkbox + line.slice(checkboxMatch[0].length)
+
+        result[index] = newLine
+    }
+
+    return result
+}
+
 export default class Outliner extends Component {
     constructor() {
         super()
@@ -40,40 +60,71 @@ export default class Outliner extends Component {
                 selectionStart: newSelection,
                 selectionEnd: newSelection
             })
-        } else if ([88, 8, 46].includes(evt.keyCode)) {
-            // Reformat line when pressing x or removing x
+        } else if (evt.keyCode === 88 && evt.ctrlKey && evt.shiftKey) {
+            // Toggle task done status with Ctrl+Shift+X
 
-            let lineStart = str.reverseIndexOf(value, '\n', selectionStart - 1) + 1
-            let lineEnd = str.truncatedIndexOf(value, '\n', lineStart)
-            let line = value.slice(lineStart, lineEnd)
-            let lineSelection = selectionStart - lineStart
-            let checkboxMatch = line.match(/^(\s*)- \[\s*([Xx])?\s*\]/)
-            let reformat = checkboxMatch != null
-                && ((lineSelection < checkboxMatch[0].length
-                && lineSelection >= checkboxMatch[1].length + 3
-                && (evt.keyCode === 8 && line[lineSelection - 1].toLowerCase() === 'x' // Backspace
-                || evt.keyCode === 46 && line[lineSelection].toLowerCase() === 'x' // Delete
-                || evt.keyCode === 88)) // x
-                || evt.keyCode == 88 && evt.ctrlKey)
-
-            if (!reformat) return
             evt.preventDefault()
 
-            let indent = checkboxMatch[1]
-            let done = !evt.ctrlKey ? evt.keyCode === 88 : checkboxMatch[2] == null
-            let checkbox = `- [${done ? 'x' : ' '}]`
-            let diff = checkboxMatch[0].length - indent.length - checkbox.length
-            let newSelectionStart = !evt.ctrlKey
-                ? lineStart + indent.length + 4
-                : selectionStart - diff
-            let newSelectionEnd = !evt.ctrlKey ? newSelectionStart : selectionEnd - diff
-            let newLine = indent + checkbox + line.slice(checkboxMatch[0].length)
-            let newValue = [value.slice(0, lineStart), value.slice(lineEnd)].join(newLine)
+            let lines = value.split('\n')
+            let [rowStart, colStart] = str.getPositionFromIndex(value, selectionStart)
+            let [rowEnd, colEnd] = str.getPositionFromIndex(value, selectionEnd)
+            let newLines = toggleDone(lines, rowStart, rowEnd)
+            let newValue = newLines.join('\n')
+            let selection = [selectionStart, selectionEnd]
+            let [newSelectionStart, newSelectionEnd] = selection
+            let lineStart = str.reverseIndexOf(value, '\n', selectionStart - 1) + 1
+
+            if (rowStart === rowEnd) {
+                let checkboxMatch = lines[rowStart].match(/^(\s*- \[)\s*[Xx]?\s*\]/)
+                let diff = newLines[rowStart].length - lines[rowStart].length
+
+                ;[newSelectionStart, newSelectionEnd] = [colStart, colEnd].map((col, i) =>
+                    checkboxMatch == null ? selection[i]
+                    : col >= checkboxMatch[0].length ? selection[i] + diff
+                    : col >= checkboxMatch[1].length ? lineStart + checkboxMatch[1].length + 1
+                    : selection[i]
+                )
+            } else {
+                newSelectionStart = lineStart
+                newSelectionEnd = newLines.slice(0, rowEnd + 1).join('\n').length
+            }
 
             onChange({
                 value: newValue,
                 selectionStart: newSelectionStart,
                 selectionEnd: newSelectionEnd
+            })
+        } else if ([88, 8, 46].includes(evt.keyCode)) {
+            // Reformat line when pressing x or removing x
+
+            if (evt.keyCode !== 88 && Math.abs(selectionStart - selectionEnd) > 1) return
+            if (evt.keyCode === 8 && value[selectionEnd - 1].toLowerCase() !== 'x') return // Backspace
+            if (evt.keyCode === 46 && value[selectionStart].toLowerCase() !== 'x') return // Delete
+
+            let lines = value.split('\n')
+            let [index, colStart] = str.getPositionFromIndex(value, selectionStart)
+            let [, colEnd] = str.getPositionFromIndex(value, selectionEnd)
+            let line = lines[index]
+
+            let checkboxMatch = line.match(/^(\s*)- \[\s*([Xx])?\s*\]/)
+            if (checkboxMatch == null) return
+
+            let [criticalStart, criticalEnd] = [checkboxMatch[1].length + 3, checkboxMatch[0].length - 1]
+            if ([colStart, colEnd].some(col => col < criticalStart || col > criticalEnd)) return
+
+            evt.preventDefault()
+
+            let done = evt.keyCode === 88
+            let newLines = toggleDone(lines, index, index, done)
+            let newValue = newLines.join('\n')
+
+            let lineStart = str.reverseIndexOf(value, '\n', selectionStart - 1) + 1
+            let newSelection = lineStart + checkboxMatch[1].length + 4
+
+            onChange({
+                value: newValue,
+                selectionStart: newSelection,
+                selectionEnd: newSelection
             })
         }
     }
