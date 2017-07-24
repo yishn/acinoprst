@@ -53,7 +53,7 @@ export function getIndent(haystack, index) {
 export function getPositionFromIndex(haystack, index) {
     let slicedValue = [...haystack.slice(0, index)]
 
-    let row = slicedValue.filter(x => x === '\n').length + 1
+    let row = slicedValue.filter(x => x === '\n').length
     let col = slicedValue.reverse().indexOf('\n')
     if (col < 0) col = slicedValue.length
 

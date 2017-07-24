@@ -139,11 +139,14 @@ export default class CodeTextarea extends Component {
             // Ctrl+Z
 
             evt.preventDefault()
-            onUndo()
+
+            if (!evt.shiftKey) onUndo()
+            else onRedo()
         } else if (evt.keyCode === 89 && evt.ctrlKey) {
             // Ctrl+Y
 
             evt.preventDefault()
+
             onRedo()
         }
 
