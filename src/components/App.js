@@ -227,6 +227,8 @@ export default class App extends Component {
                     <Outliner
                         value={currentFile.content}
                         onChange={this.handleOutlinerChange}
+                        onUndo={this.handleUndoClick}
+                        onRedo={this.handleRedoClick}
                         onSelectionChange={this.handleOutlinerSelectionChange}
                     />
                 </main>

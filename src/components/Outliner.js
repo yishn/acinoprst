@@ -83,6 +83,8 @@ export default class Outliner extends Component {
             <CodeTextarea
                 value={this.props.value}
                 onChange={this.props.onChange}
+                onUndo={this.props.onUndo}
+                onRedo={this.props.onRedo}
                 onSelectionChange={this.props.onSelectionChange}
                 onKeyDown={this.handleKeyDown}
             />

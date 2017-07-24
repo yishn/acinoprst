@@ -1,5 +1,6 @@
 import 'regenerator-runtime/runtime'
 import Promise from 'pinkie-promise'
+
 window.Promise = Promise
 
 import querystring from 'querystring'
