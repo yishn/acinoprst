@@ -78,7 +78,7 @@ export default class App extends Component {
             this.gistId = data.id
             this.setNeedPush(false)
         } catch (err) {
-            this.logout()
+            alert(err.message)
         }
 
         this.setBusy(false)

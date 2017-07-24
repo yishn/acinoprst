@@ -140,50 +140,54 @@ export default class Sidebar extends Component {
         return <section id="sidebar" style={{width: this.props.width}}>
             <nav ref={el => this.scrollElement = el}>
                 <h3>
-                    Files
+                    Outlines
 
-                    {this.props.visible && <span class="actions">
-                        {this.props.children}
-                    </span>}
+                    {this.props.visible &&
+                        <span class="actions">
+                            {this.props.children}
+                        </span>
+                    }
                 </h3>
 
-                {this.props.visible && <ul class={classNames({dragging: this.state.dragging})}>
-                    {items.map(([i, name]) =>
-                        <li
-                            key={i}
-                            data-index={i}
-                            class={classNames({
-                                selected: this.props.selected === i,
-                                dragging: this.state.dragging && this.state.dragIndex === i
-                            })}
-                        >
-                            <a
-                                href="#"
-                                onClick={this.handleItemClick}
-                                onMouseDown={this.handleItemMouseDown}
+                {this.props.visible &&
+                    <ul class={classNames({dragging: this.state.dragging})}>
+                        {items.map(([i, name]) =>
+                            <li
+                                key={i}
+                                data-index={i}
+                                class={classNames({
+                                    selected: this.props.selected === i,
+                                    dragging: this.state.dragging && this.state.dragIndex === i
+                                })}
                             >
-                                <img src="./node_modules/octicons/build/svg/file.svg" />
-                                {name || '(Untitled)'}
-                            </a>
-                        </li>
-                    )}
+                                <a
+                                    href="#"
+                                    onClick={this.handleItemClick}
+                                    onMouseDown={this.handleItemMouseDown}
+                                >
+                                    <img src="./node_modules/octicons/build/svg/file.svg" />
+                                    {name || '(Untitled)'}
+                                </a>
+                            </li>
+                        )}
 
-                    {this.state.dragging &&
-                        <li
-                            key="ghost"
-                            style={{top: this.state.dragGhostTop}}
-                            class={classNames({
-                                ghost: true,
-                                selected: this.props.selected === this.state.dragIndex
-                            })}
-                        >
-                            <a href="#">
-                                <img src="./node_modules/octicons/build/svg/file.svg" />
-                                {this.props.items[this.state.dragIndex] || '(Untitled)'}
-                            </a>
-                        </li>
-                    }
-                </ul>}
+                        {this.state.dragging &&
+                            <li
+                                key="ghost"
+                                style={{top: this.state.dragGhostTop}}
+                                class={classNames({
+                                    ghost: true,
+                                    selected: this.props.selected === this.state.dragIndex
+                                })}
+                            >
+                                <a href="#">
+                                    <img src="./node_modules/octicons/build/svg/file.svg" />
+                                    {this.props.items[this.state.dragIndex] || '(Untitled)'}
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
             </nav>
 
             <div
