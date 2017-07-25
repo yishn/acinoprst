@@ -29,6 +29,15 @@ export default class App extends Component {
             this.login(...this.state.authorization)
             this.pullFiles()
         }
+
+        window.addEventListener('beforeunload', evt => {
+            if (!this.state.needPush) return
+
+            let message = 'You have made unsaved changes. Do you really want to leave?'
+
+            evt.returnValue = message
+            return message
+        })
     }
 
     componentDidUpdate = (_, prevState) => {
