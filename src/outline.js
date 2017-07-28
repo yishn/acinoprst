@@ -16,7 +16,7 @@ function getSuccessiveLines(lines, index, predicate) {
 
 function parseLine(line, i) {
     let trimmedLine = line.trim()
-    let checkboxMatch = trimmedLine.match(/^- \[\s*([Xx])?\s*\]/)
+    let checkboxMatch = trimmedLine.match(/^-\s*\[\s*([Xx])?\s*\]/)
     let task = checkboxMatch != null
 
     let type = task ? 'task' : 'text'

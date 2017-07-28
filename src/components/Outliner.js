@@ -7,7 +7,7 @@ function toggleDone(lines, indexStart, indexEnd, forceDone = null) {
 
     for (let index = indexStart; index <= indexEnd; index++) {
         let line = lines[index]
-        let checkboxMatch = line.match(/^(\s*)- \[\s*([Xx])?\s*\]/)
+        let checkboxMatch = line.match(/^(\s*)-\s*\[\s*([Xx])?\s*\]/)
 
         if (checkboxMatch == null) continue
 
@@ -42,7 +42,7 @@ export default class Outliner extends Component {
 
             let prefix = !evt.shiftKey ? '- ' : '- [ ] '
             let chunks = [value.slice(0, selectionStart), value.slice(selectionStart)]
-            let matchSpaces = chunks[1].match(/^([^\S\n]*)- (\[\s*[Xx]?\s*\])?/)
+            let matchSpaces = chunks[1].match(/^([^\S\n]*)-\s*(\[\s*[Xx]?\s*\])?/)
             let newSelection = selectionStart + prefix.length
 
             if (matchSpaces) {
@@ -75,7 +75,7 @@ export default class Outliner extends Component {
             let lineStart = str.reverseIndexOf(value, '\n', selectionStart - 1) + 1
 
             if (rowStart === rowEnd) {
-                let checkboxMatch = lines[rowStart].match(/^(\s*- \[)\s*[Xx]?\s*\]/)
+                let checkboxMatch = lines[rowStart].match(/^(\s*-\s*\[)\s*[Xx]?\s*\]/)
                 let diff = newLines[rowStart].length - lines[rowStart].length
 
                 ;[newSelectionStart, newSelectionEnd] = [colStart, colEnd].map((col, i) =>
@@ -106,7 +106,7 @@ export default class Outliner extends Component {
             let [, colEnd] = str.getPositionFromIndex(value, selectionEnd)
             let line = lines[index]
 
-            let checkboxMatch = line.match(/^(\s*)- \[\s*([Xx])?\s*\]/)
+            let checkboxMatch = line.match(/^(\s*)-\s*\[\s*([Xx])?\s*\]/)
             if (checkboxMatch == null) return
 
             let [criticalStart, criticalEnd] = [checkboxMatch[1].length + 3, checkboxMatch[0].length - 1]
