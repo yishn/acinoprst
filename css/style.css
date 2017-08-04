@@ -41,9 +41,39 @@ main {
         background: #2E3235;
         color: white;
     }
-    #sidebar nav {
+    #sidebar .head {
         position: absolute;
         top: 0;
+        left: 0;
+        right: 0;
+        height: 3.5em;
+        background: #3E4547;
+    }
+    #sidebar .head .avatar {
+        position: absolute;
+        height: 3.5em;
+        width: 3.5em;
+        top: 0;
+        left: 0;
+        background: #576263;
+        background-size: contain;
+    }
+    #sidebar .head span {
+        position: absolute;
+        top: 0;
+        left: 3.5em;
+        right: 0;
+        bottom: 0;
+        padding: 0 1em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-weight: bold;
+        line-height: 3.5em;
+    }
+    #sidebar nav {
+        position: absolute;
+        top: 3.5em;
         right: 0;
         left: 0;
         bottom: 0;
