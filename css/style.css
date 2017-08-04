@@ -85,10 +85,7 @@ main {
         background: transparent;
     }
     #sidebar nav::-webkit-scrollbar-thumb {
-        background: #444;
-    }
-    #sidebar nav::-webkit-scrollbar-thumb:hover {
-        background: #555;
+        background: #222;
     }
     #sidebar nav::-webkit-scrollbar-corner {
         background: transparent;
