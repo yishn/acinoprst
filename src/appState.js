@@ -5,7 +5,7 @@ import * as storage from './storage'
 let lastHistoryPointTime = new Date()
 
 export const initState = {
-    authorization: storage.get('authorization'),
+    authorization: null,
     busy: false,
     sidebarWidth: storage.get('sidebarWidth') || 200,
     needPush: false,

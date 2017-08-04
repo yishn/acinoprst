@@ -1,6 +1,8 @@
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 
+import * as github from '../github'
+
 function cap(min, max, value) {
     return Math.min(max, Math.max(min, value))
 }
@@ -39,6 +41,7 @@ export default class Sidebar extends Component {
         super()
 
         this.state = {
+            avatar: null,
             dragging: false,
             dragIndex: 0,
             dragBefore: 0,
@@ -89,6 +92,23 @@ export default class Sidebar extends Component {
                 })
             }
         })
+
+        this.updateAvatar()
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.username !== this.props.username) {
+            this.updateAvatar()
+        }
+    }
+
+    async updateAvatar() {
+        this.setState({avatar: null})
+
+        try {
+            let user = await github.getUser()
+            this.setState({avatar: user.avatar_url})
+        } catch (err) {}
     }
 
     handleResizerMouseDown = evt => {
@@ -138,6 +158,12 @@ export default class Sidebar extends Component {
         }
 
         return <section id="sidebar" style={{width: this.props.width}}>
+            <div class="head">
+                <div class="avatar" style={{backgroundImage: `url('${this.state.avatar}')`}}/>
+
+                <span>{this.props.username}</span>
+            </div>
+
             <nav ref={el => this.scrollElement = el}>
                 <h3>
                     Outlines

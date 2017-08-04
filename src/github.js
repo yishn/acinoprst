@@ -19,6 +19,17 @@ export function makeHeaders() {
     }
 }
 
+export async function getUser() {
+    if (authorization == null) throw new Error('Not logged in')
+
+    let res = await fetch('https://api.github.com/user', {
+        headers: makeHeaders()
+    })
+
+    if (!res.ok) throw new Error(res.statusText)
+    return res.json()
+}
+
 export async function getGists(options) {
     if (authorization == null) throw new Error('Not logged in')
 
@@ -27,7 +38,7 @@ export async function getGists(options) {
     })
 
     if (!res.ok) throw new Error(res.statusText)
-    return await res.json()
+    return res.json()
 }
 
 export async function removeGist(id) {
@@ -39,7 +50,7 @@ export async function removeGist(id) {
     })
 
     if (!res.ok) throw new Error(res.statusText)
-    return await res.text()
+    return res.text()
 }
 
 export async function createGist(options) {
@@ -55,7 +66,7 @@ export async function createGist(options) {
     })
 
     if (!res.ok) throw new Error(res.statusText)
-    return await res.json()
+    return res.json()
 }
 
 export async function pullAcinoprstGist() {

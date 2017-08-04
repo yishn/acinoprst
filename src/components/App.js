@@ -2,6 +2,7 @@ import {h, Component} from 'preact'
 import {pullAcinoprstGist, pushAcinoprstGist} from '../github'
 import * as appState from '../appState'
 import {parseFiles, stringifyFiles} from '../outline'
+import * as storage from '../storage'
 
 import Headline, {HeadlineButton, MenuItem} from './Headline'
 import Outliner from './Outliner'
@@ -25,8 +26,8 @@ export default class App extends Component {
     }
 
     componentDidMount = () => {
-        if (this.state.authorization != null) {
-            this.login(...this.state.authorization)
+        if (storage.get('authorization') != null) {
+            this.login(...storage.get('authorization'))
             this.pullFiles()
         }
 
@@ -167,6 +168,8 @@ export default class App extends Component {
 
         return <section id="app">
             <Sidebar
+                username={this.state.authorization && this.state.authorization[0]}
+
                 width={this.state.sidebarWidth}
                 items={this.state.files.map(x => x.title)}
                 selected={this.state.current}
