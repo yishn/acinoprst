@@ -80,8 +80,8 @@ export default class Sidebar extends Component {
 
                 this.itemDragged = true
 
-                let {diff, itemHeight, top, bottom} = this.itemMouseDown
-                let pivot = evt.clientY + this.scrollElement.scrollTop
+                let {diff, itemHeight, posDiff, top, bottom} = this.itemMouseDown
+                let pivot = evt.clientY + this.scrollElement.scrollTop - posDiff
                 let dragBefore = Math.floor((pivot - top) / itemHeight)
 
                 this.setState({
@@ -103,6 +103,8 @@ export default class Sidebar extends Component {
     }
 
     async updateAvatar() {
+        if (this.props.username == null) return
+
         this.setState({avatar: null})
 
         try {
@@ -126,14 +128,16 @@ export default class Sidebar extends Component {
         let {currentTarget} = evt
         let ulElement = currentTarget.parentNode.parentNode
         let {top: itemTop, height: itemHeight} = currentTarget.getBoundingClientRect()
+        let {top: posDiff} = this.scrollElement.getBoundingClientRect()
         let {top, bottom} = ulElement.getBoundingClientRect()
 
         this.itemDragged = false
         this.itemMouseDown = {
             index: +currentTarget.parentNode.dataset.index,
             diff: evt.clientY - itemTop,
-            top: top + this.scrollElement.scrollTop,
-            bottom: bottom + this.scrollElement.scrollTop,
+            posDiff,
+            top: top + this.scrollElement.scrollTop - posDiff,
+            bottom: bottom + this.scrollElement.scrollTop - posDiff,
             itemHeight
         }
     }
