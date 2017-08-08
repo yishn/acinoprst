@@ -39,7 +39,7 @@ export function login(state, user, password) {
 }
 
 export function setSidebarWidth(state, width) {
-    let sidebarWidth = Math.min(Math.max(width, 120), 400)
+    let sidebarWidth = Math.min(Math.max(width, 153), 400)
     storage.set('sidebarWidth', sidebarWidth)
 
     return {sidebarWidth}
