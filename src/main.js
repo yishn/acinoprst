@@ -11,7 +11,7 @@ let list = outline.parse([
 
 render(<div>
     <pre>
-        {JSON.stringify(list, null, '  ')}
+        {outline.stringify(outline.update(list, 3, {checked: false}))}
     </pre>
     <pre>
         {outline.stringify(list)}
