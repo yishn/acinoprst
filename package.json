@@ -1,0 +1,41 @@
+{
+  "name": "acinoprst",
+  "version": "0.1.0",
+  "description": "A simple outliner.",
+  "main": "src/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yishn/acinoprst.git"
+  },
+  "keywords": [
+    "outliner",
+    "editor",
+    "text",
+    "todo",
+    "list"
+  ],
+  "author": "Yichuan Shen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yishn/acinoprst/issues"
+  },
+  "homepage": "https://github.com/yishn/acinoprst#readme",
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "preact": "^8.2.7"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "fast-async": "^6.3.0",
+    "webpack": "^3.10.0"
+  },
+  "scripts": {
+    "test": "ava",
+    "build": "webpack --progress -p",
+    "watch": "webpack --progress --watch"
+  }
+}
