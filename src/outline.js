@@ -62,16 +62,6 @@ export function getItemTrail(list, id) {
     return []
 }
 
-function getNewId(list) {
-    function getMaxId(list) {
-        return Math.max(...list.map(item =>
-            Math.max(item.id, getMaxId(item.sublist))
-        ))
-    }
-
-    return getMaxId(list) + 1
-}
-
 export function update(list, trail, data) {
     if (typeof trail === 'number') trail = getItemTrail(list, trail)
     if (trail.length === 0) return list
@@ -117,7 +107,7 @@ export function move(list, trail1, op, trail2) {
             newList.splice(item2Index + shift, 0, item1)
             return newList
         } else {
-            let newSublist = parentTrail2[0].sublist.slice()
+            let newSublist = [...parentTrail2[0].sublist]
             newSublist.splice(newSublist.indexOf(item2) + shift, 0, item1)
 
             return update(newList, parentTrail2, {
@@ -130,12 +120,18 @@ export function move(list, trail1, op, trail2) {
 }
 
 export function append(list, data) {
+    function getMaxId(list) {
+        return Math.max(...list.map(item =>
+            Math.max(item.id, getMaxId(item.sublist))
+        ))
+    }
+
     return [...list, {
         collapsed: false,
         checked: false,
         text: '',
         ...data,
-        id: getNewId(list),
+        id: getMaxId(list) + 1,
         sublist: []
     }]
 }
