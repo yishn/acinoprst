@@ -10,7 +10,7 @@ export function stringify(list, level = 0) {
 }
 
 export function parse(content) {
-    function parseList(items, start = 0, parent = null) {
+    function parseList(items, start = 0) {
         if (start >= items.length) return []
 
         let {indent} = items[start]
@@ -21,10 +21,11 @@ export function parse(content) {
             if (items[i].indent > indent) continue
 
             let hasSublist = i + 1 < items.length && items[i + 1].indent > indent
-            let item = {...items[i], parent}
 
+            let item = {...items[i]}
             delete item.indent
             item.sublist = hasSublist ? parseList(items, i + 1, item) : []
+
             list.push(item)
         }
 
@@ -46,15 +47,19 @@ export function parse(content) {
     return parseList(items)
 }
 
-function getItem(list, id) {
-    for (let item of list) {
-        if (item.id === id) return item
+export function hash(list) {
+    return JSON.stringify(list)
+}
 
-        let result = getItem(item.sublist, id)
-        if (result != null) return result
+export function getItemTrail(list, id) {
+    for (let item of list) {
+        if (item.id === id) return [item]
+
+        let trail = getItemTrail(item.sublist, id)
+        if (trail.length > 0) return [...trail, item]
     }
 
-    return null
+    return []
 }
 
 function getNewId(list) {
@@ -67,68 +72,75 @@ function getNewId(list) {
     return getMaxId(list) + 1
 }
 
-export function update(list, id, data) {
-    if (list.some(item => item.id === id))
-        return list.map(item => item.id === id ? {...item, ...data} : item)
+export function update(list, trail, data) {
+    if (typeof trail === 'number') trail = getItemTrail(list, trail)
+    if (trail.length === 0) return list
+    if (trail.length === 1) return list.map(item => item.id === trail[0].id ? {...item, ...data} : item)
 
-    let item = getItem(list, id)
-    if (item == null) return list
+    let [item, ...parentTrail] = trail
 
-    return update(list, item.parent.id, {
-        sublist: update(item.parent.sublist, id, data)
+    return update(list, parentTrail, {
+        sublist: update(parentTrail[0].sublist, [item], data)
     })
 }
 
-export function remove(list, id) {
-    if (list.some(item => item.id === id))
-        return list.filter(item => item.id !== id)
+export function remove(list, trail) {
+    if (typeof trail === 'number') trail = getItemTrail(list, trail)
+    if (trail.length === 0) return list
+    if (trail.length === 1) return list.filter(item => item.id !== trail[0].id)
 
-    let item = getItem(list, id)
-    if (item == null) return list
+    let [item, ...parentTrail] = trail
 
-    return update(list, item.parent.id, {
-        sublist: remove(item.parent.sublist, id)
+    return update(list, parentTrail, {
+        sublist: remove(parentTrail[0].sublist, [item])
     })
 }
 
-export function insert(list, id1, op, id2) {
-    if (id1 === id2) return list
+export function move(list, trail1, op, trail2) {
+    if (typeof trail1 === 'number') trail1 = getItemTrail(list, trail1)
+    if (typeof trail2 === 'number') trail2 = getItemTrail(list, trail2)
+    if (trail1.length === 0 || trail2.length === 0 || trail1[0] === trail2[0]) return list
 
-    let item1 = ({
-        'true': () => ({
-            id: getNewId(list),
-            collapsed: false,
-            checked: false,
-            text: '',
-            ...id1
-        }),
-        [typeof id1 === 'number']: () => getItem(list, id1)
-    }).true()
-
-    let item2 = getItem(list, id2)
-    if (item2 == null) return list
-
-    let newList = remove(list, item1.id)
+    let [item1, ] = trail1
+    let [item2, ...parentTrail2] = trail2
+    let newList = remove(list, trail1)
 
     if (op === 'in') {
-        return update(newList, id2, {
+        return update(newList, trail2, {
             sublist: [...item2.sublist, item1]
         })
     } else if (op === 'after' || op === 'before') {
         let shift = op === 'after' ? 1 : 0
+        let item2Index = newList.indexOf(item2)
 
-        if (item2.parent == null) {
-            newList.splice(newList.indexOf(item2) + shift, 0, item1)
+        if (item2Index >= 0) {
+            newList.splice(item2Index + shift, 0, item1)
             return newList
         } else {
-            let newSublist = item2.parent.sublist.slice()
+            let newSublist = parentTrail2[0].sublist.slice()
             newSublist.splice(newSublist.indexOf(item2) + shift, 0, item1)
 
-            return update(newList, item2.parent.id, {
+            return update(newList, parentTrail2, {
                 sublist: newSublist
             })
         }
     }
 
     return list
+}
+
+export function append(list, data) {
+    return [...list, {
+        collapsed: false,
+        checked: false,
+        text: '',
+        ...data,
+        id: getNewId(list),
+        sublist: []
+    }]
+}
+
+export function insert(list, data, op, trail2) {
+    let trail1 = append(list, data).slice(-1)
+    return insert(list, trail1, op, trail2)
 }

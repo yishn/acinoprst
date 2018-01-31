@@ -9,11 +9,15 @@ let list = outline.parse([
     '- [ ] Hi'
 ].join('\n'))
 
+let newList = outline.insert((
+    outline.update(list, 3, {checked: false})
+), 3, 'in', 4)
+
 render(<div>
     <pre>
-        {outline.stringify(outline.update(list, 3, {checked: false}))}
+        {JSON.stringify(newList, null, '  ')}
     </pre>
     <pre>
-        {outline.stringify(list)}
+        {JSON.stringify(list, null, '  ')}
     </pre>
 </div>, document.body)
