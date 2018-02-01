@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
 import * as outline from '../outline'
 import * as doclist from '../doclist'
-import OutlineList from './OutlineList'
+import DocumentView from './DocumentView'
 
 export default class App extends Component {
     constructor() {
@@ -44,6 +44,6 @@ export default class App extends Component {
     render() {
         let doc = this.getCurrentDoc()
 
-        return <OutlineList list={doc.list}/>
+        return <DocumentView doc={doc}/>
     }
 }

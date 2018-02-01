@@ -26,6 +26,13 @@ export function parse(content) {
     })
 }
 
+export function hash(docs) {
+    return JSON.stringify(docs.map(({title, list}) => ({
+        title, 
+        hash: outline.hash(list)
+    })))
+}
+
 export function update(docs, index, doc) {
     let newDocs = [...docs]
     newDocs[index] = doc
