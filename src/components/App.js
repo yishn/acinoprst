@@ -1,13 +1,14 @@
 import {h, Component} from 'preact'
 import * as outline from '../outline'
 import * as doclist from '../doclist'
+import OutlineList from './OutlineList'
 
 export default class App extends Component {
     constructor() {
         super()
 
         this.state = {
-            currentIndex: -1,
+            currentIndex: 0,
             docs: doclist.append(
                 doclist.append([], 'Test', outline.parse([
                     '- [ ] Hello',
@@ -43,6 +44,6 @@ export default class App extends Component {
     render() {
         let doc = this.getCurrentDoc()
 
-        return <pre>{doclist.stringify(this.state.docs)}</pre>
+        return <OutlineList list={doc.list}/>
     }
 }
