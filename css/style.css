@@ -42,7 +42,12 @@ a, img {
 }
 
 .document-view-header {
-    padding: .5rem 1rem;
+        padding: .5rem 1rem;
+        background: #333;
+        color: #eee;
+    }
+    .document-view-header h1 {
+        font-size: 1rem;
 }
 
 /* ================================= */

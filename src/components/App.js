@@ -20,7 +20,8 @@ export default class App extends Component {
                     '    - [x] World',
                     '- [x] Hey',
                     '- [ ] What is up',
-                    '    - [ ] Boom'
+                    '    - [ ] Boom',
+                    '    - [ ] Second Boom'
                 ].join('\n')))
             )
         }

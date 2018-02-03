@@ -10,8 +10,6 @@ export default class OutlineList extends Component {
     }
 
     handleToggleCollapse = evt => {
-        evt.preventDefault()
-
         let {list, onChange = () => {}} = this.props
         let id = +evt.currentTarget.dataset.id
         let item = list.find(item => item.id === id)
@@ -37,7 +35,7 @@ export default class OutlineList extends Component {
                     })}
                 >
                     <div class="inner" style={{paddingLeft: `${level * 1.5 + 1}rem`}}>
-                        <a 
+                        <span 
                             data-id={id}
                             class="collapse" 
                             href="#" 
@@ -50,7 +48,7 @@ export default class OutlineList extends Component {
                                 src="./img/arrow.svg"
                                 alt={collapsed ? 'Collapsed' : 'Expanded'}
                             />
-                        </a>{' '}
+                        </span>{' '}
 
                         <span class="id">#{id}</span>{' '}
                         <span class="text">{checked ? <del>{text}</del> : text}</span>
