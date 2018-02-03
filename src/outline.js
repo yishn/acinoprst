@@ -62,6 +62,16 @@ export function getItemTrail(list, id) {
     return []
 }
 
+export function getDescendantTrails(list, trail) {
+    if (typeof trail === 'number') trail = getItemTrail(list, trail)
+    if (trail.length === 0) return []
+
+    let [item, ] = trail
+    let subtrails = getLinearItemTrails(item.sublist)
+
+    return subtrails.map(subtrail => [...subtrail, ...trail])
+}
+
 export function getLinearItemTrails(list, options = {}) {
     let {includeCollapsed = true} = options
     let result = []

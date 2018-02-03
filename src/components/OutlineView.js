@@ -57,8 +57,26 @@ export default class OutlineView extends Component {
     handleKeyDown = evt => {
         let {list, selectedIds, onChange = () => {}} = this.props
 
+        function selectCollapsed(selectedIds) {
+            let result = [...selectedIds]
+
+            for (let id of selectedIds) {
+                let trail = outline.getItemTrail(list, id)
+                if (trail.length === 0 || !trail[0].collapsed) continue
+
+                for (let subtrail of outline.getDescendantTrails(list, trail)) {
+                    if (subtrail.length === 0) continue
+                    result.push(subtrail[0].id)
+                }
+            }
+
+            return result
+        }
+
         if ([38, 40, 36, 35].includes(evt.keyCode)) {
             // Arrow Up/Down, Home, End
+            // Selection
+
             evt.preventDefault()
 
             let direction = [38, 36].includes(evt.keyCode) ? -1 : 1
@@ -87,6 +105,8 @@ export default class OutlineView extends Component {
             this.handleSelectionChange({selectedIds: newSelectedIds})
         } else if ([37, 39].includes(evt.keyCode)) {
             // Arrow Left/Right
+            // Toggle collapse items
+
             evt.preventDefault()
 
             let type = evt.keyCode === 37 ? -1 : 1
@@ -97,11 +117,17 @@ export default class OutlineView extends Component {
             onChange({list: newList})
         } else if (evt.keyCode === 88) {
             // x
+            // Toggle check items
+
             evt.preventDefault()
 
-            let selectedItemTrails = selectedIds.map(id => outline.getItemTrail(list, id))
-            let newList = selectedItemTrails.reduce((list, trail) => (
-                outline.update(list, trail, {checked: trail[0] && !trail[0].checked})
+            let firstSelectedItemElement = this.element.querySelector('.outline-item.selected')
+            if (firstSelectedItemElement == null || selectedIds.length === 0) return
+
+            let targetIds = selectCollapsed(selectedIds)
+            let checked = !firstSelectedItemElement.classList.contains('checked')
+            let newList = targetIds.reduce((list, id) => (
+                outline.update(list, id, {checked})
             ), list)
 
             onChange({list: newList})
