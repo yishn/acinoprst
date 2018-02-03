@@ -23,7 +23,7 @@ export default class App extends Component {
                     '- [x] Hey',
                     '- [ ] What is up',
                     '    - [ ] Boom',
-                    '    - [ ] Second Boom'
+                    '        - [ ] Second Boom'
                 ].join('\n')))
             ),
             selectedIds: [0]
@@ -35,7 +35,7 @@ export default class App extends Component {
         return docs[currentIndex]
     }
 
-    updateDoc = ({selectedIds, doc}) => {
+    updateDoc = ({doc}) => {
         let {docs, currentIndex} = this.state
 
         this.setState({

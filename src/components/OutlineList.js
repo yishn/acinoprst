@@ -17,6 +17,10 @@ export default class OutlineList extends Component {
         this.updateItem({id, data: {collapsed: !item.collapsed}})
     }
 
+    handleSublistChange = (id, {list}) => {
+        this.updateItem({id, data: {sublist: list}})
+    }
+
     render() {
         let {list, level, selectedIds} = this.props
 
@@ -59,6 +63,7 @@ export default class OutlineList extends Component {
                             list={sublist}
                             level={level + 1}
                             selectedIds={selectedIds}
+                            onChange={evt => this.handleSublistChange(id, evt)}
                         />
                     }
                 </li>
