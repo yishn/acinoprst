@@ -15,15 +15,13 @@ export default class App extends Component {
                     '    - [x] World',
                     '- [x] Hey',
                     '+ [ ] What is up',
-                    '    - [ ] Boom'
-                ].join('\n'))),
-                'Test2', outline.parse([
-                    '- [ ] Hello',
+                    '    - [ ] Boom',
+                    '+ [ ] Hello',
                     '    - [x] World',
                     '- [x] Hey',
-                    '+ [ ] What is up',
+                    '- [ ] What is up',
                     '    - [ ] Boom'
-                ].join('\n'))
+                ].join('\n')))
             )
         }
     }
@@ -31,6 +29,14 @@ export default class App extends Component {
     getCurrentDoc = () => {
         let {docs, currentIndex} = this.state
         return docs[currentIndex]
+    }
+
+    updateDoc = ({doc}) => {
+        let {docs, currentIndex} = this.state
+
+        this.setState({
+            docs: docs.map((x, i) => i === currentIndex ? doc : x)
+        })
     }
 
     updateDocs = ({docs}) => {
@@ -44,6 +50,10 @@ export default class App extends Component {
     render() {
         let doc = this.getCurrentDoc()
 
-        return <DocumentView doc={doc} selectedItem={0} />
+        return <DocumentView
+            doc={doc}
+            selectedIds={[0]}
+            onChange={this.updateDoc}
+        />
     }
 }

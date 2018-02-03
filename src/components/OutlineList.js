@@ -1,30 +1,54 @@
 import {h, Component} from 'preact'
 import classnames from 'classnames'
+import * as outline from '../outline'
 
 export default class OutlineList extends Component {
+    updateItem = ({id, data}) => {
+        let {list, onChange = () => {}} = this.props
+
+        onChange({list: outline.update(list, id, data)})
+    }
+
+    handleToggleCollapse = evt => {
+        evt.preventDefault()
+
+        let {list, onChange = () => {}} = this.props
+        let id = +evt.currentTarget.dataset.id
+        let item = list.find(item => item.id === id)
+
+        this.updateItem({id, data: {collapsed: !item.collapsed}})
+    }
+
     render() {
-        let {list, level, selectedId} = this.props
+        let {list, level, selectedIds} = this.props
 
         if (list.length === 0) return
 
         return <ul class="outline-list">
             {list.map(({id, collapsed, checked, text, sublist}) =>
                 <li
+                    key={id}
                     data-id={id}
                     class={classnames('outline-item', {
                         collapsed,
                         checked,
-                        selected: id === selectedId,
+                        selected: selectedIds.includes(id),
                         parent: sublist.length > 0
                     })}
                 >
                     <div class="inner" style={{paddingLeft: `${level * 1.5 + 1}rem`}}>
-                        <a class="collapse" href="#" title={collapsed ? 'Expand' : 'Collapse'}>
+                        <a 
+                            data-id={id}
+                            class="collapse" 
+                            href="#" 
+                            title={collapsed ? 'Expand' : 'Collapse'}
+                            onClick={this.handleToggleCollapse}
+                        >
                             <img
-                                width="16"
-                                height="16"
+                                width="12"
+                                height="12"
                                 src="./img/arrow.svg"
-                                alt={collapsed ? 'Expand' : 'Collapse'}
+                                alt={collapsed ? 'Collapsed' : 'Expanded'}
                             />
                         </a>{' '}
 
@@ -36,7 +60,7 @@ export default class OutlineList extends Component {
                         <OutlineList
                             list={sublist}
                             level={level + 1}
-                            selectedId={selectedId}
+                            selectedIds={selectedIds}
                         />
                     }
                 </li>
