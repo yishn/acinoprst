@@ -62,6 +62,22 @@ export function getItemTrail(list, id) {
     return []
 }
 
+export function getLinearItemTrails(list, options = {}) {
+    let {includeCollapsed = true} = options
+    let result = []
+
+    for (let item of list) {
+        result.push([item])
+
+        if (includeCollapsed || !item.collapsed) {
+            let linearItemTrails = getLinearItemTrails(item.sublist, options)
+            result.push(...linearItemTrails.map(trail => [...trail, item]))
+        }
+    }
+
+    return result
+}
+
 export function update(list, trail, data) {
     if (typeof trail === 'number') trail = getItemTrail(list, trail)
     if (trail.length === 0) return list

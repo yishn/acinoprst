@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 import classnames from 'classnames'
-import OutlineList from './OutlineList'
+import OutlineView from './OutlineView'
 
 class DocumentViewHeader extends Component {
     render() {
@@ -20,19 +20,18 @@ export default class DocumentView extends Component {
     }
 
     render() {
-        let {doc, selectedIds} = this.props
+        let {doc, selectedIds, onSelectionChange = () => {}} = this.props
 
         return <section class="document-view">
             <DocumentViewHeader doc={doc} />
 
-            <div class="list">
-                <OutlineList 
-                    list={doc.list}
-                    level={0}
-                    selectedIds={selectedIds}
-                    onChange={this.handleChange}
-                />
-            </div>
+            <OutlineView
+                list={doc.list}
+                selectedIds={selectedIds}
+
+                onChange={this.handleChange}
+                onSelectionChange={onSelectionChange}
+            />
         </section>
     }
 }

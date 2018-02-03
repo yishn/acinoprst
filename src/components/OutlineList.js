@@ -10,7 +10,7 @@ export default class OutlineList extends Component {
     }
 
     handleToggleCollapse = evt => {
-        let {list, onChange = () => {}} = this.props
+        let {list} = this.props
         let id = +evt.currentTarget.dataset.id
         let item = list.find(item => item.id === id)
 

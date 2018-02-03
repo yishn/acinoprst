@@ -7,6 +7,8 @@ export default class App extends Component {
     constructor() {
         super()
 
+        window.acinoprst = this
+
         this.state = {
             currentIndex: 0,
             docs: doclist.append(
@@ -23,7 +25,8 @@ export default class App extends Component {
                     '    - [ ] Boom',
                     '    - [ ] Second Boom'
                 ].join('\n')))
-            )
+            ),
+            selectedIds: [0]
         }
     }
 
@@ -32,7 +35,7 @@ export default class App extends Component {
         return docs[currentIndex]
     }
 
-    updateDoc = ({doc}) => {
+    updateDoc = ({selectedIds, doc}) => {
         let {docs, currentIndex} = this.state
 
         this.setState({
@@ -48,13 +51,19 @@ export default class App extends Component {
         this.setState({currentIndex})
     }
 
+    updateSelectedIds = ({selectedIds}) => {
+        this.setState({selectedIds})
+    }
+
     render() {
         let doc = this.getCurrentDoc()
 
         return <DocumentView
             doc={doc}
-            selectedIds={[0]}
+            selectedIds={this.state.selectedIds}
+
             onChange={this.updateDoc}
+            onSelectionChange={this.updateSelectedIds}
         />
     }
 }

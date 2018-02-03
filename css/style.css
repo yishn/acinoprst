@@ -26,19 +26,22 @@ a, img {
     cursor: default;
 }
 
+.focus-element {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
 /* ================================= */
 
 .document-view {
-        display: grid;
-        grid-template-rows: auto 1fr;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-    }
-    .document-view > .list {
-        overflow: auto;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 
 .document-view-header {
@@ -52,6 +55,11 @@ a, img {
 
 /* ================================= */
 
+.outline-view {
+    overflow: auto;
+    outline: none;
+}
+
 .outline-list {
     list-style: none;
 }
@@ -62,7 +70,7 @@ a, img {
         grid-column-gap: .5rem;
         padding: .2rem 1rem;
     }
-    .outline-item.selected > .inner {
+    .outline-view.focused .outline-item.selected > .inner {
         background: rgba(0, 0, 0, .1);
     }
     .outline-item > .inner .id {
