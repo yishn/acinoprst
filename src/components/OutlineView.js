@@ -151,6 +151,8 @@ export default class OutlineView extends Component {
                 list={list}
                 level={0}
                 selectedIds={selectedIds}
+                
+                onSelectionChange={this.handleSelectionChange}
                 onChange={onChange}
             />
         </section>
