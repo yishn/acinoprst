@@ -26,6 +26,28 @@ export default class OutlineView extends Component {
         this.setState({focused: false})
     }
 
+    handleItemClick = evt => {
+        let {ctrlKey, shiftKey} = evt.mouseEvent
+        let {list, selectedIds} = this.props
+        let newSelectedIds = []
+
+        if (shiftKey) {
+            let linearItemTrails = outline.getLinearItemTrails(list)
+            let selectedIndices = [evt.id, ...selectedIds]
+                .map(id => linearItemTrails.findIndex(([item]) => item.id === id))
+            let [minIndex, maxIndex] = selectedIndices.filter(x => x >= 0)
+                .reduce(([min, max], i) => [Math.min(i, min), Math.max(i, max)], [Infinity, -Infinity])
+
+            newSelectedIds = linearItemTrails.slice(minIndex, maxIndex + 1).map(([item]) => item.id)
+        } else if (ctrlKey) {
+            newSelectedIds = [evt.id, ...selectedIds]
+        } else {
+            newSelectedIds = [evt.id]
+        }
+
+        this.handleSelectionChange({selectedIds: newSelectedIds})
+    }
+
     handleSelectionChange = ({selectedIds}) => {
         let {list, onSelectionChange = () => {}} = this.props
         let newSelectedIds = []
@@ -136,7 +158,7 @@ export default class OutlineView extends Component {
 
     render() {
         let {focused} = this.state
-        let {list, selectedIds, onChange = () => {}} = this.props
+        let {list, selectedIds} = this.props
 
         return <section
             ref={el => this.element = el}
@@ -152,8 +174,8 @@ export default class OutlineView extends Component {
                 level={0}
                 selectedIds={selectedIds}
                 
-                onSelectionChange={this.handleSelectionChange}
-                onChange={onChange}
+                onItemClick={this.handleItemClick}
+                onChange={this.props.onChange}
             />
         </section>
     }

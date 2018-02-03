@@ -3,6 +3,16 @@ import classnames from 'classnames'
 import * as outline from '../outline'
 
 class OutlineItem extends Component {
+    handleClick = evt => {
+        let {id, onClick = () => {}} = this.props
+        onClick({id, mouseEvent: evt})
+    }
+
+    handleSubitemClick = evt => {
+        let {onClick = () => {}} = this.props
+        onClick(evt)
+    }
+
     handleToggleCollapse = () => {
         let {id, collapsed, onChange = () => {}} = this.props
         onChange({id: this.props.id, collapsed: !collapsed})
@@ -28,6 +38,7 @@ class OutlineItem extends Component {
             <div 
                 class="inner" 
                 style={{paddingLeft: `${level * 1.5 + 1}rem`}}
+                onClick={this.handleClick}
             >
                 <span 
                     data-id={id}
@@ -53,6 +64,7 @@ class OutlineItem extends Component {
                     level={level + 1}
                     selectedIds={selectedIds}
 
+                    onItemClick={this.handleSubitemClick}
                     onChange={this.handleSublistChange}
                 />
             }
@@ -83,6 +95,7 @@ export default class OutlineList extends Component {
                     text={text}
                     sublist={sublist}
 
+                    onClick={this.props.onItemClick}
                     onChange={this.updateItem}
                 />
             )}
