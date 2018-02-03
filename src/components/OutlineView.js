@@ -85,13 +85,23 @@ export default class OutlineView extends Component {
             }
 
             this.handleSelectionChange({selectedIds: newSelectedIds})
-        } else if (evt.keyCode === 37 || evt.keyCode === 39) {
+        } else if ([37, 39].includes(evt.keyCode)) {
             // Arrow Left/Right
             evt.preventDefault()
 
             let type = evt.keyCode === 37 ? -1 : 1
             let newList = selectedIds.reduce((list, id) => (
                 outline.update(list, id, {collapsed: type < 0})
+            ), list)
+
+            onChange({list: newList})
+        } else if (evt.keyCode === 88) {
+            // x
+            evt.preventDefault()
+
+            let selectedItemTrails = selectedIds.map(id => outline.getItemTrail(list, id))
+            let newList = selectedItemTrails.reduce((list, trail) => (
+                outline.update(list, trail, {checked: trail[0] && !trail[0].checked})
             ), list)
 
             onChange({list: newList})
