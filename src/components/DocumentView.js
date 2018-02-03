@@ -1,12 +1,27 @@
 import {h, Component} from 'preact'
+import classnames from 'classnames'
 import OutlineList from './OutlineList'
+
+class DocumentViewHeader extends Component {
+    render() {
+        let {doc, selected} = this.props
+
+        return <div class={classnames('document-view-header', {selected})}>
+            <h1>{doc.title}</h1>
+        </div>
+    }
+}
 
 export default class DocumentView extends Component {
     render() {
-        return <section class="document-view">
-            <h1 class="title">{this.props.doc.title}</h1>
+        let {doc, selectedItem} = this.props
 
-            <OutlineList list={this.props.doc.list}/>
+        return <section class="document-view">
+            <DocumentViewHeader doc={doc} selected={selectedItem === 'title'} />
+
+            <div class="list">
+                <OutlineList list={doc.list} level={0} selectedId={selectedItem} />
+            </div>
         </section>
     }
 }

@@ -44,6 +44,6 @@ export default class App extends Component {
     render() {
         let doc = this.getCurrentDoc()
 
-        return <DocumentView doc={doc}/>
+        return <DocumentView doc={doc} selectedItem={0} />
     }
 }

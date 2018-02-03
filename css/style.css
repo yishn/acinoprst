@@ -1,0 +1,86 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+input, textarea {
+    -ms-user-select: all;
+    -moz-user-select: all;
+    -webkit-user-select: all;
+    user-select: all;
+}
+
+body, html {
+    font: 100%/1.5 'Segoe UI', sans-serif;
+    height: 100%;
+}
+
+a, img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    cursor: default;
+}
+
+/* ================================= */
+
+.document-view {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+    .document-view > .list {
+        overflow: auto;
+}
+
+.document-view-header {
+    padding: .5rem 1rem;
+}
+
+/* ================================= */
+
+.outline-list {
+    list-style: none;
+}
+
+.outline-item > .inner {
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+        grid-column-gap: .5rem;
+        padding: .2rem 1rem;
+    }
+    .outline-item.selected > .inner {
+        background: rgba(0, 0, 0, .15);
+    }
+    .outline-item > .inner .id {
+        font-family: Consolas, monospace;
+        opacity: .7;
+    }
+    .outline-item.checked > .inner .text {
+        opacity: .5;
+    }
+    .outline-item > .inner .collapse {
+        position: relative;
+        width: 16px;
+    }
+    .outline-item:not(.parent) > .inner .collapse {
+        visibility: hidden;
+    }
+    .outline-item > .inner .collapse img {
+        display: block;
+        position: absolute;
+        top: 50%;
+        margin-top: -8px;
+        transition: transform .2s;
+    }
+    .outline-item.collapsed > .inner .collapse img {
+        transform: rotate(-90deg);
+    }
