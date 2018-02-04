@@ -9,17 +9,19 @@ export function stringify(list, level = 0) {
     }).join('\n')
 }
 
-export function parse(content) {
+export function parse(content, {ids = null} = {}) {
     function parseList(items, start = 0) {
         if (start >= items.length) return []
 
         let {indent} = items[start]
+        let parentIndent = start === 0 ? -1 : items[start - 1].indent
         let list = []
 
         for (let i = start; i < items.length; i++) {
-            if (items[i].indent < indent) break
+            if (items[i].indent <= parentIndent) break
             if (items[i].indent > indent) continue
 
+            indent = items[i].indent
             let hasSublist = i + 1 < items.length && items[i + 1].indent > indent
 
             let item = {...items[i]}
@@ -36,8 +38,8 @@ export function parse(content) {
     let items = content.split('\n')
         .map(line => line.match(/^(\s*)([+-])\s*\[(\s*[xX]?\s*)\](.*)$/))
         .filter(match => match != null)
-        .map(([, indent, bullet, x, text]) => ({
-            id: id++,
+        .map(([, indent, bullet, x, text], i) => ({
+            id: ids != null ? ids[i] : id++,
             indent: indent.length,
             collapsed: bullet === '+',
             checked: x.toLowerCase().includes('x'),
