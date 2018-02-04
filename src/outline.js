@@ -135,7 +135,7 @@ export function move(list, trail1, op, id2) {
     let [item2, ...parentTrail2] = trail2
 
     if (op === 'in') {
-        return update(newList, trail2, {
+        newList = update(newList, trail2, {
             sublist: [...item2.sublist, item1]
         })
     } else if (op === 'after' || op === 'before') {
@@ -144,18 +144,32 @@ export function move(list, trail1, op, id2) {
 
         if (item2Index >= 0) {
             newList.splice(item2Index + shift, 0, item1)
-            return newList
         } else {
             let newSublist = [...parentTrail2[0].sublist]
             newSublist.splice(newSublist.indexOf(item2) + shift, 0, item1)
 
-            return update(newList, parentTrail2, {
+            newList = update(newList, parentTrail2, {
                 sublist: newSublist
             })
         }
+    } else {
+        return list
     }
 
-    return list
+    return reveal(newList, item1.id)
+}
+
+export function reveal(list, trail) {
+    if (typeof trail === 'number') trail = getItemTrail(list, trail)
+
+    let [, ...parentTrail] = trail
+    if (parentTrail.length === 0) return list
+    if (parentTrail.length === 1) {
+        if (!parentTrail[0].collapsed) return list
+        return update(list, parentTrail[0].id, {collapsed: false})
+    }
+
+    return reveal(list, parentTrail)
 }
 
 export function append(list, data) {

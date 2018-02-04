@@ -56,28 +56,13 @@ export default class OutlineView extends Component {
 
     handleSelectionChange = ({selectedIds}) => {
         let {list, onSelectionChange = () => {}} = this.props
-        let newSelectedIds = []
 
-        // Normalize selectedIds
+        // Normalize
 
-        for (let id of selectedIds) {
-            let [item, ...parents] = outline.getItemTrail(list, id)
-            if (item == null) continue
-
-            let topCollapsedParent = parents.reverse().find(parent => parent.collapsed)
-            
-            if (!topCollapsedParent) {
-                newSelectedIds.push(id)
-            } else {
-                newSelectedIds.push(topCollapsedParent.id)
-            }
-        }
-
-        // Deduplicate
-
-        newSelectedIds = newSelectedIds
+        let newSelectedIds = [...selectedIds]
             .sort((x, y) => x - y)
             .filter((x, i, arr) => i === 0 || arr[i - 1] !== x)
+            .filter(id => outline.getItemTrail(list, id).length > 0)
 
         onSelectionChange({selectedIds: newSelectedIds})
     }
@@ -111,23 +96,22 @@ export default class OutlineView extends Component {
             if (this.state.appendSelectionType === 0) this.setState({appendSelectionType: direction})
 
             let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
-            let newSelectedIds = []
-
-            selectedIds = linearItemTrails
+            let orderedSelectedIds = linearItemTrails
                 .filter(([item]) => selectedIds.includes(item.id))
                 .map(([item]) => item.id)
+            let newSelectedIds = []
             
-            let noneSelected = selectedIds.length === 0
+            let noneSelected = orderedSelectedIds.length === 0
 
             if ([36, 35].includes(evt.keyCode) || noneSelected) {
                 let [edgeItem] = linearItemTrails[direction < 0 || noneSelected ? 0 : linearItemTrails.length - 1]
 
                 if (evt.shiftKey && !noneSelected) {
-                    let selectedEdgeId = selectedIds[direction < 0 ? 0 : selectedIds.length - 1]
+                    let selectedEdgeId = orderedSelectedIds[direction < 0 ? 0 : orderedSelectedIds.length - 1]
                     newSelectedIds = outline.getIdsBetween(list, [edgeItem.id, selectedEdgeId])
 
                     if (direction === this.state.appendSelectionType) {
-                        newSelectedIds.push(...selectedIds.filter(id => id !== selectedEdgeId))
+                        newSelectedIds.push(...orderedSelectedIds.filter(id => id !== selectedEdgeId))
                     } else {
                         this.setState({appendSelectionType: direction})
                     }
@@ -136,16 +120,16 @@ export default class OutlineView extends Component {
                 }
             } else {
                 if (!evt.shiftKey || direction === this.state.appendSelectionType) {
-                    let edgeSelectedId = selectedIds[direction < 0 ? 0 : selectedIds.length - 1]
-                    let index = linearItemTrails.findIndex(([item]) => item.id === edgeSelectedId)
+                    let selectedEdgeId = orderedSelectedIds[direction < 0 ? 0 : orderedSelectedIds.length - 1]
+                    let index = linearItemTrails.findIndex(([item]) => item.id === selectedEdgeId)
                     let newIndex = Math.max(0, Math.min(linearItemTrails.length - 1, index + direction))
                     let newId = linearItemTrails[newIndex][0].id
                     
                     newSelectedIds = [newId]
-                    if (evt.shiftKey) newSelectedIds.push(...selectedIds)
+                    if (evt.shiftKey) newSelectedIds.push(...orderedSelectedIds)
                 } else {
-                    let selectedEdgeId = selectedIds[direction > 0 ? 0 : selectedIds.length - 1]
-                    newSelectedIds = [...selectedIds].filter(id => id !== selectedEdgeId)
+                    let selectedEdgeId = orderedSelectedIds[direction > 0 ? 0 : orderedSelectedIds.length - 1]
+                    newSelectedIds = [...orderedSelectedIds].filter(id => id !== selectedEdgeId)
                 }
             }
 
@@ -169,7 +153,7 @@ export default class OutlineView extends Component {
             evt.preventDefault()
 
             let targetIds = selectCollapsed(selectedIds)
-            let linearItemTrails = outline.getLinearItemTrails(list)
+            let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
             let newSelectedIndex = linearItemTrails.findIndex(([item]) => targetIds.includes(item.id)) - 1
             if (newSelectedIndex < 0)
                 newSelectedIndex = linearItemTrails.findIndex(([item]) => !targetIds.includes(item.id))
@@ -198,8 +182,8 @@ export default class OutlineView extends Component {
                 return outline.remove(list, id)
             }, list)
             
-            this.handleSelectionChange({selectedIds: newSelectedIds})
             onChange({list: newList})
+            this.handleSelectionChange({selectedIds: newSelectedIds})
         } else if (evt.keyCode === 9) {
             // Tab
             // Indent/Unindent items
@@ -264,7 +248,7 @@ export default class OutlineView extends Component {
         return <section
             ref={el => this.element = el}
             class={classnames('outline-view', {focused})}
-            tabIndex="0"
+            tabIndex={0}
 
             onFocus={this.gotFocus}
             onBlur={this.lostFocus}
