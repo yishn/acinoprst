@@ -162,6 +162,43 @@ export default class OutlineView extends Component {
             ), list)
 
             onChange({list: newList})
+        } else if (evt.keyCode === 9) {
+            // Tab
+            // Indent/Unindent items
+
+            evt.preventDefault()
+
+            let targetIds = selectCollapsed(selectedIds)
+            if (evt.shiftKey) targetIds.reverse()
+
+            let newList = targetIds.reduce((list, id) => {
+                let [item, parent, ] = outline.getItemTrail(list, id)
+                
+                if (!evt.shiftKey) {
+                    let parentList = parent != null ? parent.sublist : list
+                    let index = parentList.indexOf(item)
+                    if (index <= 0) return list
+
+                    let targetId = parentList[index - 1].id
+                    let subitemIds = item.sublist.map(x => x.id)
+
+                    return subitemIds.reverse().reduce((list, subId) => (
+                        outline.move(list, subId, 'after', id)
+                    ), outline.move(list, id, 'in', targetId))
+                } else {
+                    if (parent == null) return list
+                    let index = parent.sublist.indexOf(item)
+                    let newSubitemIds = parent.sublist.slice(index + 1).map(x => x.id)
+
+                    list = newSubitemIds.reduce((list, subId) => (
+                        outline.move(list, subId, 'in', id)
+                    ), list)
+
+                    return outline.move(list, id, 'after', parent.id)
+                }
+            }, list)
+
+            onChange({list: newList})
         } else if (evt.keyCode === 88) {
             // x
             // Toggle check items
@@ -184,11 +221,12 @@ export default class OutlineView extends Component {
     render() {
         let {focused} = this.state
         let {list, selectedIds} = this.props
+        let showCollapse = list.some(item => item.sublist.length > 0)
 
         return <section
             ref={el => this.element = el}
             class={classnames('outline-view', {focused})}
-            tabindex="0"
+            tabIndex="0"
 
             onFocus={this.gotFocus}
             onBlur={this.lostFocus}
@@ -197,6 +235,7 @@ export default class OutlineView extends Component {
             <OutlineList
                 list={list}
                 level={0}
+                showCollapse={showCollapse}
                 selectedIds={selectedIds}
 
                 onItemClick={this.handleItemClick}

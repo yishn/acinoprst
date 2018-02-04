@@ -122,14 +122,17 @@ export function remove(list, trail) {
     })
 }
 
-export function move(list, trail1, op, trail2) {
+export function move(list, trail1, op, id2) {
     if (typeof trail1 === 'number') trail1 = getItemTrail(list, trail1)
-    if (typeof trail2 === 'number') trail2 = getItemTrail(list, trail2)
-    if (trail1.length === 0 || trail2.length === 0 || trail1[0] === trail2[0]) return list
+
+    let newList = remove(list, trail1)
+    if (newList === list) return list
+
+    let trail2 = getItemTrail(newList, id2)
+    if (trail1.length === 0 || trail2.length === 0 || trail1[0].id === trail2[0].id) return list
 
     let [item1, ] = trail1
     let [item2, ...parentTrail2] = trail2
-    let newList = remove(list, trail1)
 
     if (op === 'in') {
         return update(newList, trail2, {

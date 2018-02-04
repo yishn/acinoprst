@@ -66,9 +66,12 @@ a, img {
 
 .outline-item > .inner {
         display: grid;
-        grid-template-columns: auto auto 1fr;
+        grid-template-columns: auto 1fr;
         grid-column-gap: .5rem;
         padding: .2rem 1rem;
+    }
+    .outline-item.showcollapse > .inner {
+        grid-template-columns: auto auto 1fr;
     }
     .outline-view.focused .outline-item.selected > .inner {
         background: rgba(0, 0, 0, .1);

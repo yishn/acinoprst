@@ -24,12 +24,13 @@ class OutlineItem extends Component {
     }
 
     render() {
-        let {level, selectedIds, id, collapsed, checked, sublist, text} = this.props
+        let {level, showCollapse, selectedIds, id, collapsed, checked, sublist, text} = this.props
 
         return <li
             data-id={id}
             class={classnames('outline-item', {
                 collapsed,
+                showcollapse: showCollapse,
                 checked,
                 selected: selectedIds.includes(id),
                 parent: sublist.length > 0
@@ -40,19 +41,21 @@ class OutlineItem extends Component {
                 style={{paddingLeft: `${level * 1.5 + 1}rem`}}
                 onClick={this.handleClick}
             >
-                <span 
-                    data-id={id}
-                    class="collapse"
-                    title={collapsed ? 'Expand' : 'Collapse'}
-                    onClick={this.handleToggleCollapse}
-                >
-                    <img
-                        width="12"
-                        height="12"
-                        src="./img/arrow.svg"
-                        alt={collapsed ? 'Collapsed' : 'Expanded'}
-                    />
-                </span>{' '}
+                {showCollapse &&
+                    <span 
+                        data-id={id}
+                        class="collapse"
+                        title={collapsed ? 'Expand' : 'Collapse'}
+                        onClick={this.handleToggleCollapse}
+                    >
+                        <img
+                            width="12"
+                            height="12"
+                            src="./img/arrow.svg"
+                            alt={collapsed ? 'Collapsed' : 'Expanded'}
+                        />
+                    </span>
+                }{' '}
 
                 <span class="id">#{id}</span>{' '}
                 <span class="text">{checked ? <del>{text}</del> : text}</span>
@@ -62,6 +65,7 @@ class OutlineItem extends Component {
                 <OutlineList
                     list={sublist}
                     level={level + 1}
+                    showCollapse={true}
                     selectedIds={selectedIds}
 
                     onItemClick={this.handleSubitemClick}
@@ -79,7 +83,7 @@ export default class OutlineList extends Component {
     }
 
     render() {
-        let {list, level, selectedIds} = this.props
+        let {list, level, showCollapse, selectedIds} = this.props
 
         if (list.length === 0) return
 
@@ -88,6 +92,7 @@ export default class OutlineList extends Component {
                 <OutlineItem
                     key={id}
                     level={level}
+                    showCollapse={showCollapse}
                     selectedIds={selectedIds}
                     id={id}
                     collapsed={collapsed}
