@@ -166,28 +166,13 @@ export default class OutlineView extends Component {
                 newSelectedIndex = linearItemTrails.findIndex(([item]) => !targetIds.includes(item.id))
             let newSelectedIds = newSelectedIndex < 0 ? [] : [linearItemTrails[newSelectedIndex][0].id]
 
-            let newList = targetIds.reverse().reduce((list, id) => {
-                let [item, parent, ] = outline.getItemTrail(list, id)
-                let parentList = parent != null ? parent.sublist : list
-                let index = parentList.indexOf(item)
-                if (index < 0) return list
-
-                let subitemIds = item.sublist.map(x => x.id)
-
-                if (index === 0) {
-                    list = subitemIds.reverse().reduce((list, subId) => (
-                        outline.move(list, subId, 'before', id)
-                    ), list)
-                } else {
-                    let targetId = parentList[index - 1].id
-
-                    list = subitemIds.reduce((list, subId) => (
-                        outline.move(list, subId, 'in', targetId)
-                    ), list)
-                }
-                
-                return outline.remove(list, id)
-            }, list)
+            let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
+            let lines = outline.stringify(list).split('\n')
+            let targetIndices = targetIds.map(id => linearIds.indexOf(id))
+            let newLines = lines.map((x, i) => !targetIndices.includes(i) ? x : null).filter(x => x != null)
+            let newList = outline.parse(newLines.join('\n'), {
+                ids: linearIds.filter(id => !targetIds.includes(id))
+            })
             
             onChange({list: newList})
             this.handleSelectionChange({selectedIds: newSelectedIds})
@@ -198,34 +183,21 @@ export default class OutlineView extends Component {
             evt.preventDefault()
 
             let targetIds = selectCollapsed(selectedIds)
-            if (evt.shiftKey) targetIds.reverse()
+            let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
+            let lines = outline.stringify(list).split('\n')
+            let targetIndices = targetIds.map(id => linearIds.indexOf(id))
 
-            let newList = targetIds.reduce((list, id) => {
-                let [item, parent, ] = outline.getItemTrail(list, id)
-                
+            let newLines = lines.map((x, i) => {
+                if (!targetIndices.includes(i)) return x
+
                 if (!evt.shiftKey) {
-                    let parentList = parent != null ? parent.sublist : list
-                    let index = parentList.indexOf(item)
-                    if (index <= 0) return list
-
-                    let targetId = parentList[index - 1].id
-                    let subitemIds = item.sublist.map(x => x.id)
-
-                    return subitemIds.reverse().reduce((list, subId) => (
-                        outline.move(list, subId, 'after', id)
-                    ), outline.move(list, id, 'in', targetId))
+                    return ' '.repeat(4) + x
                 } else {
-                    if (parent == null) return list
-                    let index = parent.sublist.indexOf(item)
-                    let newSubitemIds = parent.sublist.slice(index + 1).map(x => x.id)
-
-                    list = newSubitemIds.reduce((list, subId) => (
-                        outline.move(list, subId, 'in', id)
-                    ), list)
-
-                    return outline.move(list, id, 'after', parent.id)
+                    return x.replace(/^ {4}/, '')
                 }
-            }, list)
+            })
+
+            let newList = outline.parse(newLines.join('\n'), {ids: linearIds})
 
             onChange({list: newList})
         } else if (evt.keyCode === 88) {
