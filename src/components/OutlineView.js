@@ -86,7 +86,7 @@ export default class OutlineView extends Component {
             return result
         }
 
-        if ([38, 40, 36, 35].includes(evt.keyCode)) {
+        if ([38, 40, 36, 35].includes(evt.keyCode) && !evt.ctrlKey) {
             // Arrow Up/Down, Home, End
             // Selection
 
@@ -96,11 +96,13 @@ export default class OutlineView extends Component {
             if (this.state.appendSelectionType === 0) this.setState({appendSelectionType: direction})
 
             let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
+            if (linearItemTrails.length === 0) return
+
             let orderedSelectedIds = linearItemTrails
                 .filter(([item]) => selectedIds.includes(item.id))
                 .map(([item]) => item.id)
             let newSelectedIds = []
-            
+
             let noneSelected = orderedSelectedIds.length === 0
 
             if ([36, 35].includes(evt.keyCode) || noneSelected) {
@@ -134,6 +136,11 @@ export default class OutlineView extends Component {
             }
 
             this.handleSelectionChange({selectedIds: newSelectedIds})
+        } else if ([38, 40].includes(evt.keyCode) && evt.ctrlKey) {
+            // Arrow Up/Down
+            // Moving items
+
+            evt.preventDefault()
         } else if ([37, 39].includes(evt.keyCode)) {
             // Arrow Left/Right
             // Toggle collapse items
@@ -184,7 +191,7 @@ export default class OutlineView extends Component {
             
             onChange({list: newList})
             this.handleSelectionChange({selectedIds: newSelectedIds})
-        } else if (evt.keyCode === 9) {
+        } else if (evt.keyCode === 9 && !evt.ctrlKey) {
             // Tab
             // Indent/Unindent items
 
