@@ -65,7 +65,7 @@ class OutlineItem extends Component {
                 <OutlineList
                     list={sublist}
                     level={level + 1}
-                    showCollapse={true}
+                    showCollapse={showCollapse}
                     selectedIds={selectedIds}
 
                     onItemClick={this.handleSubitemClick}

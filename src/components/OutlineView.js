@@ -162,6 +162,44 @@ export default class OutlineView extends Component {
             ), list)
 
             onChange({list: newList})
+        } else if (evt.keyCode === 46) {
+            // Del
+            // Remove item
+
+            evt.preventDefault()
+
+            let targetIds = selectCollapsed(selectedIds)
+            let linearItemTrails = outline.getLinearItemTrails(list)
+            let newSelectedIndex = linearItemTrails.findIndex(([item]) => targetIds.includes(item.id)) - 1
+            if (newSelectedIndex < 0)
+                newSelectedIndex = linearItemTrails.findIndex(([item]) => !targetIds.includes(item.id))
+            let newSelectedIds = newSelectedIndex < 0 ? [] : [linearItemTrails[newSelectedIndex][0].id]
+
+            let newList = targetIds.reverse().reduce((list, id) => {
+                let [item, parent, ] = outline.getItemTrail(list, id)
+                let parentList = parent != null ? parent.sublist : list
+                let index = parentList.indexOf(item)
+                if (index < 0) return list
+
+                let subitemIds = item.sublist.map(x => x.id)
+
+                if (index === 0) {
+                    list = subitemIds.reverse().reduce((list, subId) => (
+                        outline.move(list, subId, 'before', id)
+                    ), list)
+                } else {
+                    let targetId = parentList[index - 1].id
+
+                    list = subitemIds.reduce((list, subId) => (
+                        outline.move(list, subId, 'in', targetId)
+                    ), list)
+                }
+                
+                return outline.remove(list, id)
+            }, list)
+            
+            this.handleSelectionChange({selectedIds: newSelectedIds})
+            onChange({list: newList})
         } else if (evt.keyCode === 9) {
             // Tab
             // Indent/Unindent items
