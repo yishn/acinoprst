@@ -166,12 +166,8 @@ export function reveal(list, trail) {
 
     let [, ...parentTrail] = trail
     if (parentTrail.length === 0) return list
-    if (parentTrail.length === 1) {
-        if (!parentTrail[0].collapsed) return list
-        return update(list, parentTrail[0].id, {collapsed: false})
-    }
 
-    return reveal(list, parentTrail)
+    return reveal(update(list, parentTrail[0].id, {collapsed: false}), parentTrail[0].id)
 }
 
 export function append(list, data) {

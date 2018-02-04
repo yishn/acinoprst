@@ -161,11 +161,12 @@ export default class OutlineView extends Component {
             let newLinearIds = permutation.map(i => linearIds[i])
             let newList = outline.parse(newLines.join('\n'), {ids: newLinearIds})
 
-            newList = selectedIds.reduce((list, id) => (
+            newList = targetIds.reduce((list, id) => (
                 outline.reveal(list, id)
             ), newList)
             
             onChange({list: newList})
+            this.handleSelectionChange({selectedIds: targetIds})
         } else if ([37, 39].includes(evt.keyCode)) {
             // Arrow Left/Right
             // Toggle collapse items
@@ -223,6 +224,10 @@ export default class OutlineView extends Component {
             })
 
             let newList = outline.parse(newLines.join('\n'), {ids: linearIds})
+
+            newList = selectedIds.reduce((list, id) => (
+                outline.reveal(list, id)
+            ), newList)
 
             onChange({list: newList})
         } else if (evt.keyCode === 88) {
