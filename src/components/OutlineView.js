@@ -141,6 +141,31 @@ export default class OutlineView extends Component {
             // Moving items
 
             evt.preventDefault()
+
+            let direction = evt.keyCode === 38 ? -1 : 1
+            let targetIds = selectCollapsed(selectedIds)
+            let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
+            let lines = outline.stringify(list).split('\n')
+            let targetIndices = targetIds.map(id => linearIds.indexOf(id))
+            let newTargetIndices = targetIndices.map(i => i + direction)
+            if (newTargetIndices.some(i => i < 0 || i >= lines.length)) return
+
+            let remainingIndices = newTargetIndices.filter(i => !targetIndices.includes(i))
+            let permutation = lines.map((_, i) => 
+                newTargetIndices.includes(i) ? i - direction
+                : targetIndices.includes(i) ? remainingIndices.shift()
+                : i
+            )
+
+            let newLines = permutation.map(i => lines[i])
+            let newLinearIds = permutation.map(i => linearIds[i])
+            let newList = outline.parse(newLines.join('\n'), {ids: newLinearIds})
+
+            newList = selectedIds.reduce((list, id) => (
+                outline.reveal(list, id)
+            ), newList)
+            
+            onChange({list: newList})
         } else if ([37, 39].includes(evt.keyCode)) {
             // Arrow Left/Right
             // Toggle collapse items
