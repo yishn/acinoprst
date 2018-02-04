@@ -22,7 +22,8 @@
   "homepage": "https://github.com/yishn/acinoprst#readme",
   "dependencies": {
     "classnames": "^2.2.5",
-    "preact": "^8.2.7"
+    "preact": "^8.2.7",
+    "scroll-into-view-if-needed": "^1.4.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

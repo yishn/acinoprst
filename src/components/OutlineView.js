@@ -1,5 +1,6 @@
 import {h, Component} from 'preact'
 import classnames from 'classnames'
+import scrollIntoView from 'scroll-into-view-if-needed'
 import * as outline from '../outline'
 import OutlineList from './OutlineList'
 
@@ -20,8 +21,17 @@ export default class OutlineView extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.list !== this.props.list) {
-            this.handleSelectionChange({selectedIds: this.props.selectedIds})
+        let {list, selectedIds} = this.props
+
+        if (prevProps.list !== list) {
+            this.handleSelectionChange({selectedIds: selectedIds})
+        } else {
+            if (JSON.stringify(prevProps.selectedIds) !== JSON.stringify(selectedIds)) {
+                let edgeSelectedId = selectedIds[this.state.appendSelectionType > 0 ? selectedIds.length - 1 : 0]
+                let element = this.element.querySelector(`.outline-item[data-id="${edgeSelectedId}"]`)
+
+                if (element != null) scrollIntoView(element, {duration: 200})
+            }
         }
     }
 
