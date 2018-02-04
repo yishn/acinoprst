@@ -20,7 +20,7 @@ export default class DocumentView extends Component {
     }
 
     render() {
-        let {doc, selectedIds, onSelectionChange = () => {}} = this.props
+        let {doc, selectedIds} = this.props
 
         return <section class="document-view">
             <DocumentViewHeader doc={doc} />
@@ -30,7 +30,7 @@ export default class DocumentView extends Component {
                 selectedIds={selectedIds}
 
                 onChange={this.handleChange}
-                onSelectionChange={onSelectionChange}
+                onSelectionChange={this.props.onSelectionChange}
             />
         </section>
     }

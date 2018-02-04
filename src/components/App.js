@@ -7,8 +7,6 @@ export default class App extends Component {
     constructor() {
         super()
 
-        window.acinoprst = this
-
         this.state = {
             currentIndex: 0,
             docs: doclist.append(
@@ -35,24 +33,12 @@ export default class App extends Component {
         return docs[currentIndex]
     }
 
+    updateDocs = ({docs}) => this.setState({docs})
+    updateCurrentIndex = ({currentIndex}) => this.setState({currentIndex})
+    updateSelectedIds = ({selectedIds}) => this.setState({selectedIds})
     updateDoc = ({doc}) => {
         let {docs, currentIndex} = this.state
-
-        this.setState({
-            docs: docs.map((x, i) => i === currentIndex ? doc : x)
-        })
-    }
-
-    updateDocs = ({docs}) => {
-        this.setState({docs})
-    }
-
-    updateCurrentIndex = ({currentIndex}) => {
-        this.setState({currentIndex})
-    }
-
-    updateSelectedIds = ({selectedIds}) => {
-        this.setState({selectedIds})
+        this.updateDocs({docs: docs.map((x, i) => i === currentIndex ? doc : x)})
     }
 
     render() {

@@ -8,7 +8,14 @@ export default class OutlineView extends Component {
         super(props)
 
         this.state = {
-            focused: false
+            focused: false,
+            appendSelectionType: 0
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.selectedIds.length <= 1) {
+            this.setState({appendSelectionType: 0})
         }
     }
 
@@ -18,13 +25,8 @@ export default class OutlineView extends Component {
         }
     }
 
-    gotFocus = () => {
-        this.setState({focused: true})
-    }
-
-    lostFocus = () => {
-        this.setState({focused: false})
-    }
+    gotFocus = () => this.setState({focused: true})
+    lostFocus = () => this.setState({focused: false})
 
     handleItemClick = evt => {
         let {ctrlKey, shiftKey} = evt.mouseEvent
@@ -32,13 +34,7 @@ export default class OutlineView extends Component {
         let newSelectedIds = []
 
         if (shiftKey) {
-            let linearItemTrails = outline.getLinearItemTrails(list)
-            let selectedIndices = [evt.id, ...selectedIds]
-                .map(id => linearItemTrails.findIndex(([item]) => item.id === id))
-            let [minIndex, maxIndex] = selectedIndices.filter(x => x >= 0)
-                .reduce(([min, max], i) => [Math.min(i, min), Math.max(i, max)], [Infinity, -Infinity])
-
-            newSelectedIds = linearItemTrails.slice(minIndex, maxIndex + 1).map(([item]) => item.id)
+            newSelectedIds = outline.getIdsBetween(list, [evt.id, ...selectedIds])
         } else if (ctrlKey) {
             newSelectedIds = [evt.id, ...selectedIds]
         } else {
@@ -102,26 +98,45 @@ export default class OutlineView extends Component {
             evt.preventDefault()
 
             let direction = [38, 36].includes(evt.keyCode) ? -1 : 1
-            let newSelectedIds = []
-            let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
-            let noneSelected = selectedIds.length === 0
+            if (this.state.appendSelectionType === 0) this.setState({appendSelectionType: direction})
 
-            if (linearItemTrails.length === 0) return
+            let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
+            let newSelectedIds = []
+
+            selectedIds = linearItemTrails
+                .filter(([item]) => selectedIds.includes(item.id))
+                .map(([item]) => item.id)
+            
+            let noneSelected = selectedIds.length === 0
 
             if ([36, 35].includes(evt.keyCode) || noneSelected) {
                 let [edgeItem] = linearItemTrails[direction < 0 || noneSelected ? 0 : linearItemTrails.length - 1]
 
-                newSelectedIds = [edgeItem.id]
-            } else {
-                selectedIds = linearItemTrails
-                    .filter(([item]) => selectedIds.includes(item.id))
-                    .map(([item]) => item.id)
+                if (evt.shiftKey && !noneSelected) {
+                    let selectedEdgeId = selectedIds[direction < 0 ? 0 : selectedIds.length - 1]
+                    newSelectedIds = outline.getIdsBetween(list, [edgeItem.id, selectedEdgeId])
 
-                let edgeSelectedId = selectedIds[direction < 0 ? 0 : selectedIds.length - 1]
-                let index = linearItemTrails.findIndex(([item]) => item.id === edgeSelectedId)
-                let newIndex = Math.max(0, Math.min(linearItemTrails.length - 1, index + direction))
-                
-                newSelectedIds = [linearItemTrails[newIndex][0].id]
+                    if (direction === this.state.appendSelectionType) {
+                        newSelectedIds.push(...selectedIds.filter(id => id !== selectedEdgeId))
+                    } else {
+                        this.setState({appendSelectionType: direction})
+                    }
+                } else {
+                    newSelectedIds = [edgeItem.id]
+                }
+            } else {
+                if (!evt.shiftKey || direction === this.state.appendSelectionType) {
+                    let edgeSelectedId = selectedIds[direction < 0 ? 0 : selectedIds.length - 1]
+                    let index = linearItemTrails.findIndex(([item]) => item.id === edgeSelectedId)
+                    let newIndex = Math.max(0, Math.min(linearItemTrails.length - 1, index + direction))
+                    let newId = linearItemTrails[newIndex][0].id
+                    
+                    newSelectedIds = [newId]
+                    if (evt.shiftKey) newSelectedIds.push(...selectedIds)
+                } else {
+                    let selectedEdgeId = selectedIds[direction > 0 ? 0 : selectedIds.length - 1]
+                    newSelectedIds = [...selectedIds].filter(id => id !== selectedEdgeId)
+                }
             }
 
             this.handleSelectionChange({selectedIds: newSelectedIds})
@@ -169,11 +184,11 @@ export default class OutlineView extends Component {
             onBlur={this.lostFocus}
             onKeyDown={this.handleKeyDown}
         >
-            <OutlineList 
+            <OutlineList
                 list={list}
                 level={0}
                 selectedIds={selectedIds}
-                
+
                 onItemClick={this.handleItemClick}
                 onChange={this.props.onChange}
             />

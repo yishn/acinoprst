@@ -88,6 +88,16 @@ export function getLinearItemTrails(list, options = {}) {
     return result
 }
 
+export function getIdsBetween(list, ids) {
+    let linearItemTrails = getLinearItemTrails(list)
+    let indices = ids.map(id => linearItemTrails.findIndex(([item]) => item.id === id))
+    let [min, max] = indices
+        .filter(x => x >= 0)
+        .reduce(([min, max], i) => [Math.min(i, min), Math.max(i, max)], [Infinity, -Infinity])
+
+    return linearItemTrails.slice(min, max + 1).map(([item]) => item.id)
+}
+
 export function update(list, trail, data) {
     if (typeof trail === 'number') trail = getItemTrail(list, trail)
     if (trail.length === 0) return list
