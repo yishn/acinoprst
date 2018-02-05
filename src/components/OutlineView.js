@@ -4,6 +4,9 @@ import scrollIntoView from 'scroll-into-view-if-needed'
 import * as outline from '../outline'
 import OutlineList from './OutlineList'
 
+const dedupe = arr => arr.sort((x, y) => x - y)
+    .filter((x, i, arr) => i === 0 || arr[i - 1] !== x)
+
 export default class OutlineView extends Component {
     constructor(props) {
         super(props)
@@ -59,9 +62,7 @@ export default class OutlineView extends Component {
 
         // Normalize
 
-        let newSelectedIds = [...selectedIds]
-            .sort((x, y) => x - y)
-            .filter((x, i, arr) => i === 0 || arr[i - 1] !== x)
+        let newSelectedIds = dedupe([...selectedIds])
             .filter(id => outline.getItemTrail(list, id).length > 0)
 
         onSelectionChange({selectedIds: newSelectedIds})
@@ -126,7 +127,7 @@ export default class OutlineView extends Component {
                     let index = linearItemTrails.findIndex(([item]) => item.id === selectedEdgeId)
                     let newIndex = Math.max(0, Math.min(linearItemTrails.length - 1, index + direction))
                     let newId = linearItemTrails[newIndex][0].id
-                    
+
                     newSelectedIds = [newId]
                     if (evt.shiftKey) newSelectedIds.push(...orderedSelectedIds)
                 } else {
@@ -151,7 +152,8 @@ export default class OutlineView extends Component {
             if (newTargetIndices.some(i => i < 0 || i >= lines.length)) return
 
             let remainingIndices = newTargetIndices.filter(i => !targetIndices.includes(i))
-            let permutation = lines.map((_, i) => 
+            let revealIds = dedupe([...targetIds, ...remainingIndices.map(i => linearIds[i])])
+            let permutation = lines.map((_, i) =>
                 newTargetIndices.includes(i) ? i - direction
                 : targetIndices.includes(i) ? remainingIndices.shift()
                 : i
@@ -161,10 +163,10 @@ export default class OutlineView extends Component {
             let newLinearIds = permutation.map(i => linearIds[i])
             let newList = outline.parse(newLines.join('\n'), {ids: newLinearIds})
 
-            newList = targetIds.reduce((list, id) => (
+            newList = revealIds.reduce((list, id) => (
                 outline.reveal(list, id)
             ), newList)
-            
+
             onChange({list: newList})
             this.handleSelectionChange({selectedIds: targetIds})
         } else if ([37, 39].includes(evt.keyCode)) {
@@ -199,7 +201,7 @@ export default class OutlineView extends Component {
             let newList = outline.parse(newLines.join('\n'), {
                 ids: linearIds.filter(id => !targetIds.includes(id))
             })
-            
+
             onChange({list: newList})
             this.handleSelectionChange({selectedIds: newSelectedIds})
         } else if (evt.keyCode === 9 && !evt.ctrlKey) {
