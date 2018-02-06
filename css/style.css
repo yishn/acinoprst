@@ -9,10 +9,11 @@
 }
 
 input, textarea {
-    -ms-user-select: all;
-    -moz-user-select: all;
-    -webkit-user-select: all;
-    user-select: all;
+    -ms-user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+    user-select: text;
+    font: inherit;
 }
 
 body, html {
@@ -73,15 +74,36 @@ a, img {
     .outline-item.showcollapse > .inner {
         grid-template-columns: auto auto 1fr;
     }
-    .outline-view.focused .outline-item.selected > .inner {
+    .outline-view.focused .outline-item.selected > .inner,
+    .outline-view .outline-item.edit > .inner {
         background: rgba(0, 0, 0, .1);
     }
     .outline-item > .inner .id {
         font-family: Consolas, monospace;
         opacity: .7;
     }
-    .outline-item.checked > .inner .text {
+    .outline-item > .inner .text {
+        white-space: pre-wrap;
+    }
+    .outline-item.checked > .inner .text,
+    .outline-item.checked > .inner .input {
         opacity: .5;
+    }
+    .outline-item.edit > .inner .text {
+        position: absolute;
+        left: -9999em;
+        top: -9999em;
+        opacity: 0;
+        pointer-events: none;
+    }
+    .outline-item > .inner .input {
+        border: none;
+        outline: none;
+        background: transparent;
+        resize: none;
+    }
+    .outline-item:not(.edit) > .inner .input {
+        display: none;
     }
     .outline-item > .inner .collapse {
         position: relative;

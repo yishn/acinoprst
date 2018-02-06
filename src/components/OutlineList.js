@@ -3,6 +3,37 @@ import classnames from 'classnames'
 import * as outline from '../outline'
 
 class OutlineItem extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            inputHeight: 0
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.editId !== prevProps.editId && this.props.editId === this.props.id) {
+            this.inputElement.focus()
+            this.inputElement.select()
+            this.updateInputHeight()
+        }
+
+        if (this.props.editId === this.props.id && this.props.text !== prevProps.text) {
+            this.updateInputHeight()
+        }
+    }
+
+    updateInputHeight() {
+        if (this.textElement && this.inputElement) {
+            let width = this.inputElement.clientWidth
+            this.textElement.style.width = width + 'px'
+            let inputHeight = this.textElement.offsetHeight
+            this.textElement.style.width = null
+
+            this.setState({inputHeight})
+        }
+    }
+
     handleClick = evt => {
         let {id, onClick = () => {}} = this.props
         onClick({id, mouseEvent: evt})
@@ -15,34 +46,52 @@ class OutlineItem extends Component {
 
     handleToggleCollapse = () => {
         let {id, collapsed, onChange = () => {}} = this.props
-        onChange({id: this.props.id, collapsed: !collapsed})
+        onChange({id, collapsed: !collapsed})
     }
 
     handleSublistChange = ({list}) => {
         let {id, onChange = () => {}} = this.props
-        onChange({id: this.props.id, sublist: list})
+        onChange({id, sublist: list})
+    }
+
+    handleInput = evt => {
+        let {id, onChange = () => {}} = this.props
+        onChange({id, text: evt.currentTarget.value})
+    }
+
+    handleInputKeyDown = evt => {
+        evt.stopPropagation()
+
+        if ([27, 13].includes(evt.keyCode)) {
+            // Esc, Enter
+            this.inputElement.blur()
+        }
     }
 
     render() {
-        let {level, showCollapse, selectedIds, id, collapsed, checked, sublist, text} = this.props
+        let {inputHeight} = this.state
+        let {level, showCollapse, selectedIds, editId, id, collapsed, checked, sublist, text} = this.props
+        let selected = selectedIds.includes(id)
+        let edit = editId === id
 
         return <li
             data-id={id}
             class={classnames('outline-item', {
                 collapsed,
-                showcollapse: showCollapse,
                 checked,
-                selected: selectedIds.includes(id),
+                showcollapse: showCollapse,
+                edit,
+                selected,
                 parent: sublist.length > 0
             })}
         >
-            <div 
-                class="inner" 
+            <div
+                class="inner"
                 style={{paddingLeft: `${level * 1.5 + 1}rem`}}
-                onClick={this.handleClick}
+                onMouseDown={this.handleClick}
             >
                 {showCollapse &&
-                    <span 
+                    <span
                         data-id={id}
                         class="collapse"
                         title={collapsed ? 'Expand' : 'Collapse'}
@@ -58,7 +107,24 @@ class OutlineItem extends Component {
                 }{' '}
 
                 <span class="id">#{id}</span>{' '}
-                <span class="text">{checked ? <del>{text}</del> : text}</span>
+
+                <span ref={el => this.textElement = el} class="text">
+                    {text !== ''
+                        ? (checked ? <del>{text}</del> : text)
+                        : <span style={{opacity: 0}}>_</span>
+                    }
+                </span>
+
+                <textarea
+                    ref={el => this.inputElement = el}
+                    class="input"
+                    style={{height: inputHeight}}
+                    value={text}
+
+                    onInput={this.handleInput}
+                    onKeyDown={this.handleInputKeyDown}
+                    onBlur={this.props.onCancelEdit}
+                />
             </div>
 
             {!collapsed &&
@@ -67,9 +133,11 @@ class OutlineItem extends Component {
                     level={level + 1}
                     showCollapse={showCollapse}
                     selectedIds={selectedIds}
+                    editId={editId}
 
                     onItemClick={this.handleSubitemClick}
                     onChange={this.handleSublistChange}
+                    onCancelEdit={this.props.onCancelEdit}
                 />
             }
         </li>
@@ -83,7 +151,7 @@ export default class OutlineList extends Component {
     }
 
     render() {
-        let {list, level, showCollapse, selectedIds} = this.props
+        let {list, level, showCollapse, selectedIds, editId} = this.props
 
         if (list.length === 0) return
 
@@ -94,6 +162,7 @@ export default class OutlineList extends Component {
                     level={level}
                     showCollapse={showCollapse}
                     selectedIds={selectedIds}
+                    editId={editId}
                     id={id}
                     collapsed={collapsed}
                     checked={checked}
@@ -102,6 +171,7 @@ export default class OutlineList extends Component {
 
                     onClick={this.props.onItemClick}
                     onChange={this.updateItem}
+                    onCancelEdit={this.props.onCancelEdit}
                 />
             )}
         </ul>

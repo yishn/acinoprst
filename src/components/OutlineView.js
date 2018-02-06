@@ -12,6 +12,7 @@ export default class OutlineView extends Component {
         super(props)
 
         this.state = {
+            editId: null,
             focused: false,
             appendSelectionType: 0
         }
@@ -66,6 +67,11 @@ export default class OutlineView extends Component {
             .filter(id => outline.getItemTrail(list, id).length > 0)
 
         onSelectionChange({selectedIds: newSelectedIds})
+    }
+
+    handleCancelEdit = () => {
+        this.element.focus()
+        this.setState({editId: null})
     }
 
     handleKeyDown = evt => {
@@ -181,8 +187,8 @@ export default class OutlineView extends Component {
             ), list)
 
             onChange({list: newList})
-        } else if (evt.keyCode === 46) {
-            // Del
+        } else if ([46, 8].includes(evt.keyCode)) {
+            // Del, Backspace
             // Remove item
 
             evt.preventDefault()
@@ -232,6 +238,20 @@ export default class OutlineView extends Component {
             ), newList)
 
             onChange({list: newList})
+        } else if (evt.keyCode === 13) {
+            // Enter
+            // Edit mode
+
+            evt.preventDefault()
+
+            let orderedSelectedIds = outline
+                .getLinearItemTrails(list, {includeCollapsed: false})
+                .filter(([item]) => selectedIds.includes(item.id))
+                .map(([item]) => item.id)
+
+            if (orderedSelectedIds.length === 0) return
+
+            this.setState({editId: orderedSelectedIds[0]})
         } else if (evt.keyCode === 88) {
             // x
             // Toggle check items
@@ -252,7 +272,7 @@ export default class OutlineView extends Component {
     }
 
     render() {
-        let {focused} = this.state
+        let {editId, focused} = this.state
         let {list, selectedIds} = this.props
         let showCollapse = list.some(item => item.sublist.length > 0)
 
@@ -270,9 +290,11 @@ export default class OutlineView extends Component {
                 level={0}
                 showCollapse={showCollapse}
                 selectedIds={selectedIds}
+                editId={editId}
 
                 onItemClick={this.handleItemClick}
                 onChange={this.props.onChange}
+                onCancelEdit={this.handleCancelEdit}
             />
         </section>
     }
