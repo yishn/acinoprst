@@ -67,12 +67,12 @@ a, img {
 
 .outline-item > .inner {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: 1fr;
         grid-column-gap: .5rem;
         padding: .2rem 1rem;
     }
     .outline-item.showcollapse > .inner {
-        grid-template-columns: auto auto 1fr;
+        grid-template-columns: auto 1fr;
     }
     .outline-view.focused .outline-item.selected > .inner,
     .outline-view .outline-item.edit > .inner {
@@ -87,7 +87,7 @@ a, img {
     }
     .outline-item.checked > .inner .text,
     .outline-item.checked > .inner .input {
-        opacity: .5;
+        opacity: .4;
     }
     .outline-item.edit > .inner .text {
         position: absolute;

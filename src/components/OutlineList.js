@@ -123,8 +123,6 @@ class OutlineItem extends Component {
                     </span>
                 }{' '}
 
-                <span class="id">#{id}</span>{' '}
-
                 <span ref={el => this.textElement = el} class="text">
                     {text !== ''
                         ? (checked ? <del>{text}</del> : text)
