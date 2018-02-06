@@ -90,6 +90,12 @@ export function getLinearItemTrails(list, options = {}) {
     return result
 }
 
+export function getMaxId(list) {
+    return Math.max(...list.map(item =>
+        Math.max(item.id, getMaxId(item.sublist))
+    ))
+}
+
 export function getIdsBetween(list, ids) {
     let linearItemTrails = getLinearItemTrails(list)
     let indices = ids.map(id => linearItemTrails.findIndex(([item]) => item.id === id))
@@ -171,23 +177,17 @@ export function reveal(list, trail) {
 }
 
 export function append(list, data) {
-    function getMaxId(list) {
-        return Math.max(...list.map(item =>
-            Math.max(item.id, getMaxId(item.sublist))
-        ))
-    }
-
     return [...list, {
         collapsed: false,
         checked: false,
         text: '',
-        ...data,
         id: getMaxId(list) + 1,
-        sublist: []
+        sublist: [],
+        ...data
     }]
 }
 
 export function insert(list, data, op, trail2) {
     let trail1 = append(list, data).slice(-1)
-    return insert(list, trail1, op, trail2)
+    return move(list, trail1, op, trail2)
 }
