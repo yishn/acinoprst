@@ -8,14 +8,10 @@ const dedupe = arr => arr.sort((x, y) => x - y)
     .filter((x, i, arr) => i === 0 || arr[i - 1] !== x)
 
 export default class OutlineView extends Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            editId: null,
-            focused: false,
-            appendSelectionType: 0
-        }
+    state = {
+        editId: null,
+        focused: false,
+        appendSelectionType: 0
     }
 
     componentWillReceiveProps(nextProps) {
@@ -26,21 +22,28 @@ export default class OutlineView extends Component {
 
     componentDidUpdate(prevProps) {
         let {list, selectedIds} = this.props
+        let listChange = prevProps.list !== list
+        let selectedIdsChange = JSON.stringify(selectedIds) !== JSON.stringify(prevProps.selectedIds)
 
-        if (prevProps.list !== list) {
-            this.handleSelectionChange({selectedIds: selectedIds})
-        } else {
-            if (JSON.stringify(prevProps.selectedIds) !== JSON.stringify(selectedIds)) {
-                let edgeSelectedId = selectedIds[this.state.appendSelectionType > 0 ? selectedIds.length - 1 : 0]
-                let element = this.element.querySelector(`.outline-item[data-id="${edgeSelectedId}"]`)
+        if (listChange || selectedIdsChange) {
+            let orderedSelectedIds = outline
+                .getLinearItemTrails(list, {includeCollapsed: false})
+                .filter(([item]) => selectedIds.includes(item.id))
+                .map(([item]) => item.id)
+            let edgeSelectedIndex = this.state.appendSelectionType > 0 ? orderedSelectedIds.length - 1 : 0
+            let edgeSelectedId = orderedSelectedIds[edgeSelectedIndex]
 
-                if (element != null) scrollIntoView(element, {duration: 200})
-            }
+            this.scrollIntoView(edgeSelectedId)
         }
     }
 
     gotFocus = () => this.setState({focused: true})
     lostFocus = () => this.setState({focused: false})
+
+    scrollIntoView(id) {
+        let element = this.element.querySelector(`.outline-item[data-id="${id}"] > .inner`)
+        if (element != null) scrollIntoView(element)
+    }
 
     handleItemClick = evt => {
         let {ctrlKey, shiftKey} = evt.mouseEvent
@@ -70,12 +73,16 @@ export default class OutlineView extends Component {
     }
 
     handleCancelEdit = () => {
+        let {scrollTop} = this.element
         this.element.focus()
-        this.setState({editId: null})
+
+        this.setState({editId: null}, () => {
+            this.element.scrollTop = scrollTop
+        })
     }
 
     handleKeyDown = evt => {
-        let {list, selectedIds, onChange = () => {}} = this.props
+        let {list, selectedIds, onChange = () => {}, onSelectionChange = () => {}} = this.props
 
         function selectCollapsed(selectedIds) {
             let result = [...selectedIds]
@@ -144,7 +151,7 @@ export default class OutlineView extends Component {
 
             this.handleSelectionChange({selectedIds: newSelectedIds})
         } else if ([38, 40].includes(evt.keyCode) && evt.ctrlKey) {
-            // Arrow Up/Down
+            // Ctrl + Arrow Up/Down
             // Moving items
 
             evt.preventDefault()
@@ -209,12 +216,13 @@ export default class OutlineView extends Component {
             })
 
             onChange({list: newList})
-            this.handleSelectionChange({selectedIds: newSelectedIds})
+            onSelectionChange({selectedIds: newSelectedIds})
         } else if (evt.keyCode === 9 && !evt.ctrlKey) {
             // Tab
             // Indent/Unindent items
 
             evt.preventDefault()
+            this.handleCancelEdit()
 
             let targetIds = selectCollapsed(selectedIds)
             let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
@@ -238,12 +246,13 @@ export default class OutlineView extends Component {
             ), newList)
 
             onChange({list: newList})
-        } else if (evt.keyCode === 13) {
+        } else if (evt.keyCode === 13 && !evt.shiftKey) {
             // Enter
             // Edit mode
 
             evt.preventDefault()
 
+            let {scrollTop} = this.element
             let orderedSelectedIds = outline
                 .getLinearItemTrails(list, {includeCollapsed: false})
                 .filter(([item]) => selectedIds.includes(item.id))
@@ -251,7 +260,42 @@ export default class OutlineView extends Component {
 
             if (orderedSelectedIds.length === 0) return
 
-            this.setState({editId: orderedSelectedIds[0]})
+            onSelectionChange({selectedIds: [orderedSelectedIds[0]]})
+            this.setState({editId: orderedSelectedIds[0]}, () => {
+                this.element.scrollTop = scrollTop
+            })
+        } else if (evt.keyCode === 13 && evt.shiftKey) {
+            // Shift + Enter
+            // Insert item
+
+            evt.preventDefault()
+
+            let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
+            let orderedSelectedItems = linearItemTrails
+                .filter(([item]) => selectedIds.includes(item.id))
+                .map(([item]) => item)
+            let [lastSelectedItem] = orderedSelectedItems.slice(-1)
+            let insertSubitem = lastSelectedItem != null 
+                && !lastSelectedItem.collapsed
+                && lastSelectedItem.sublist.length > 0
+
+            let newList = outline.append(list, {})
+            let [newItem] = newList.slice(-1)
+
+            if (lastSelectedItem != null) {
+                if (!insertSubitem) {
+                    newList = outline.move(newList, [newItem], 'after', lastSelectedItem.id)
+                } else {
+                    newList = outline.move(newList, [newItem], 'before', lastSelectedItem.sublist[0].id)
+                }
+            }
+
+            onChange({list: newList})
+            this.handleCancelEdit()
+            this.forceUpdate()
+
+            onSelectionChange({selectedIds: [newItem.id]})
+            this.setState({editId: newItem.id})
         } else if (evt.keyCode === 88) {
             // x
             // Toggle check items

@@ -3,30 +3,35 @@ import classnames from 'classnames'
 import * as outline from '../outline'
 
 class OutlineItem extends Component {
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            inputHeight: 0
-        }
+    state = {
+        inputHeight: 0
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.editId !== prevProps.editId && this.props.editId === this.props.id) {
-            this.inputElement.focus()
-            this.inputElement.select()
-            this.updateInputHeight()
-        }
+        let {id, editId, text} = this.props
 
-        if (this.props.editId === this.props.id && this.props.text !== prevProps.text) {
-            this.updateInputHeight()
+        if (editId === id) {
+            if (this.inputElement != null && document.activeElement !== this.inputElement) {
+                this.inputElement.focus()
+                this.inputElement.select()
+                this.updateInputHeight()
+            }
+
+            if (text !== prevProps.text) {
+                this.updateInputHeight()
+            }
         }
+    }
+
+    componentDidMount() {
+        this.componentDidUpdate(this.props)
     }
 
     updateInputHeight() {
         if (this.textElement && this.inputElement) {
             let width = this.inputElement.clientWidth
             this.textElement.style.width = width + 'px'
+
             let inputHeight = this.textElement.offsetHeight
             this.textElement.style.width = null
 
@@ -60,12 +65,24 @@ class OutlineItem extends Component {
     }
 
     handleInputKeyDown = evt => {
+        if (evt.keyCode === 9 || evt.keyCode === 13 && evt.shiftKey) {
+            // Tab, Shift+Enter
+
+            evt.preventDefault()
+            return
+        }
+
         evt.stopPropagation()
 
         if ([27, 13].includes(evt.keyCode)) {
             // Esc, Enter
             this.inputElement.blur()
         }
+    }
+
+    handleCancelEdit = () => {
+        let {id, editId, onCancelEdit = () => {}} = this.props
+        if (editId === id) onCancelEdit()
     }
 
     render() {
@@ -117,13 +134,14 @@ class OutlineItem extends Component {
 
                 <textarea
                     ref={el => this.inputElement = el}
+                    tabIndex={edit ? 0 : -1}
                     class="input"
                     style={{height: inputHeight}}
                     value={text}
 
                     onInput={this.handleInput}
                     onKeyDown={this.handleInputKeyDown}
-                    onBlur={this.props.onCancelEdit}
+                    onBlur={this.handleCancelEdit}
                 />
             </div>
 

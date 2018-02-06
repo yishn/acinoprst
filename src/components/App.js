@@ -4,28 +4,24 @@ import * as doclist from '../doclist'
 import DocumentView from './DocumentView'
 
 export default class App extends Component {
-    constructor() {
-        super()
-
-        this.state = {
-            currentIndex: 0,
-            docs: doclist.append(
-                doclist.append([], 'Test', outline.parse([
-                    '- [ ] Hello',
-                    '    - [x] World',
-                    '- [x] Hey',
-                    '+ [ ] What is up',
-                    '    - [ ] Boom',
-                    '+ [ ] Hello',
-                    '    - [x] World',
-                    '- [x] Hey',
-                    '- [ ] What is up',
-                    '    - [ ] Boom',
-                    '        - [ ] Second Boom'
-                ].join('\n')))
-            ),
-            selectedIds: [0]
-        }
+    state = {
+        currentIndex: 0,
+        docs: doclist.append(
+            doclist.append([], 'Test', outline.parse([
+                '- [ ] Hello',
+                '    - [x] World',
+                '- [x] Hey',
+                '+ [ ] What is up',
+                '    - [ ] Boom',
+                '+ [ ] Hello',
+                '    - [x] World',
+                '- [x] Hey',
+                '- [ ] What is up',
+                '    - [ ] Boom',
+                '        - [ ] Second Boom'
+            ].join('\n')))
+        ),
+        selectedIds: [0]
     }
 
     getCurrentDoc = () => {
