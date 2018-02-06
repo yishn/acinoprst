@@ -39,7 +39,7 @@ export function parse(content, {ids = null} = {}) {
         .map(line => line.match(/^(\s*)([+-])\s*\[(\s*[xX]?\s*)\](.*)$/))
         .filter(match => match != null)
         .map(([, indent, bullet, x, text], i) => ({
-            id: ids != null ? ids[i] : id++,
+            id: ids != null ? ids[i] : ++id,
             indent: indent.length,
             collapsed: bullet === '+',
             checked: x.toLowerCase().includes('x'),
@@ -91,7 +91,7 @@ export function getLinearItemTrails(list, options = {}) {
 }
 
 export function getMaxId(list) {
-    return Math.max(...list.map(item =>
+    return Math.max(0, ...list.map(item =>
         Math.max(item.id, getMaxId(item.sublist))
     ))
 }
@@ -181,13 +181,8 @@ export function append(list, data) {
         collapsed: false,
         checked: false,
         text: '',
+        ...data,
         id: getMaxId(list) + 1,
-        sublist: [],
-        ...data
+        sublist: []
     }]
-}
-
-export function insert(list, data, op, trail2) {
-    let trail1 = append(list, data).slice(-1)
-    return move(list, trail1, op, trail2)
 }
