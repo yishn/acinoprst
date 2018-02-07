@@ -50,7 +50,7 @@ class DocumentViewHeader extends Component {
         return <div class="document-view-header">
             <div class="progress" style={{width: `${progress}%`}}/>
 
-            <h1>
+            <h1 title={`${progress}%`}>
                 <input
                     value={doc.title}
 
