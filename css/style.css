@@ -46,9 +46,18 @@ a, img {
 }
 
 .document-view-header {
+        position: relative;
         padding: .5rem 1rem;
         background: #333;
         color: #eee;
+    }
+    .document-view-header .progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, .1);
+        transition: width .5s;
     }
     .document-view-header h1 {
         font-size: 1rem;
