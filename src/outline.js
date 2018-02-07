@@ -90,6 +90,19 @@ export function getLinearItemTrails(list, options = {}) {
     return result
 }
 
+export function getStats(list) {
+    let linearItemTrails = getLinearItemTrails(list)
+
+    let result = {
+        count: linearItemTrails.length,
+        checked: linearItemTrails.filter(([item]) => item.checked).length
+    }
+
+    result.progress = result.count === 0 ? 0 : result.checked / result.count
+
+    return result
+}
+
 export function getMaxId(list) {
     return Math.max(0, ...list.map(item =>
         Math.max(item.id, getMaxId(item.sublist))
