@@ -119,6 +119,25 @@ export function getIdsBetween(list, ids) {
     return linearItemTrails.slice(min, max + 1).map(([item]) => item.id)
 }
 
+export function separateItems(list) {
+    return list.map((item, i) => [i, item]).sort(([i, item1], [j, item2]) =>
+        +item1.checked - +item2.checked || i - j
+    ).map(([, item]) => ({
+        ...item,
+        sublist: separateItems(item.sublist)
+    }))
+}
+
+export function removeCheckedTasks(list) {
+    return list.reduce((acc, item) => (
+        item.checked ? acc
+        : (acc.push({
+            ...item,
+            sublist: removeCheckedTasks(item.sublist)
+        }), acc)
+    ), [])
+}
+
 export function update(list, trail, data) {
     if (typeof trail === 'number') trail = getItemTrail(list, trail)
     if (trail.length === 0) return list
