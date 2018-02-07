@@ -32,6 +32,17 @@ class DocumentViewHeader extends Component {
         onChange({title: value})
     }
 
+    handleKeyDown = evt => {
+        if (evt.keyCode === 13) {
+            // Enter
+
+            evt.preventDefault()
+
+            let {onSubmit = () => {}} = this.props
+            onSubmit()
+        }
+    }
+
     render() {
         let {progress} = this.state
         let {doc} = this.props
@@ -39,12 +50,30 @@ class DocumentViewHeader extends Component {
         return <div class="document-view-header">
             <div class="progress" style={{width: `${progress}%`}}/>
 
-            <h1><input value={doc.title} onInput={this.handleInput}/></h1>
+            <h1>
+                <input
+                    value={doc.title}
+
+                    onKeyDown={this.handleKeyDown}
+                    onInput={this.handleInput}
+                />
+            </h1>
         </div>
     }
 }
 
 export default class DocumentView extends Component {
+    handleOutlineBlur = () => {
+        let titleInput = this.element.querySelector('.document-view-header h1 input')
+        
+        titleInput.select()
+        titleInput.focus()
+    }
+
+    handleTitleSubmit = () => {
+        this.element.querySelector('.outline-view').focus()
+    }
+
     handleChange = evt => {
         let {doc, onChange = () => {}} = this.props
 
@@ -54,9 +83,11 @@ export default class DocumentView extends Component {
     render() {
         let {doc, selectedIds} = this.props
 
-        return <section class="document-view">
+        return <section ref={el => this.element = el} class="document-view">
             <DocumentViewHeader
                 doc={doc}
+
+                onSubmit={this.handleTitleSubmit}
                 onChange={this.handleChange}
             />
 
@@ -64,6 +95,7 @@ export default class DocumentView extends Component {
                 list={doc.list}
                 selectedIds={selectedIds}
 
+                onBlur={this.handleOutlineBlur}
                 onChange={this.handleChange}
                 onSelectionChange={this.props.onSelectionChange}
             />

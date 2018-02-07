@@ -19,6 +19,10 @@ export default class OutlineView extends Component {
             this.setState({appendSelectionType: 0})
         }
     }
+    
+    componentDidMount() {
+        this.componentDidUpdate({})
+    }
 
     componentDidUpdate(prevProps) {
         let {list, selectedIds} = this.props
@@ -264,6 +268,16 @@ export default class OutlineView extends Component {
             this.setState({editId: orderedSelectedIds[0]}, () => {
                 this.element.scrollTop = scrollTop
             })
+        } else if (evt.keyCode === 27) {
+            // Esc
+            // Lose focus
+
+            evt.preventDefault()
+
+            let {onBlur = () => {}} = this.props
+
+            this.element.blur()
+            onBlur()
         } else if (evt.keyCode === 13 && evt.shiftKey) {
             // Shift + Enter
             // Insert item

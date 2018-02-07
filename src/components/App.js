@@ -21,7 +21,7 @@ export default class App extends Component {
                 '        - [ ] Second Boom'
             ].join('\n')))
         ),
-        selectedIds: [0]
+        selectedIds: [1]
     }
 
     getCurrentDoc = () => {
