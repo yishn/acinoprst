@@ -47,7 +47,6 @@ a, img {
 
 .document-view-header {
         position: relative;
-        padding: .5rem 1rem;
         background: #333;
         color: #eee;
     }
@@ -56,11 +55,22 @@ a, img {
         top: 0;
         left: 0;
         bottom: 0;
+        width: 0;
         background: rgba(255, 255, 255, .1);
         transition: width .5s;
+        pointer-events: none;
     }
     .document-view-header h1 {
         font-size: 1rem;
+    }
+    .document-view-header h1 input {
+        border: none;
+        width: 100%;
+        padding: .5rem 1rem;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        outline: none;
 }
 
 /* ================================= */
