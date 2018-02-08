@@ -72,6 +72,14 @@ class OutlineItem extends Component {
             return
         }
 
+        if ([8, 46].includes(evt.keyCode) && evt.currentTarget.value === '') {
+            // Backspace, Delete
+
+            evt.preventDefault()
+            this.inputElement.blur()
+            return
+        }
+
         evt.stopPropagation()
 
         if ([27, 13].includes(evt.keyCode)) {
