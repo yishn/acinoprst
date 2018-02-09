@@ -186,7 +186,7 @@ export default class OutlineView extends Component {
 
             onChange({list: newList})
             this.handleSelectionChange({selectedIds: targetIds})
-        } else if ([37, 39].includes(evt.keyCode)) {
+        } else if ([37, 39].includes(evt.keyCode) && !evt.ctrlKey) {
             // Arrow Left/Right
             // Toggle collapse items
 
@@ -198,6 +198,18 @@ export default class OutlineView extends Component {
             ), list)
 
             onChange({list: newList})
+        } else if (evt.keyCode === 37 && evt.ctrlKey) {
+            // Ctrl + Arrow Left
+            // Jump to parent item
+
+            evt.preventDefault()
+
+            if (selectedIds.length !== 1) return
+
+            let [item, parent, ] = outline.getItemTrail(list, selectedIds[0])
+            if (parent == null) return
+
+            this.handleSelectionChange({selectedIds: [parent.id]})
         } else if ([46, 8].includes(evt.keyCode)) {
             // Del, Backspace
             // Remove item
