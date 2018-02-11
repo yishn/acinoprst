@@ -2,7 +2,6 @@ import {h, Component} from 'preact'
 import classnames from 'classnames'
 import * as outline from '../outline'
 import OutlineView from './OutlineView'
-import History from '../history'
 
 class DocumentViewHeader extends Component {
     state = {
@@ -64,15 +63,6 @@ class DocumentViewHeader extends Component {
 }
 
 export default class DocumentView extends Component {
-    history = new History()
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.doc !== this.props.doc) {
-            let {doc, selectedIds} = nextProps
-            this.history.push({doc, selectedIds})
-        }
-    }
-
     handleOutlineBlur = () => {
         let titleInput = this.element.querySelector('.document-view-header h1 input')
         
@@ -88,18 +78,6 @@ export default class DocumentView extends Component {
         let {doc, onChange = () => {}} = this.props
         onChange({doc: {...doc, ...evt}})
     }
-
-    handleHistoryStep = step => {
-        let {onChange = () => {}, onSelectionChange = () => {}} = this.props
-        let entry = history.step(step)
-        if (entry == null) return
-
-        onChange({doc: entry.doc})
-        onSelectionChange({selectedIds: entry.selectedIds})
-    }
-
-    handleUndo = () => this.handleHistoryStep(-1)
-    handleRedo = () => this.handleHistoryStep(1)
 
     render() {
         let {doc, selectedIds} = this.props
@@ -119,6 +97,8 @@ export default class DocumentView extends Component {
                 onBlur={this.handleOutlineBlur}
                 onChange={this.handleChange}
                 onSelectionChange={this.props.onSelectionChange}
+                onUndo={this.props.onUndo}
+                onRedo={this.props.onRedo}
             />
         </section>
     }

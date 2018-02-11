@@ -10,10 +10,8 @@ export default class History {
         let lastEntry = this.history[this.pointer]
 
         if (lastEntry != null) {
-            if (data === lastEntry.data || timestamp - lastEntry.timestamp < this.delay)
-                return this
-
-            this.history.length = this.pointer + 1
+            let overwrite = data === lastEntry.data || timestamp - lastEntry.timestamp < this.delay
+            this.history.length = +!overwrite + this.pointer
         }
 
         this.history.push({data, timestamp})
