@@ -238,6 +238,8 @@ export default class OutlineView extends Component {
             // Indent/Unindent items
 
             evt.preventDefault()
+
+            let {editId} = this.state
             this.handleCancelEdit()
 
             let targetIds = selectCollapsed(selectedIds)
@@ -262,6 +264,7 @@ export default class OutlineView extends Component {
             ), newList)
 
             onChange({list: newList})
+            this.setState({editId})
         } else if (evt.keyCode === 13 && !evt.shiftKey) {
             // Enter
             // Edit mode
@@ -280,16 +283,6 @@ export default class OutlineView extends Component {
             this.setState({editId: orderedSelectedIds[0]}, () => {
                 this.element.scrollTop = scrollTop
             })
-        } else if (evt.keyCode === 27) {
-            // Esc
-            // Lose focus
-
-            evt.preventDefault()
-
-            let {onBlur = () => {}} = this.props
-
-            this.element.blur()
-            onBlur()
         } else if (evt.keyCode === 13 && evt.shiftKey) {
             // Shift + Enter
             // Insert item
@@ -322,6 +315,16 @@ export default class OutlineView extends Component {
 
             onSelectionChange({selectedIds: [newItem.id]})
             this.setState({editId: newItem.id})
+        } else if (evt.keyCode === 27) {
+            // Esc
+            // Lose focus
+
+            evt.preventDefault()
+
+            let {onBlur = () => {}} = this.props
+
+            this.element.blur()
+            onBlur()
         } else if (evt.keyCode === 88) {
             // x
             // Toggle check items
