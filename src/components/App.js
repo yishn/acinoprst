@@ -2,7 +2,7 @@ import {h, Component} from 'preact'
 import * as outline from '../outline'
 import * as doclist from '../doclist'
 import History from '../history'
-import DocumentView from './DocumentView'
+import DocumentView, {ToolbarButton} from './DocumentView'
 
 export default class App extends Component {
     history = new History()
@@ -73,15 +73,24 @@ export default class App extends Component {
         this.updateDocs({docs: docs.map((x, i) => i === currentIndex ? doc : x)})
     }
 
+    removeDoc = () => {
+        let {docs, currentIndex} = this.state
+        
+        this.updateDocs({docs: docs.filter((_, i) => i !== currentIndex)})
+        this.updateCurrentIndex({currentIndex: Math.max(0, currentIndex - 1)})
+    }
+
     render() {
         let doc = this.getCurrentDoc()
 
         return <DocumentView
-            doc={doc}
+            disabled={doc == null}
+            doc={doc || {title: '', list: []}}
             selectedIds={this.state.selectedIds}
 
             onMenuButtonClick={console.log}
             onChange={this.updateDoc}
+            onRemove={this.removeDoc}
             onSelectionChange={this.updateSelectedIds}
             onUndo={this.undo}
             onRedo={this.redo}

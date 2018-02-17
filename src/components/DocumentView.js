@@ -62,9 +62,9 @@ class DocumentViewHeader extends Component {
 
     render() {
         let {progress} = this.state
-        let {doc} = this.props
+        let {disabled, doc} = this.props
 
-        return <div class="document-view-header">
+        return <div class={classnames('document-view-header', {disabled})}>
             <div class="progress" style={{width: `${progress}%`}}/>
 
             <ul class="buttons">
@@ -73,7 +73,9 @@ class DocumentViewHeader extends Component {
 
             <h1 title={`${progress}%`}>
                 <input
+                    disabled={disabled}
                     value={doc.title}
+                    placeholder="(Untitled)"
 
                     onKeyDown={this.handleKeyDown}
                     onInput={this.handleInput}
@@ -104,13 +106,40 @@ export default class DocumentView extends Component {
         onChange({doc: {...doc, ...evt}})
     }
 
+    handleSeparateItems = evt => {
+        let {doc, onChange = () => {}} = this.props
+        onChange({doc: {...doc, list: outline.separateItems(doc.list)}})
+    }
+
+    removeCheckedTasks = evt => {
+        let {doc, onChange = () => {}} = this.props
+        onChange({doc: {...doc, list: outline.removeCheckedTasks(doc.list)}})
+    }
+
     render() {
-        let {doc, selectedIds} = this.props
+        let {disabled, doc, selectedIds} = this.props
 
         return <section ref={el => this.element = el} class="document-view">
             <DocumentViewHeader
+                disabled={disabled}
                 doc={doc}
-                buttons={this.props.toolbarButtons}
+                buttons={[
+                    <ToolbarButton
+                        icon="./img/separate-items.svg"
+                        text="Separate items"
+                        onClick={this.handleSeparateItems}
+                    />,
+                    <ToolbarButton
+                        icon="./img/remove-checked.svg"
+                        text="Remove checked tasks"
+                        onClick={this.removeCheckedTasks}
+                    />,
+                    <ToolbarButton
+                        icon="./img/trash.svg"
+                        text="Remove"
+                        onClick={this.props.onRemove}
+                    />
+                ]}
 
                 onMenuButtonClick={this.props.onMenuButtonClick}
                 onSubmit={this.handleTitleSubmit}
@@ -118,6 +147,7 @@ export default class DocumentView extends Component {
             />
 
             <OutlineView
+                disabled={disabled}
                 list={doc.list}
                 selectedIds={selectedIds}
 
