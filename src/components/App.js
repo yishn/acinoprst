@@ -11,7 +11,7 @@ export default class App extends Component {
         currentIndex: 0,
         docs: (
             doclist.append([], 'Test', outline.parse([
-                '- [ ] Hello',
+                '* Hello',
                 '    - [x] World',
                 '- [x] Hey',
                 '+ [ ] What is up',
