@@ -46,6 +46,8 @@ a, img {
 }
 
 .document-view-header {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
         position: relative;
         background: #333;
         color: #eee;
@@ -60,13 +62,41 @@ a, img {
         transition: width .5s;
         pointer-events: none;
     }
+    .document-view-header .buttons {
+        display: flex;
+        list-style: none;
+    }
+    .document-view-header .buttons a {
+        float: left;
+        position: relative;
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    .document-view-header .buttons a:hover,
+    .document-view-header .buttons a:focus {
+        background: rgba(255, 255, 255, .1);
+    }
+    .document-view-header .buttons a:active {
+        background: rgba(0, 0, 0, .3);
+    }
+    .document-view-header .buttons a img {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -8px;
+        margin-left: -8px;
+        width: 16px;
+        height: 16px;
+        filter: invert(100%);
+    }
     .document-view-header h1 {
         font-size: 1rem;
     }
     .document-view-header h1 input {
         border: none;
         width: 100%;
-        padding: .5rem 1rem;
+        padding: .5rem;
         background: transparent;
         color: inherit;
         font: inherit;

@@ -3,6 +3,23 @@ import classnames from 'classnames'
 import * as outline from '../outline'
 import OutlineView from './OutlineView'
 
+export class ToolbarButton extends Component {
+    handleClick = evt => {
+        evt.preventDefault()
+
+        let {onClick = () => {}} = this.props
+        onClick(evt)
+    }
+
+    render() {
+        return <li>
+            <a href="#" title={this.props.text} onClick={this.handleClick}>
+                <img src={this.props.icon} alt={this.props.text}/>
+            </a>
+        </li>
+    }
+}
+
 class DocumentViewHeader extends Component {
     state = {
         progress: null
@@ -50,6 +67,10 @@ class DocumentViewHeader extends Component {
         return <div class="document-view-header">
             <div class="progress" style={{width: `${progress}%`}}/>
 
+            <ul class="buttons">
+                <ToolbarButton text="Menu" icon="./img/menu.svg" onClick={this.props.onMenuButtonClick}/>
+            </ul>
+
             <h1 title={`${progress}%`}>
                 <input
                     value={doc.title}
@@ -58,6 +79,10 @@ class DocumentViewHeader extends Component {
                     onInput={this.handleInput}
                 />
             </h1>
+
+            <ul class="buttons">
+                {this.props.buttons}
+            </ul>
         </div>
     }
 }
@@ -85,7 +110,9 @@ export default class DocumentView extends Component {
         return <section ref={el => this.element = el} class="document-view">
             <DocumentViewHeader
                 doc={doc}
+                buttons={this.props.toolbarButtons}
 
+                onMenuButtonClick={this.props.onMenuButtonClick}
                 onSubmit={this.handleTitleSubmit}
                 onChange={this.handleChange}
             />

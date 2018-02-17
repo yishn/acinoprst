@@ -80,6 +80,7 @@ export default class App extends Component {
             doc={doc}
             selectedIds={this.state.selectedIds}
 
+            onMenuButtonClick={console.log}
             onChange={this.updateDoc}
             onSelectionChange={this.updateSelectedIds}
             onUndo={this.undo}
