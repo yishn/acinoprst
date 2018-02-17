@@ -75,14 +75,14 @@ class DocumentViewHeader extends Component {
                 <input
                     disabled={disabled}
                     value={doc.title}
-                    placeholder="(Untitled)"
+                    placeholder={disabled ? '' : '(Untitled)'}
 
                     onKeyDown={this.handleKeyDown}
                     onInput={this.handleInput}
                 />
             </h1>
 
-            <ul class="buttons">
+            <ul class={classnames('buttons', {disabled})}>
                 {this.props.buttons}
             </ul>
         </div>
@@ -126,12 +126,12 @@ export default class DocumentView extends Component {
                 buttons={[
                     <ToolbarButton
                         icon="./img/separate-items.svg"
-                        text="Separate items"
+                        text="Move checked items to the bottom"
                         onClick={this.handleSeparateItems}
                     />,
                     <ToolbarButton
                         icon="./img/remove-checked.svg"
-                        text="Remove checked tasks"
+                        text="Remove checked items"
                         onClick={this.removeCheckedTasks}
                     />,
                     <ToolbarButton

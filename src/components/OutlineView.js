@@ -359,18 +359,28 @@ export default class OutlineView extends Component {
 
     render() {
         let {editId, focused} = this.state
-        let {list, selectedIds} = this.props
+        let {disabled, list, selectedIds} = this.props
         let showCollapse = list.some(item => item.sublist.length > 0)
 
         return <section
             ref={el => this.element = el}
             class={classnames('outline-view', {focused})}
-            tabIndex={0}
+            tabIndex={!disabled && 0}
 
             onFocus={this.gotFocus}
             onBlur={this.lostFocus}
             onKeyDown={this.handleKeyDown}
         >
+            {list.length === 0 &&
+                <div class="message">
+                    <h2>No items</h2>
+                    
+                    {!disabled && 
+                        <p>Press <kbd>Shift</kbd>+<kbd>Enter</kbd> to insert an item</p>
+                    }
+                </div>
+            }
+
             <OutlineList
                 list={list}
                 level={0}

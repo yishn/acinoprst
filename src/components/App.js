@@ -75,6 +75,8 @@ export default class App extends Component {
 
     removeDoc = () => {
         let {docs, currentIndex} = this.state
+        let result = confirm('Do you really want to remove this document?')
+        if (!result) return
         
         this.updateDocs({docs: docs.filter((_, i) => i !== currentIndex)})
         this.updateCurrentIndex({currentIndex: Math.max(0, currentIndex - 1)})
