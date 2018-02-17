@@ -138,6 +138,22 @@ export function removeCheckedTasks(list) {
     ), [])
 }
 
+export function expandAll(list) {
+    return list.map(item => ({
+        ...item,
+        collapsed: false,
+        sublist: expandAll(item.sublist)
+    }))
+}
+
+export function collapseLevel(list, level) {
+    return list.map(item => ({
+        ...item,
+        collapsed: level > 0 ? false : level < 0 ? item.collapsed : true,
+        sublist: level === 0 ? item.sublist : collapseLevel(item.sublist, level - 1)
+    }))
+}
+
 export function update(list, trail, data) {
     if (typeof trail === 'number') trail = getItemTrail(list, trail)
     if (trail.length === 0) return list

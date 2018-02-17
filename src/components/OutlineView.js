@@ -325,6 +325,16 @@ export default class OutlineView extends Component {
 
             this.element.blur()
             onBlur()
+        } else if (48 <= evt.keyCode && evt.keyCode <= 57 && evt.ctrlKey) {
+            // Ctrl + Number
+            // Collapse level
+
+            evt.preventDefault()
+
+            let number = evt.keyCode - 48
+            let newList = number === 0 ? outline.expandAll(list) : outline.collapseLevel(list, number - 1)
+
+            onChange({list: newList})
         } else if (evt.keyCode === 88) {
             // x
             // Toggle check items
