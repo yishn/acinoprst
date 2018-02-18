@@ -36,13 +36,68 @@ kbd {
 /* ================================= */
 
 .document-view {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+    .document-view .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        list-style: none;
+    }
+    .document-view .buttons.disabled a,
+    .document-view .buttons .disabled a {
+        opacity: .5;
+        pointer-events: none;
+    }
+    .document-view .buttons .separator {
+        width: 2px;
+        margin: 0 .3rem;
+        background: rgba(255, 255, 255, .2);
+    }
+    .document-view .buttons a {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 .5rem;
+        color: inherit;
+        text-decoration: none;
+    }
+    .document-view .buttons a:hover,
+    .document-view .buttons a:focus {
+        background: rgba(255, 255, 255, .1);
+    }
+    .document-view .buttons a:active {
+        background: rgba(0, 0, 0, .3);
+    }
+    .document-view .buttons a img {
+        display: block;
+        width: 16px;
+        height: 16px;
+        opacity: .95;
+        filter: invert(100%);
+    }
+    .document-view .buttons a .text {
+        margin-left: .5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+}
+
+.document-view-toolbar {
+        padding: 0 .3rem;
+        background: #666;
+        color: #eee;
+        font-size: .7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .document-view-toolbar .buttons a {
+        height: 2rem;
 }
 
 .document-view-header {
@@ -62,38 +117,8 @@ kbd {
         transition: width .5s;
         pointer-events: none;
     }
-    .document-view-header .buttons {
-        display: flex;
-        list-style: none;
-    }
-    .document-view-header .buttons.disabled {
-        opacity: .5;
-        pointer-events: none;
-    }
-    .document-view-header .buttons a {
-        float: left;
-        position: relative;
-        width: 2.5rem;
-        height: 2.5rem;
-    }
-    .document-view-header .buttons a:hover,
-    .document-view-header .buttons a:focus {
-        background: rgba(255, 255, 255, .1);
-    }
-    .document-view-header .buttons a:active {
-        background: rgba(0, 0, 0, .3);
-    }
-    .document-view-header .buttons a img {
-        display: block;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-top: -8px;
-        margin-left: -8px;
-        width: 16px;
-        height: 16px;
-        opacity: .95;
-        filter: invert(100%);
+    .document-view-header .buttons a .text {
+        display: none;
     }
     .document-view-header h1 {
         font-size: 1rem;
@@ -189,4 +214,4 @@ kbd {
     }
     .outline-item.collapsed > .inner .collapse img {
         transform: rotate(-90deg);
-    }
+}
