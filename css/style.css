@@ -48,17 +48,17 @@ kbd {
 .menu-panel {
         position: absolute;
         top: 0;
-        left: calc(-100% - 1rem);
         width: 100%;
         height: 100%;
         background: #222;
         box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
         color: #eee;
-        transition: left .5s;
+        transform: translateX(calc(-100% - 1rem));
+        transition: transform .5s;
         z-index: 2;
     }
     .menu-panel.show {
-        left: 0;
+        transform: translateX(0);
 }
 
 .menu-panel .documents {
@@ -175,9 +175,10 @@ kbd {
         top: 0;
         left: 0;
         bottom: 0;
-        width: 0;
+        width: 100%;
         background: rgba(255, 255, 255, .1);
-        transition: width .5s;
+        transform: translateX(-100%);
+        transition: transform .5s;
         pointer-events: none;
     }
     .document-view-header .buttons a {

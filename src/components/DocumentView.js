@@ -76,7 +76,7 @@ class DocumentViewHeader extends Component {
         let {disabled, doc} = this.props
 
         return <div class={classnames('document-view-header', {disabled})}>
-            <div class="progress" style={{width: `${progress}%`}}/>
+            <div class="progress" style={{transform: `translateX(${progress - 100}%)`}}/>
 
             <ul class="buttons">
                 <ToolbarButton text="Menu" icon="./img/menu.svg" onClick={this.props.onMenuButtonClick}/>
