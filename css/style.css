@@ -35,6 +35,34 @@ kbd {
 
 /* ================================= */
 
+#app {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+/* ================================= */
+
+.menu-panel {
+        position: absolute;
+        top: 0;
+        left: calc(-100% - 1rem);
+        width: 100%;
+        height: 100%;
+        background: #222;
+        box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
+        color: #eee;
+        transition: left .5s;
+        z-index: 2;
+    }
+    .menu-panel.show {
+        left: 0;
+}
+
+/* ================================= */
+
 .document-view {
         display: grid;
         grid-template-rows: auto auto 1fr;
@@ -43,6 +71,7 @@ kbd {
         right: 0;
         top: 0;
         bottom: 0;
+        z-index: 1;
     }
     .document-view .buttons {
         display: flex;
@@ -116,6 +145,9 @@ kbd {
         background: rgba(255, 255, 255, .1);
         transition: width .5s;
         pointer-events: none;
+    }
+    .document-view-header .buttons a {
+        padding: 0 .8rem;
     }
     .document-view-header .buttons a .text {
         display: none;
