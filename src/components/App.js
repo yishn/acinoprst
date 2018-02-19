@@ -11,7 +11,7 @@ export default class App extends Component {
 
     state = {
         showMenu: false,
-        currentIndex: 0,
+        currentIndex: 1,
         docs: (
             doclist.parse([
                 '# Test',
@@ -22,6 +22,22 @@ export default class App extends Component {
                 '+ [ ] What is up',
                 '    - [ ] Boom',
                 '+ [ ] Hello',
+                '    - [x] World',
+                '- [x] Hey',
+                '- [ ] What is up',
+                '    - [ ] Boom',
+                '        - [ ] Second Boom',
+                '',
+                '---',
+                '',
+                '# Another Test',
+                '',
+                '* Hello',
+                '    - [x] World',
+                '- [x] Hey',
+                '- [ ] What is up',
+                '    - [ ] Boom',
+                '- [ ] Hello',
                 '    - [x] World',
                 '- [x] Hey',
                 '- [ ] What is up',
