@@ -13,7 +13,9 @@ export default class App extends Component {
         showMenu: false,
         currentIndex: 0,
         docs: (
-            doclist.append([], 'Test', outline.parse([
+            doclist.parse([
+                '# Test',
+                '',
                 '* Hello',
                 '    - [x] World',
                 '- [x] Hey',
@@ -25,7 +27,7 @@ export default class App extends Component {
                 '- [ ] What is up',
                 '    - [ ] Boom',
                 '        - [ ] Second Boom'
-            ].join('\n')))
+            ].join('\n'))
         ),
         selectedIds: [1]
     }

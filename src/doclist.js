@@ -13,14 +13,14 @@ export function stringify(docs) {
 
 export function parse(content) {
     let lines = content.split('\n')
-    let isSeparator = line => [...line].every(x => x === '-')
+    let isSeparator = line => line.length >= 2 && [...line].every(x => x === '-')
     let separatorIndices = lines.reduce((acc, x, i) => isSeparator(x) ? [...acc, i] : acc, [0])
     
     return separatorIndices.map((index, j) => {
-        let docLines = lines.slice(index, separatorIndices[j + 1] || lines.length).join('\n')
+        let docLines = lines.slice(index, separatorIndices[j + 1] || lines.length)
         let headerIndex = docLines.findIndex(x => x.match(/^#\s+/) != null)
         let title = headerIndex < 0 ? '' : docLines[headerIndex].slice(1).trim()
-        let listContent = docLines.slice(headerIndex + 1).join('\n')
+        let listContent = docLines.slice(headerIndex + 1).join('\n').trim()
 
         return {title, list: outline.parse(listContent)}
     })
