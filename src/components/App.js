@@ -93,7 +93,13 @@ export default class App extends Component {
     updateCurrentIndex = ({currentIndex}) => {
         if (currentIndex === this.state.currentIndex) return
 
-        this.setState({currentIndex, selectedIds: []})
+        let currentDoc = this.state.docs[currentIndex]
+
+        this.setState({
+            currentIndex,
+            selectedIds: currentDoc == null ? [] : currentDoc.list.slice(0, 1).map(item => item.id)
+        })
+
         this.recordHistory()
     }
     
