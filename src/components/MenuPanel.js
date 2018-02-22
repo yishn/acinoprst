@@ -6,7 +6,7 @@ class DocumentListItem extends Component {
         evt.preventDefault()
 
         let {onClick = () => {}} = this.props
-        onClick(evt)
+        onClick({index: this.props.index})
     }
 
     render() {
@@ -28,8 +28,11 @@ export default class MenuPanel extends Component {
         return <section class={classnames('menu-panel', {show})}>
             <ol class="documents">{docs.map((doc, i) => 
                 <DocumentListItem
+                    index={i}
                     current={i === currentIndex}
                     text={doc.title}
+
+                    onClick={this.props.onDocumentClick}
                 />
             )}</ol>
         </section>

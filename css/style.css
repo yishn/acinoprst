@@ -53,12 +53,12 @@ kbd {
         background: #222;
         box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
         color: #eee;
-        transform: translateX(calc(-100% - 1rem));
+        transform: translateY(calc(-100% - 1rem));
         transition: transform .5s;
         z-index: 2;
     }
     .menu-panel.show {
-        transform: translateX(0);
+        transform: translateY(0);
 }
 
 .menu-panel .documents {
@@ -73,15 +73,15 @@ kbd {
         color: inherit;
         text-decoration: inherit;
     }
+    .menu-panel .documents .current a {
+        background: rgba(255, 255, 255, .2);
+    }
     .menu-panel .documents a:hover,
     .menu-panel .documents a:focus {
         background: rgba(255, 255, 255, .1);
     }
     .menu-panel .documents a:active {
         background: rgba(255, 255, 255, .05);
-    }
-    .menu-panel .documents .current a {
-        background: rgba(255, 255, 255, .2);
     }
     .menu-panel .documents a img {
         width: 16px;

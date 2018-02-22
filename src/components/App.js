@@ -111,6 +111,11 @@ export default class App extends Component {
         this.updateCurrentIndex({currentIndex: Math.max(0, currentIndex - 1)})
     }
 
+    handleDocumentClick = ({index}) => {
+        this.updateCurrentIndex({currentIndex: index})
+        this.hideMenu()
+    }
+
     render() {
         let doc = this.getCurrentDoc()
 
@@ -119,6 +124,8 @@ export default class App extends Component {
                 show={this.state.showMenu}
                 docs={this.state.docs}
                 currentIndex={this.state.currentIndex}
+
+                onDocumentClick={this.handleDocumentClick}
             />
 
             <DocumentView
