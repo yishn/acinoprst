@@ -163,11 +163,13 @@ export default class DocumentView extends Component {
                 <ToolbarButton
                     icon="./img/undo.svg"
                     text="Undo"
+                    disabled={!this.props.undoable}
                     onClick={this.props.onUndo}
                 />
                 <ToolbarButton
                     icon="./img/redo.svg"
                     text="Redo"
+                    disabled={!this.props.redoable}
                     onClick={this.props.onRedo}
                 />
                 <ToolbarSeparator/>

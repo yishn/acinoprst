@@ -84,11 +84,15 @@ export default class App extends Component {
     }
 
     updateDocs = ({docs}) => {
+        if (docs === this.state.docs) return
+
         this.setState({docs})
         this.recordHistory()
     }
     
     updateCurrentIndex = ({currentIndex}) => {
+        if (currentIndex === this.state.currentIndex) return
+
         this.setState({currentIndex, selectedIds: []})
         this.recordHistory()
     }
@@ -126,12 +130,15 @@ export default class App extends Component {
                 currentIndex={this.state.currentIndex}
 
                 onDocumentClick={this.handleDocumentClick}
+                onDocumentsChange={this.updateDocs}
             />
 
             <DocumentView
                 disabled={doc == null}
                 doc={doc || {title: '', list: []}}
                 selectedIds={this.state.selectedIds}
+                undoable={this.history.isUndoable()}
+                redoable={this.history.isRedoable()}
 
                 onMenuButtonClick={this.showMenu}
                 onChange={this.updateDoc}

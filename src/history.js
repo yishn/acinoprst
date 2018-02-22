@@ -29,6 +29,14 @@ export default class History {
         return entry.data
     }
 
+    isUndoable() {
+        return this.pointer > 0
+    }
+
+    isRedoable() {
+        return this.pointer < this.history.length - 1
+    }
+
     undo() {
         return this.step(-1)
     }
