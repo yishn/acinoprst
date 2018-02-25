@@ -61,6 +61,25 @@ kbd {
         transform: translateY(0);
 }
 
+.menu-panel .user {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        height: 40px;
+    }
+    .menu-panel .user img {
+        height: 40px;
+        width: 40px;
+    }
+    .menu-panel .user h2 {
+        padding: 0 1rem;
+        overflow: hidden;
+        font: inherit;
+        font-weight: bold;
+        line-height: 40px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+}
+
 .menu-panel .documents {
         list-style: none;
     }
@@ -97,70 +116,67 @@ kbd {
 
 /* ================================= */
 
-.document-view {
-        display: grid;
-        grid-template-rows: auto auto 1fr;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        z-index: 1;
-    }
-    .document-view .buttons {
+.tool-bar .buttons {
         display: flex;
         flex-wrap: wrap;
-        list-style: none;
-    }
-    .document-view .buttons.disabled a,
-    .document-view .buttons .disabled a {
-        opacity: .5;
-        pointer-events: none;
-    }
-    .document-view .buttons .separator {
-        width: 2px;
-        margin: 0 .3rem;
-        background: rgba(255, 255, 255, .2);
-    }
-    .document-view .buttons a {
-        display: flex;
-        align-items: center;
-        height: 100%;
-        padding: 0 .5rem;
-        color: inherit;
-        text-decoration: inherit;
-    }
-    .document-view .buttons a:hover,
-    .document-view .buttons a:focus {
-        background: rgba(255, 255, 255, .1);
-    }
-    .document-view .buttons a:active {
-        background: rgba(0, 0, 0, .3);
-    }
-    .document-view .buttons a img {
-        display: block;
-        width: 16px;
-        height: 16px;
-        opacity: .95;
-        filter: invert(100%);
-    }
-    .document-view .buttons a .text {
-        margin-left: .5rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-}
-
-.document-view-toolbar {
         padding: 0 .3rem;
+        list-style: none;
         background: #666;
         color: #eee;
         font-size: .7rem;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    .document-view-toolbar .buttons a {
+    .tool-bar .buttons a {
+        display: flex;
+        align-items: center;
         height: 2rem;
+        padding: 0 .5rem;
+        color: inherit;
+        text-decoration: inherit;
+    }
+    .tool-bar .buttons.disabled a,
+    .tool-bar .buttons .disabled a {
+        opacity: .5;
+        pointer-events: none;
+    }
+    .tool-bar .buttons .separator {
+        width: 2px;
+        margin: 0 .3rem;
+        background: rgba(255, 255, 255, .2);
+    }
+    .tool-bar .buttons a:hover,
+    .tool-bar .buttons a:focus {
+        background: rgba(255, 255, 255, .1);
+    }
+    .tool-bar .buttons a:active {
+        background: rgba(0, 0, 0, .3);
+    }
+    .tool-bar .buttons a img {
+        display: block;
+        width: 16px;
+        height: 16px;
+        opacity: .95;
+        filter: invert(100%);
+    }
+    .tool-bar .buttons a .text {
+        margin-left: .5rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+}
+
+/* ================================= */
+
+.document-view {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
 }
 
 .document-view-header {
@@ -181,7 +197,13 @@ kbd {
         transition: transform .5s;
         pointer-events: none;
     }
+    .document-view-header .buttons {
+        height: 100%;
+        padding: 0;
+        background: transparent;
+    }
     .document-view-header .buttons a {
+        height: 100%;
         padding: 0 .8rem;
     }
     .document-view-header .buttons a .text {

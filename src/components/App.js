@@ -4,7 +4,7 @@ import * as doclist from '../doclist'
 import History from '../history'
 
 import MenuPanel from './MenuPanel'
-import DocumentView, {ToolbarButton} from './DocumentView'
+import DocumentView from './DocumentView'
 
 export default class App extends Component {
     history = new History()

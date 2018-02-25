@@ -2,34 +2,7 @@ import {h, Component} from 'preact'
 import classnames from 'classnames'
 import * as outline from '../outline'
 import OutlineView from './OutlineView'
-
-export class ToolbarButton extends Component {
-    handleClick = evt => {
-        evt.preventDefault()
-
-        let {disabled, onClick = () => {}} = this.props
-        if (disabled) return
-
-        onClick(evt)
-    }
-
-    render() {
-        let {disabled, icon, tooltip, text} = this.props
-
-        return <li class={classnames({disabled})}>
-            <a href="#" title={tooltip || text} onClick={this.handleClick}>
-                <img src={icon} alt={text}/>{' '}
-                <span class="text">{text}</span>
-            </a>
-        </li>
-    }
-}
-
-export class ToolbarSeparator extends Component {
-    render() {
-        return <li class="separator"/>
-    }
-}
+import Toolbar, {ToolbarButton, ToolbarSeparator} from './Toolbar'
 
 class DocumentViewHeader extends Component {
     state = {
@@ -78,9 +51,9 @@ class DocumentViewHeader extends Component {
         return <div class={classnames('document-view-header', {disabled})}>
             <div class="progress" style={{transform: `translateX(${progress - 100}%)`}}/>
 
-            <ul class="buttons">
+            <Toolbar>
                 <ToolbarButton text="Menu" icon="./img/menu.svg" onClick={this.props.onMenuButtonClick}/>
-            </ul>
+            </Toolbar>
 
             <h1 title={`${progress}%`}>
                 <input
@@ -93,21 +66,9 @@ class DocumentViewHeader extends Component {
                 />
             </h1>
 
-            <ul class={classnames('buttons', {disabled})}>
+            <Toolbar disabled={disabled}>
                 {this.props.buttons}
-            </ul>
-        </div>
-    }
-}
-
-class DocumentViewToolbar extends Component {
-    render() {
-        let {disabled} = this.props
-
-        return <div class="document-view-toolbar">
-            <ul class={classnames('buttons', {disabled})}>
-                {this.props.children}
-            </ul>
+            </Toolbar>
         </div>
     }
 }
@@ -159,7 +120,7 @@ export default class DocumentView extends Component {
                 onChange={this.handleChange}
             />
 
-            <DocumentViewToolbar disabled={disabled}>
+            <Toolbar disabled={disabled}>
                 <ToolbarButton
                     icon="./img/undo.svg"
                     text="Undo"
@@ -185,7 +146,7 @@ export default class DocumentView extends Component {
                     text="Remove Checked"
                     onClick={this.removeCheckedTasks}
                 />
-            </DocumentViewToolbar>
+            </Toolbar>
 
             <OutlineView
                 disabled={disabled}
