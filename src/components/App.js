@@ -10,7 +10,11 @@ export default class App extends Component {
     history = new History()
 
     state = {
-        showMenu: false,
+        user: {
+            name: 'Yichuan Shen',
+            avatar: 'https://avatars2.githubusercontent.com/u/9217349?s=460&v=4'
+        },
+        showMenu: true,
         currentIndex: 1,
         docs: (
             doclist.parse([
@@ -53,6 +57,10 @@ export default class App extends Component {
 
         window.app = this
         this.recordHistory()
+    }
+
+    logout = () => {
+        this.setState({user: null})
     }
 
     getCurrentDoc = () => {
@@ -131,6 +139,7 @@ export default class App extends Component {
 
         return <section id="app">
             <MenuPanel
+                user={this.state.user}
                 show={this.state.showMenu}
                 docs={this.state.docs}
                 currentIndex={this.state.currentIndex}
@@ -140,7 +149,7 @@ export default class App extends Component {
             />
 
             <DocumentView
-                disabled={doc == null}
+                disabled={doc == null || this.state.user == null}
                 doc={doc || {title: '', list: []}}
                 selectedIds={this.state.selectedIds}
                 undoable={this.history.isUndoable()}

@@ -23,9 +23,14 @@ class DocumentListItem extends Component {
 
 export default class MenuPanel extends Component {
     render() {
-        let {show, docs, currentIndex} = this.props
+        let {user, show, docs, currentIndex} = this.props
 
         return <section class={classnames('menu-panel', {show})}>
+            <div class="user">
+                <img src={user.avatar}/>
+                <h2>{user.name}</h2>
+            </div>
+
             <ol class="documents">{docs.map((doc, i) => 
                 <DocumentListItem
                     index={i}
