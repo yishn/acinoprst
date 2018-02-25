@@ -80,6 +80,10 @@ kbd {
         white-space: nowrap;
 }
 
+.menu-panel .tool-bar .buttons {
+    background: rgba(255, 255, 255, .05);
+}
+
 .menu-panel .documents {
         list-style: none;
     }
@@ -88,7 +92,7 @@ kbd {
         grid-template-columns: auto 1fr;
         grid-column-gap: .5rem;
         align-items: center;
-        padding: .3rem 1rem;
+        padding: .3rem .8rem;
         color: inherit;
         text-decoration: inherit;
     }

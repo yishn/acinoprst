@@ -1,5 +1,6 @@
 import {h, Component} from 'preact'
 import classnames from 'classnames'
+import Toolbar, {ToolbarButton, ToolbarSeparator} from './Toolbar'
 
 class DocumentListItem extends Component {
     handleClick = evt => {
@@ -30,6 +31,12 @@ export default class MenuPanel extends Component {
                 <img src={user.avatar}/>
                 <h2>{user.name}</h2>
             </div>
+
+            <Toolbar>
+                <ToolbarButton icon="./img/add.svg" text="New Document"/>
+                <ToolbarSeparator/>
+                <ToolbarButton icon="./img/logout.svg" text="Logout"/>
+            </Toolbar>
 
             <ol class="documents">{docs.map((doc, i) => 
                 <DocumentListItem

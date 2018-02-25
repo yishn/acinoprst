@@ -16,7 +16,7 @@ export class ToolbarButton extends Component {
 
         return <li class={classnames({disabled})}>
             <a href="#" title={tooltip || text} onClick={this.handleClick}>
-                <img src={icon} alt={text}/>{' '}
+                {icon != null && <img src={icon} alt={text}/>}{' '}
                 <span class="text">{text}</span>
             </a>
         </li>
