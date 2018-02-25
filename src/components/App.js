@@ -146,6 +146,7 @@ export default class App extends Component {
 
                 onDocumentClick={this.handleDocumentClick}
                 onDocumentsChange={this.updateDocs}
+                onLogout={this.logout}
             />
 
             <DocumentView

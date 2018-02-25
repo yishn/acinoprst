@@ -27,26 +27,33 @@ export default class MenuPanel extends Component {
         let {user, show, docs, currentIndex} = this.props
 
         return <section class={classnames('menu-panel', {show})}>
-            <div class="user">
-                <img src={user.avatar}/>
-                <h2>{user.name}</h2>
-            </div>
+            {user != null ? (
+                <div>
+                    <div class="user">
+                        <img src={user.avatar}/>
+                        <h2>{user.name}</h2>
+                    </div>
 
-            <Toolbar>
-                <ToolbarButton icon="./img/add.svg" text="New Document"/>
-                <ToolbarSeparator/>
-                <ToolbarButton icon="./img/logout.svg" text="Logout"/>
-            </Toolbar>
+                    <Toolbar>
+                        <ToolbarButton icon="./img/add.svg" text="New Document"/>
+                        <ToolbarSeparator/>
+                        <ToolbarButton icon="./img/logout.svg" text="Logout" onClick={this.props.onLogout}/>
+                    </Toolbar>
 
-            <ol class="documents">{docs.map((doc, i) => 
-                <DocumentListItem
-                    index={i}
-                    current={i === currentIndex}
-                    text={doc.title}
+                    <ol class="documents">{docs.map((doc, i) => 
+                        <DocumentListItem
+                            index={i}
+                            current={i === currentIndex}
+                            text={doc.title}
 
-                    onClick={this.props.onDocumentClick}
-                />
-            )}</ol>
+                            onClick={this.props.onDocumentClick}
+                        />
+                    )}</ol>
+                </div> 
+            ) : (
+                <div>
+                </div>
+            )}
         </section>
     }
 }
