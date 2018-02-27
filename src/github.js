@@ -32,7 +32,7 @@ export default class GitHub extends Component {
         return res.json()
     }
 
-    async getGistContent(id) {
+    async getGistFirstContent(id) {
         let gist = this.getGist(id)
         let fileNames = Object.keys(gist.files)
         let file = gist.files[fileNames[0]]
@@ -47,6 +47,20 @@ export default class GitHub extends Component {
     async createGist(options) {
         let res = await fetch('https://api.github.com/gists', {
             method: 'POST',
+            headers: {
+                ...makeHeaders(),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(options)
+        })
+
+        if (!res.ok) throw new Error(res.statusText)
+        return res.json()
+    }
+
+    async editGist(id, options) {
+        let res = await fetch(`https://api.github.com/gists/${id}`, {
+            method: 'PATCH',
             headers: {
                 ...makeHeaders(),
                 'Content-Type': 'application/json'
