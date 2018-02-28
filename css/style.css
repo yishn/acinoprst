@@ -59,6 +59,39 @@ kbd {
     }
     .menu-panel.show {
         transform: translateY(0);
+    }
+    .menu-panel form {
+        margin: 1rem 0;
+    }
+    .menu-panel form > ul > li {
+        margin: .8rem 0;
+    }
+    .menu-panel form > ul > li.buttons {
+        padding: .8rem;
+    }
+    .menu-panel label {
+        display: block;
+        padding: 0 .8rem;
+        color: #ccc;
+        font-size: .9rem;
+    }
+    .menu-panel input, .menu-panel button {
+        padding: .2rem 1rem;
+        background: #333;
+        border: none;
+        color: inherit;
+        font: inherit;
+        outline: none;
+        transition: background .2s, transform .2s;
+    }
+    .menu-panel input {
+        width: 100%;
+    }
+    .menu-panel button:active {
+        transform: translateY(3px);
+    }
+    .menu-panel input:focus, .menu-panel button:focus, .menu-panel button:hover {
+        background: #444;
 }
 
 .menu-panel .user {
@@ -69,6 +102,10 @@ kbd {
     .menu-panel .user img {
         height: 40px;
         width: 40px;
+        background: white;
+    }
+    .menu-panel.login .user img {
+        border: 5px solid white;
     }
     .menu-panel .user h2 {
         padding: 0 1rem;
