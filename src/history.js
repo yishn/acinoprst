@@ -5,6 +5,10 @@ export default class History {
         this.delay = delay
     }
 
+    clear() {
+        this.history.length = 0
+    }
+
     push(data) {
         let timestamp = Date.now()
         let lastEntry = this.history[this.pointer]

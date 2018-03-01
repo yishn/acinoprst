@@ -1,6 +1,7 @@
 import {h, Component} from 'preact'
 import * as outline from '../outline'
-import * as doclist from '../doclist'
+import {parse} from '../doclist'
+import {getGistInfo} from '../github'
 import History from '../history'
 
 import MenuPanel from './MenuPanel'
@@ -10,46 +11,12 @@ export default class App extends Component {
     history = new History()
 
     state = {
-        user: {
-            name: 'Yichuan Shen',
-            avatar: 'https://avatars2.githubusercontent.com/u/9217349?s=460&v=4'
-        },
+        busy: 0,
+        user: null,
         showMenu: true,
-        currentIndex: 1,
-        docs: (
-            doclist.parse([
-                '# Test',
-                '',
-                '* Hello',
-                '    - [x] World',
-                '- [x] Hey',
-                '+ [ ] What is up',
-                '    - [ ] Boom',
-                '+ [ ] Hello',
-                '    - [x] World',
-                '- [x] Hey',
-                '- [ ] What is up',
-                '    - [ ] Boom',
-                '        - [ ] Second Boom',
-                '',
-                '---',
-                '',
-                '# Another Test',
-                '',
-                '* Hello',
-                '    - [x] World',
-                '- [x] Hey',
-                '- [ ] What is up',
-                '    - [ ] Boom',
-                '- [ ] Hello',
-                '    - [x] World',
-                '- [x] Hey',
-                '- [ ] What is up',
-                '    - [ ] Boom',
-                '        - [ ] Second Boom'
-            ].join('\n'))
-        ),
-        selectedIds: [1]
+        currentIndex: 0,
+        docs: [],
+        selectedIds: []
     }
 
     constructor() {
@@ -59,8 +26,40 @@ export default class App extends Component {
         this.recordHistory()
     }
 
+    login = ({gistUrl, accessToken}) => {
+        this.pushBusy()
+
+        getGistInfo(gistUrl).then(({user, avatar, content}) => {
+            this.setState({
+                user: {
+                    avatar,
+                    name: user
+                }
+            })
+
+            this.updateDocs({docs: parse(content)})
+            this.updateCurrentIndex({currentIndex: 0})
+
+            this.history.clear()
+            this.recordHistory()
+        }).catch(err => {
+            console.log(err)
+            this.logout()
+        }).then(() => {
+            this.popBusy()
+        })
+    }
+
     logout = () => {
         this.setState({user: null, docs: []})
+    }
+
+    pushBusy = () => {
+        this.setState(({busy}) => ({busy: busy + 1}))
+    }
+
+    popBusy = () => {
+        this.setState(({busy}) => ({busy: Math.max(busy - 1, 0)}))
     }
 
     getCurrentDoc = () => {
@@ -146,7 +145,7 @@ export default class App extends Component {
 
                 onDocumentClick={this.handleDocumentClick}
                 onDocumentsChange={this.updateDocs}
-                onLogin={console.log}
+                onLogin={this.login}
                 onLogout={this.logout}
             />
 
