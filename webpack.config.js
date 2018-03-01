@@ -17,8 +17,8 @@ module.exports = {
                 loader: 'babel-loader',
                 test: /\.js$/,
                 query: {
-                    presets: [['env', {modules: false}], 'stage-1-without-async'],
-                    plugins: ['fast-async', ['transform-react-jsx', {pragma: 'h'}]]
+                    presets: [['env', {modules: false}], 'stage-1'],
+                    plugins: [['transform-react-jsx', {pragma: 'h'}]]
                 }
             }
         ]
