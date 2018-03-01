@@ -76,7 +76,7 @@ class DocumentViewHeader extends Component {
 export default class DocumentView extends Component {
     handleOutlineBlur = () => {
         let titleInput = this.element.querySelector('.document-view-header h1 input')
-        
+
         titleInput.select()
         titleInput.focus()
     }

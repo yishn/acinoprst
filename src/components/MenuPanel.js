@@ -23,11 +23,46 @@ class DocumentListItem extends Component {
 }
 
 export default class MenuPanel extends Component {
+    state = {
+        gistUrl: '',
+        accessToken: ''
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.user != null && nextProps.user == null) {
+            this.setState({
+                gistUrl: '',
+                accessToken: ''
+            }, () => {
+                this.gistUrlInput.focus()
+            })
+        }
+    }
+
+    handleLogin = evt => {
+        evt.preventDefault()
+        let {onLogin = () => {}} = this.props
+
+        onLogin({
+            gistUrl: this.state.gistUrl,
+            accessToken: this.state.accessToken
+        })
+    }
+
+    handleGistUrlChange = evt => {
+        this.setState({gistUrl: evt.currentTarget.value})
+    }
+
+    handleAccessTokenChange = evt => {
+        this.setState({accessToken: evt.currentTarget.value})
+    }
+
     render() {
         let {user, show, docs, currentIndex} = this.props
+        let login = user == null
 
-        return <section class={classnames('menu-panel', {show, login: user == null})}>
-            {user != null ? (
+        return <section class={classnames('menu-panel', {show, login})}>
+            {!login ? (
                 <div>
                     <div class="user">
                         <img src={user.avatar}/>
@@ -60,15 +95,26 @@ export default class MenuPanel extends Component {
                     <form>
                         <ul>
                             <li>
-                                <label for="input-gist-url">Gist URL:</label>
-                                <input id="input-gist-url"/>
+                                <label>
+                                    <strong>Gist URL:</strong>
+                                    <input
+                                        ref={el => this.gistUrlInput = el}
+                                        value={this.state.gistUrl}
+                                        onInput={this.handleGistUrlChange}
+                                    />
+                                </label>
                             </li>
                             <li>
-                                <label for="input-access-token">Access Token:</label>
-                                <input id="input-access-token"/>
+                                <label>
+                                    <strong>Access Token:</strong>
+                                    <input
+                                        value={this.state.accessToken}
+                                        onInput={this.handleAccessTokenChange}
+                                    />
+                                </label>
                             </li>
                             <li class="buttons">
-                                <button>Login</button>
+                                <button onClick={this.handleLogin}>Login</button>
                             </li>
                         </ul>
                     </form>

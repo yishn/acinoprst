@@ -60,7 +60,7 @@ export default class App extends Component {
     }
 
     logout = () => {
-        this.setState({user: null})
+        this.setState({user: null, docs: []})
     }
 
     getCurrentDoc = () => {
@@ -97,7 +97,7 @@ export default class App extends Component {
         this.setState({docs})
         this.recordHistory()
     }
-    
+
     updateCurrentIndex = ({currentIndex}) => {
         if (currentIndex === this.state.currentIndex) return
 
@@ -110,7 +110,7 @@ export default class App extends Component {
 
         this.recordHistory()
     }
-    
+
     updateSelectedIds = ({selectedIds}) => {
         this.setState({selectedIds})
     }
@@ -124,7 +124,7 @@ export default class App extends Component {
         let {docs, currentIndex} = this.state
         let result = confirm('Do you really want to remove this document?')
         if (!result) return
-        
+
         this.updateDocs({docs: docs.filter((_, i) => i !== currentIndex)})
         this.updateCurrentIndex({currentIndex: Math.max(0, currentIndex - 1)})
     }
@@ -146,6 +146,7 @@ export default class App extends Component {
 
                 onDocumentClick={this.handleDocumentClick}
                 onDocumentsChange={this.updateDocs}
+                onLogin={console.log}
                 onLogout={this.logout}
             />
 

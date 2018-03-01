@@ -69,11 +69,12 @@ kbd {
     .menu-panel form > ul > li.buttons {
         padding: .8rem;
     }
-    .menu-panel label {
+    .menu-panel label > strong {
         display: block;
         padding: 0 .8rem;
         color: #ccc;
         font-size: .9rem;
+        font-weight: inherit;
     }
     .menu-panel input, .menu-panel button {
         padding: .2rem 1rem;
@@ -129,7 +130,7 @@ kbd {
         grid-template-columns: auto 1fr;
         grid-column-gap: .5rem;
         align-items: center;
-        padding: .3rem .8rem;
+        padding: .5rem .8rem;
         color: inherit;
         text-decoration: inherit;
     }
