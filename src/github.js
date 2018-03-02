@@ -1,5 +1,4 @@
 import qs from 'querystring'
-import {Base64} from 'js-base64'
 import fetch from 'unfetch'
 
 export function getGistInfo(url, user = null, pass = null) {
@@ -35,7 +34,7 @@ export default class GitHub {
 
     setAuthorization(user = null, pass = null) {
         if (user == null) this.authorization = null
-        else this.authorization = Base64.encode(`${user}:${pass}`)
+        else this.authorization = atob(`${user}:${pass}`)
     }
 
     makeHeaders() {
