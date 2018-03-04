@@ -6,6 +6,7 @@ import History from '../history'
 
 import MenuPanel from './MenuPanel'
 import DocumentView from './DocumentView'
+import BusyScreen from './BusyScreen'
 
 export default class App extends Component {
     history = new History()
@@ -163,6 +164,8 @@ export default class App extends Component {
                 onUndo={this.undo}
                 onRedo={this.redo}
             />
+
+            <BusyScreen show={this.state.busy > 0}/>
         </section>
     }
 }
