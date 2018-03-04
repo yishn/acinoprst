@@ -4,6 +4,7 @@ import {parse} from '../doclist'
 import {getGistInfo} from '../github'
 import History from '../history'
 
+import {ToolbarButton} from './Toolbar'
 import MenuPanel from './MenuPanel'
 import DocumentView from './DocumentView'
 import BusyScreen from './BusyScreen'
@@ -157,9 +158,16 @@ export default class App extends Component {
                 undoable={this.history.isUndoable()}
                 redoable={this.history.isRedoable()}
 
+                headerButtons={[
+                    <ToolbarButton
+                        icon="./img/trash.svg"
+                        text="Remove"
+                        onClick={this.removeDoc}
+                    />
+                ]}
+
                 onMenuButtonClick={this.showMenu}
                 onChange={this.updateDoc}
-                onRemove={this.removeDoc}
                 onSelectionChange={this.updateSelectedIds}
                 onUndo={this.undo}
                 onRedo={this.redo}

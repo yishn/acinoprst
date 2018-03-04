@@ -107,13 +107,7 @@ export default class DocumentView extends Component {
             <DocumentViewHeader
                 disabled={disabled}
                 doc={doc}
-                buttons={[
-                    <ToolbarButton
-                        icon="./img/trash.svg"
-                        text="Remove"
-                        onClick={this.props.onRemove}
-                    />
-                ]}
+                buttons={this.props.headerButtons}
 
                 onMenuButtonClick={this.props.onMenuButtonClick}
                 onSubmit={this.handleTitleSubmit}
@@ -123,13 +117,13 @@ export default class DocumentView extends Component {
             <Toolbar disabled={disabled}>
                 <ToolbarButton
                     icon="./img/undo.svg"
-                    text="Undo"
+                    tooltip="Undo"
                     disabled={!this.props.undoable}
                     onClick={this.props.onUndo}
                 />
                 <ToolbarButton
                     icon="./img/redo.svg"
-                    text="Redo"
+                    tooltip="Redo"
                     disabled={!this.props.redoable}
                     onClick={this.props.onRedo}
                 />
