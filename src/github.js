@@ -34,7 +34,7 @@ export default class GitHub {
 
     setAuthorization(user = null, pass = null) {
         if (user == null) this.authorization = null
-        else this.authorization = atob(`${user}:${pass}`)
+        else this.authorization = btoa(`${user}:${pass}`)
     }
 
     makeHeaders() {
