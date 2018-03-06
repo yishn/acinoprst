@@ -31,11 +31,12 @@ export default class App extends Component {
     login = ({gistUrl, accessToken}) => {
         this.pushBusy()
 
-        getGistInfo(gistUrl).then(({client, id, user, avatar, content}) => {
+        getGistInfo(gistUrl).then(({client, url, id, user, avatar, content}) => {
             this.setState({
                 user: {
                     avatar,
                     name: user,
+                    gistUrl: url,
                     gistId: id,
                     client: client.setAuthorization(user, accessToken)
                 }
@@ -47,7 +48,7 @@ export default class App extends Component {
             this.history.clear()
             this.recordHistory()
         }).catch(err => {
-            alert('Loading of gist failed.')
+            alert(`Loading of gist failed.\n\n${err}`)
             this.logout()
         }).then(() => {
             this.popBusy()
@@ -56,6 +57,20 @@ export default class App extends Component {
 
     logout = () => {
         this.setState({user: null, docs: []})
+    }
+
+    pull = () => {
+        this.pushBusy()
+
+        let {gistUrl, client} = this.state.user
+
+        getGistInfo(this.state.user.gistUrl, client).then(({content}) => {
+            this.updateDocs({docs: parse(content)})
+        }).catch(err => {
+            alert(`Loading of gist failed.\n\n${err}`)
+        }).then(() => {
+            this.popBusy()
+        })
     }
 
     pushBusy = () => {

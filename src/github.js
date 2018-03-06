@@ -1,12 +1,12 @@
 import qs from 'querystring'
 import fetch from 'unfetch'
 
-export function getGistInfo(url, user = null, pass = null) {
+export function getGistInfo(url, client = null) {
     return Promise.resolve().then(() => {
         let obj = new URL(url)
         let [id] = obj.pathname.match(/[^\/]+/g).slice(-1)
         let host = obj.hostname !== 'gist.github.com' ? `${obj.hostname}/api` : 'api.github.com'
-        let client = new GitHub({user, pass, host})
+        if (client == null) client = new GitHub({host})
 
         return {id, host, client}
     }).then(({id, host, client}) => client.getGist(id).then(gist => {
@@ -22,7 +22,7 @@ export function getGistInfo(url, user = null, pass = null) {
                 if (!res.ok) return Promise.reject(new Error('Could not retrieve file'))
                 return res.text()
             })
-        }).then(content => ({id, host, user, avatar, client, content}))
+        }).then(content => ({id, host, url, user, avatar, client, content}))
     }))
 }
 
