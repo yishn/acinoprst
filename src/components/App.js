@@ -31,11 +31,13 @@ export default class App extends Component {
     login = ({gistUrl, accessToken}) => {
         this.pushBusy()
 
-        getGistInfo(gistUrl).then(({user, avatar, content}) => {
+        getGistInfo(gistUrl).then(({client, id, user, avatar, content}) => {
             this.setState({
                 user: {
                     avatar,
-                    name: user
+                    name: user,
+                    gistId: id,
+                    client: client.setAuthorization(user, accessToken)
                 }
             })
 
@@ -159,6 +161,16 @@ export default class App extends Component {
                 redoable={this.history.isRedoable()}
 
                 headerButtons={[
+                    <ToolbarButton
+                        icon="./img/down.svg"
+                        text="Pull"
+                        onClick={this.pull}
+                    />,
+                    <ToolbarButton
+                        icon="./img/up.svg"
+                        text="Push"
+                        onClick={this.push}
+                    />,
                     <ToolbarButton
                         icon="./img/trash.svg"
                         text="Remove"

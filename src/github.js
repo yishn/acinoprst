@@ -35,6 +35,8 @@ export default class GitHub {
     setAuthorization(user = null, pass = null) {
         if (user == null) this.authorization = null
         else this.authorization = btoa(`${user}:${pass}`)
+
+        return this
     }
 
     makeHeaders() {
