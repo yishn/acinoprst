@@ -12,17 +12,18 @@ export function getGistInfo(url, client = null) {
     }).then(({id, host, client}) => client.getGist(id).then(gist => {
         let user = gist.owner.login
         let avatar = gist.owner.avatar_url
-        let file = gist.files[Object.keys(gist.files)[0]]
-        if (file == null) return Promise.reject(new Error('File not found'))
+        let filename = Object.keys(gist.files)[0]
+        let file = gist.files[filename]
+        if (file == null) throw new Error('File not found')
 
         return Promise.resolve().then(() => {
             if (!file.truncated) return file.content
 
             return fetch(file.raw_url).then(res => {
-                if (!res.ok) return Promise.reject(new Error('Could not retrieve file'))
+                if (!res.ok) throw new Error('Could not retrieve file')
                 return res.text()
             })
-        }).then(content => ({id, host, url, user, avatar, client, content}))
+        }).then(content => ({id, host, url, filename, user, avatar, client, content}))
     }))
 }
 
@@ -55,7 +56,7 @@ export default class GitHub {
         return fetch(`https://${this.host}/user`, {
             headers: this.makeHeaders()
         }).then(res => {
-            if (!res.ok) return Promise.reject(new Error(res.statusText))
+            if (!res.ok) throw new Error(res.statusText)
             return res.json()
         })
     }
@@ -64,7 +65,7 @@ export default class GitHub {
         return fetch(`https://${this.host}/gists/${id}`, {
             headers: this.makeHeaders()
         }).then(res => {
-            if (!res.ok) return Promise.reject(new Error(res.statusText))
+            if (!res.ok) throw new Error(res.statusText)
             return res.json()
         })
     }
@@ -78,7 +79,7 @@ export default class GitHub {
             },
             body: JSON.stringify(options)
         }).then(res => {
-            if (!res.ok) return Promise.reject(new Error(res.statusText))
+            if (!res.ok) throw new Error(res.statusText)
             return res.json()
         })
     }
@@ -92,7 +93,7 @@ export default class GitHub {
             },
             body: JSON.stringify(options)
         }).then(res => {
-            if (!res.ok) return Promise.reject(new Error(res.statusText))
+            if (!res.ok) throw new Error(res.statusText)
             return res.json()
         })
     }

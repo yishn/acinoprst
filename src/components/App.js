@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 import * as outline from '../outline'
-import {parse} from '../doclist'
+import {parse, stringify} from '../doclist'
 import {getGistInfo} from '../github'
 import History from '../history'
 
@@ -29,15 +29,16 @@ export default class App extends Component {
     }
 
     login = ({gistUrl, accessToken}) => {
-        this.pushBusy()
+        this.startBusy()
 
-        getGistInfo(gistUrl).then(({client, url, id, user, avatar, content}) => {
+        getGistInfo(gistUrl).then(({client, url, id, filename, user, avatar, content}) => {
             this.setState({
                 user: {
                     avatar,
                     name: user,
                     gistUrl: url,
                     gistId: id,
+                    gistFilename: filename,
                     client: client.setAuthorization(user, accessToken)
                 }
             })
@@ -51,7 +52,7 @@ export default class App extends Component {
             alert(`Loading of gist failed.\n\n${err}`)
             this.logout()
         }).then(() => {
-            this.popBusy()
+            this.endBusy()
         })
     }
 
@@ -60,7 +61,7 @@ export default class App extends Component {
     }
 
     pull = () => {
-        this.pushBusy()
+        this.startBusy()
 
         let {gistUrl, client} = this.state.user
 
@@ -69,15 +70,33 @@ export default class App extends Component {
         }).catch(err => {
             alert(`Loading of gist failed.\n\n${err}`)
         }).then(() => {
-            this.popBusy()
+            this.endBusy()
         })
     }
 
-    pushBusy = () => {
+    push = () => {
+        this.startBusy()
+
+        let {gistId, gistFilename, client} = this.state.user
+
+        client.editGist(gistId, {
+            files: {
+                [gistFilename]: {
+                    content: stringify(this.state.docs)
+                }
+            }
+        }).catch(err => {
+            alert(`Updating gist failed.\n\n${err}`)
+        }).then(() => {
+            this.endBusy()
+        })
+    }
+
+    startBusy = () => {
         this.setState(({busy}) => ({busy: busy + 1}))
     }
 
-    popBusy = () => {
+    endBusy = () => {
         this.setState(({busy}) => ({busy: Math.max(busy - 1, 0)}))
     }
 
