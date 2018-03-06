@@ -45,7 +45,7 @@ export default class App extends Component {
             this.history.clear()
             this.recordHistory()
         }).catch(err => {
-            console.log(err)
+            alert('Loading of gist failed.')
             this.logout()
         }).then(() => {
             this.popBusy()
