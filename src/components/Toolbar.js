@@ -12,9 +12,9 @@ export class ToolbarButton extends Component {
     }
 
     render() {
-        let {disabled, icon, tooltip, text} = this.props
+        let {type, disabled, icon, tooltip, text} = this.props
 
-        return <li class={classnames({disabled})}>
+        return <li class={classnames(type, {disabled})}>
             <a href="#" title={tooltip || text} onClick={this.handleClick}>
                 {icon != null && <img src={icon} alt={text}/>}{' '}
                 {text && <span class="text">{text}</span>}

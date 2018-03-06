@@ -52,7 +52,12 @@ class DocumentViewHeader extends Component {
             <div class="progress" style={{transform: `translateX(${progress - 100}%)`}}/>
 
             <Toolbar>
-                <ToolbarButton text="Menu" icon="./img/menu.svg" onClick={this.props.onMenuButtonClick}/>
+                <ToolbarButton
+                    type="menu"
+                    text="Menu"
+                    icon="./img/menu.svg"
+                    onClick={this.props.onMenuButtonClick}
+                />
             </Toolbar>
 
             <h1 title={`${progress}%`}>

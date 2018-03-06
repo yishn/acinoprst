@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 import classnames from 'classnames'
-import Toolbar, {ToolbarButton, ToolbarSeparator} from './Toolbar'
+import Toolbar, {ToolbarButton} from './Toolbar'
 
 class DocumentListItem extends Component {
     handleClick = evt => {
@@ -71,7 +71,6 @@ export default class MenuPanel extends Component {
 
                     <Toolbar>
                         <ToolbarButton icon="./img/add.svg" text="New Document"/>
-                        <ToolbarSeparator/>
                         <ToolbarButton icon="./img/logout.svg" text="Logout" onClick={this.props.onLogout}/>
                     </Toolbar>
 

@@ -13,7 +13,8 @@ export default class App extends Component {
     history = new History()
 
     state = {
-        busy: 0,
+        busy: [],
+        changed: false,
         user: null,
         showMenu: true,
         currentIndex: 0,
@@ -24,7 +25,6 @@ export default class App extends Component {
     constructor() {
         super()
 
-        window.app = this
         this.recordHistory()
     }
 
@@ -45,6 +45,7 @@ export default class App extends Component {
 
             this.updateDocs({docs: parse(content)})
             this.updateCurrentIndex({currentIndex: 0})
+            this.setState({changed: false})
 
             this.history.clear()
             this.recordHistory()
@@ -61,12 +62,13 @@ export default class App extends Component {
     }
 
     pull = () => {
-        this.startBusy()
+        this.startBusy('pull')
 
         let {gistUrl, client} = this.state.user
 
         getGistInfo(this.state.user.gistUrl, client).then(({content}) => {
             this.updateDocs({docs: parse(content)})
+            this.setState({changed: false})
         }).catch(err => {
             alert(`Loading of gist failed.\n\n${err}`)
         }).then(() => {
@@ -75,7 +77,7 @@ export default class App extends Component {
     }
 
     push = () => {
-        this.startBusy()
+        this.startBusy('push')
 
         let {gistId, gistFilename, client} = this.state.user
 
@@ -85,6 +87,8 @@ export default class App extends Component {
                     content: stringify(this.state.docs)
                 }
             }
+        }).then(() => {
+            this.setState({changed: false})
         }).catch(err => {
             alert(`Updating gist failed.\n\n${err}`)
         }).then(() => {
@@ -92,12 +96,12 @@ export default class App extends Component {
         })
     }
 
-    startBusy = () => {
-        this.setState(({busy}) => ({busy: busy + 1}))
+    startBusy = type => {
+        this.setState(({busy}) => ({busy: (busy.push(type), busy)}))
     }
 
     endBusy = () => {
-        this.setState(({busy}) => ({busy: Math.max(busy - 1, 0)}))
+        this.setState(({busy}) => ({busy: (busy.pop(), busy)}))
     }
 
     getCurrentDoc = () => {
@@ -131,7 +135,7 @@ export default class App extends Component {
     updateDocs = ({docs}) => {
         if (docs === this.state.docs) return
 
-        this.setState({docs})
+        this.setState({docs, changed: true})
         this.recordHistory()
     }
 
@@ -196,16 +200,21 @@ export default class App extends Component {
 
                 headerButtons={[
                     <ToolbarButton
-                        icon="./img/down.svg"
+                        key="pull"
+                        type={this.state.busy.includes('pull') && 'sync'}
+                        icon={`./img/${this.state.busy.includes('pull') ? 'sync' : 'down'}.svg`}
                         text="Pull"
                         onClick={this.pull}
                     />,
-                    <ToolbarButton
-                        icon="./img/up.svg"
+                    this.state.changed && <ToolbarButton
+                        key="push"
+                        type={this.state.busy.includes('push') && 'sync'}
+                        icon={`./img/${this.state.busy.includes('push') ? 'sync' : 'up'}.svg`}
                         text="Push"
                         onClick={this.push}
                     />,
                     <ToolbarButton
+                        key="remove"
                         icon="./img/trash.svg"
                         text="Remove"
                         onClick={this.removeDoc}
@@ -219,7 +228,7 @@ export default class App extends Component {
                 onRedo={this.redo}
             />
 
-            <BusyScreen show={this.state.busy > 0}/>
+            <BusyScreen show={this.state.busy.length > 0}/>
         </section>
     }
 }
