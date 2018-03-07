@@ -337,27 +337,32 @@ kbd {
         opacity: .7;
     }
     .outline-item > .inner .text {
-        white-space: pre-wrap;
+        position: relative;
     }
-    .outline-item.checked > .inner .text,
-    .outline-item.checked > .inner .input {
+    .outline-item.checked > .inner .text {
         opacity: .4;
     }
-    .outline-item.edit > .inner .text {
-        position: absolute;
-        left: -9999em;
-        top: -9999em;
-        opacity: 0;
-        pointer-events: none;
+    .outline-item > .inner .text span {
+        display: block;
+        white-space: pre-wrap;
     }
-    .outline-item > .inner .input {
+    .outline-item.edit > .inner .text span {
+        visibility: hidden;
+    }
+    .outline-item > .inner .text textarea {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
         border: none;
         outline: none;
         background: transparent;
         resize: none;
     }
-    .outline-item:not(.edit) > .inner .input {
-        display: none;
+    .outline-item.edit > .inner .text textarea {
+        display: block;
     }
     .outline-item > .inner .collapse {
         position: relative;
