@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
 import * as outline from '../outline'
 import {parse, stringify} from '../doclist'
-import {getGistInfo} from '../github'
+import GitHub, {extractGistInfo} from '../github'
 import History from '../history'
 
 import {ToolbarButton} from './Toolbar'
@@ -28,68 +28,77 @@ export default class App extends Component {
         this.recordHistory()
     }
 
-    login = ({gistUrl, accessToken}) => {
-        this.startBusy()
+    pull = () => {
+        return this.client.getGist(this.gistId).then(gist => {
+            let filename = Object.keys(gist.files)[0]
 
-        getGistInfo(gistUrl).then(({client, url, id, filename, user, avatar, content}) => {
+            return this.client.getGistFileContent(gist, filename).then(content => {
+                return {gist, filename, content}
+            })
+        })
+        .then(({gist, filename, content}) => {
+            this.gistFilename = filename
+
             this.setState({
                 user: {
-                    avatar,
-                    name: user,
-                    gistUrl: url,
-                    gistId: id,
-                    gistFilename: filename,
-                    client: client.setAuthorization(user, accessToken)
+                    avatar: gist.owner.avatar_url,
+                    name: gist.owner.login
                 }
             })
 
             this.updateDocs({docs: parse(content)})
-            this.updateCurrentIndex({currentIndex: 0})
             this.setState({changed: false})
-
-            this.history.clear()
-            this.recordHistory()
-        }).catch(err => {
-            alert(`Loading of gist failed.\n\n${err}`)
-            this.logout()
-        }).then(() => {
-            this.endBusy()
-        })
-    }
-
-    logout = () => {
-        this.setState({user: null, docs: []})
-    }
-
-    pull = () => {
-        this.startBusy('pull')
-
-        let {gistUrl, client} = this.state.user
-
-        getGistInfo(this.state.user.gistUrl, client).then(({content}) => {
-            this.updateDocs({docs: parse(content)})
-            this.setState({changed: false})
-        }).catch(err => {
-            alert(`Loading of gist failed.\n\n${err}`)
-        }).then(() => {
-            this.endBusy()
         })
     }
 
     push = () => {
-        this.startBusy('push')
-
-        let {gistId, gistFilename, client} = this.state.user
-
-        client.editGist(gistId, {
+        return this.client.editGist(this.gistId, {
             files: {
-                [gistFilename]: {
+                [this.gistFilename]: {
                     content: stringify(this.state.docs)
                 }
             }
         }).then(() => {
             this.setState({changed: false})
+        })
+    }
+
+    login = ({gistUrl, accessToken}) => {
+        this.startBusy()
+
+        let {id, user, host} = extractGistInfo(gistUrl)
+        this.client = new GitHub({host, user, pass: accessToken})
+        this.gistId = id
+
+        return this.pull().then(() => {
+            this.updateCurrentIndex({currentIndex: 0})
+            this.history.clear()
+            this.recordHistory()
         }).catch(err => {
+            alert(`Login failed.\n\n${err}`)
+            this.logout()
+        })
+        .then(() => this.endBusy())
+    }
+
+    logout = () => {
+        this.client = null
+        this.setState({user: null, docs: []})
+    }
+
+    pullClick = () => {
+        this.startBusy('pull')
+
+        return this.pull().catch(err => {
+            alert(`Loading of gist failed.\n\n${err}`)
+        })
+        .then(() => this.endBusy())
+    }
+
+    pushClick = () => {
+        this.startBusy('push')
+
+        return this.push().catch(err => {
             alert(`Updating gist failed.\n\n${err}`)
         }).then(() => {
             this.endBusy()
@@ -97,11 +106,11 @@ export default class App extends Component {
     }
 
     startBusy = type => {
-        this.setState(({busy}) => ({busy: (busy.push(type), busy)}))
+        this.setState(s => ({busy: (s.busy.push(type), s.busy)}))
     }
 
     endBusy = () => {
-        this.setState(({busy}) => ({busy: (busy.pop(), busy)}))
+        this.setState(s => ({busy: (s.busy.pop(), s.busy)}))
     }
 
     getCurrentDoc = () => {
@@ -204,14 +213,14 @@ export default class App extends Component {
                         type={this.state.busy.includes('pull') && 'sync'}
                         icon={`./img/${this.state.busy.includes('pull') ? 'sync' : 'down'}.svg`}
                         text="Pull"
-                        onClick={this.pull}
+                        onClick={this.pullClick}
                     />,
                     this.state.changed && <ToolbarButton
                         key="push"
                         type={this.state.busy.includes('push') && 'sync'}
                         icon={`./img/${this.state.busy.includes('push') ? 'sync' : 'up'}.svg`}
                         text="Push"
-                        onClick={this.push}
+                        onClick={this.pushClick}
                     />,
                     <ToolbarButton
                         key="remove"

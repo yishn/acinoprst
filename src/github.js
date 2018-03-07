@@ -1,30 +1,12 @@
 import qs from 'querystring'
 import fetch from 'unfetch'
 
-export function getGistInfo(url, client = null) {
-    return Promise.resolve().then(() => {
-        let obj = new URL(url)
-        let [id] = obj.pathname.match(/[^\/]+/g).slice(-1)
-        let host = obj.hostname !== 'gist.github.com' ? `${obj.hostname}/api` : 'api.github.com'
-        if (client == null) client = new GitHub({host})
+export function extractGistInfo(url) {
+    let obj = new URL(url)
+    let [user, id] = obj.pathname.match(/[^\/]+/g).slice(-2)
+    let host = obj.hostname !== 'gist.github.com' ? `${obj.hostname}/api` : 'api.github.com'
 
-        return {id, host, client}
-    }).then(({id, host, client}) => client.getGist(id).then(gist => {
-        let user = gist.owner.login
-        let avatar = gist.owner.avatar_url
-        let filename = Object.keys(gist.files)[0]
-        let file = gist.files[filename]
-        if (file == null) throw new Error('File not found')
-
-        return Promise.resolve().then(() => {
-            if (!file.truncated) return file.content
-
-            return fetch(file.raw_url).then(res => {
-                if (!res.ok) throw new Error('Could not retrieve file')
-                return res.text()
-            })
-        }).then(content => ({id, host, url, filename, user, avatar, client, content}))
-    }))
+    return {id, user, host}
 }
 
 export default class GitHub {
@@ -67,6 +49,20 @@ export default class GitHub {
         }).then(res => {
             if (!res.ok) throw new Error(res.statusText)
             return res.json()
+        })
+    }
+
+    getGistFileContent(gist, filename) {
+        let file = gist.files[filename]
+        if (file == null) throw new Error('File not found')
+
+        return Promise.resolve().then(() => {
+            if (!file.truncated) return file.content
+
+            return fetch(file.raw_url).then(res => {
+                if (!res.ok) throw new Error('Could not retrieve file')
+                return res.text()
+            })
         })
     }
 
