@@ -28,6 +28,13 @@ export default class App extends Component {
         this.recordHistory()
     }
 
+    componentDidMount() {
+        // Auto login
+
+        let credentials = JSON.parse(localStorage.getItem('acinoprst_credentials'))
+        if (credentials != null) this.login(credentials)
+    }
+
     pull = () => {
         return this.client.getGist(this.gistId).then(gist => {
             let filename = Object.keys(gist.files)[0]
@@ -66,11 +73,15 @@ export default class App extends Component {
     login = ({gistUrl, accessToken}) => {
         this.startBusy()
 
-        let {id, user, host} = extractGistInfo(gistUrl)
-        this.client = new GitHub({host, user, pass: accessToken})
-        this.gistId = id
+        localStorage.setItem('acinoprst_credentials', JSON.stringify({gistUrl, accessToken}))
 
-        return this.pull().then(() => {
+        return Promise.resolve().then(() => {
+            let {id, user, host} = extractGistInfo(gistUrl)
+            this.client = new GitHub({host, user, pass: accessToken})
+            this.gistId = id
+        }).then(() => {
+            return this.pull()
+        }).then(() => {
             this.updateCurrentIndex({currentIndex: 0})
             this.history.clear()
             this.recordHistory()
@@ -82,6 +93,8 @@ export default class App extends Component {
     }
 
     logout = () => {
+        localStorage.removeItem('acinoprst_credentials')
+
         this.client = null
         this.setState({user: null, docs: []})
     }
