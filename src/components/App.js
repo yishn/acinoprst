@@ -31,8 +31,8 @@ export default class App extends Component {
     componentDidMount() {
         // Auto login
 
-        let credentials = JSON.parse(localStorage.getItem('acinoprst_credentials'))
-        if (credentials != null) this.login(credentials)
+        let credentials = localStorage.getItem('acinoprst_credentials')
+        if (credentials != null) this.login(JSON.parse(atob(credentials)))
     }
 
     pull = () => {
@@ -73,7 +73,7 @@ export default class App extends Component {
     login = ({gistUrl, accessToken}) => {
         this.startBusy()
 
-        localStorage.setItem('acinoprst_credentials', JSON.stringify({gistUrl, accessToken}))
+        localStorage.setItem('acinoprst_credentials', btoa(JSON.stringify({gistUrl, accessToken})))
 
         return Promise.resolve().then(() => {
             let {id, user, host} = extractGistInfo(gistUrl)
