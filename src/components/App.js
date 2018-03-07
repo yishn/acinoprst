@@ -33,6 +33,13 @@ export default class App extends Component {
 
         let credentials = localStorage.getItem('acinoprst_credentials')
         if (credentials != null) this.login(JSON.parse(atob(credentials)))
+
+        window.addEventListener('beforeunload', evt => {
+            if (!this.state.changed) return
+
+            let message = 'You have made unsaved changes. Do you really want to leave?'
+            evt.returnValue = message
+        })
     }
 
     pull = () => {
