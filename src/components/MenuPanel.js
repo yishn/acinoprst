@@ -70,7 +70,7 @@ export default class MenuPanel extends Component {
                     </div>
 
                     <Toolbar>
-                        <ToolbarButton icon="./img/add.svg" text="New Document"/>
+                        <ToolbarButton icon="./img/add.svg" text="New Document" onClick={this.props.onNewDocumentClick}/>
                         <ToolbarButton icon="./img/logout.svg" text="Logout" onClick={this.props.onLogout}/>
                     </Toolbar>
 

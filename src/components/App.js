@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import {parse, stringify} from '../doclist'
+import * as doclist from '../doclist'
 import GitHub, {extractGistInfo} from '../github'
 import History from '../history'
 import * as outline from '../outline'
@@ -65,7 +65,7 @@ export default class App extends Component {
                 }
             })
 
-            this.updateDocs({docs: parse(content)})
+            this.updateDocs({docs: doclist.parse(content)})
             this.setState({changed: false})
         })
     }
@@ -74,7 +74,7 @@ export default class App extends Component {
         return this.client.editGist(this.gistId, {
             files: {
                 [this.gistFilename]: {
-                    content: stringify(this.state.docs)
+                    content: doclist.stringify(this.state.docs)
                 }
             }
         }).then(() => {
@@ -192,16 +192,31 @@ export default class App extends Component {
 
     updateDoc = ({doc}) => {
         let {docs, currentIndex} = this.state
-        this.updateDocs({docs: docs.map((x, i) => i === currentIndex ? doc : x)})
+        this.updateDocs({docs: doclist.update(docs, currentIndex, doc)})
     }
 
-    removeDoc = () => {
+    removeDoc = ({index = null} = {}) => {
         let {docs, currentIndex} = this.state
+        if (index == null) index = currentIndex
+
         let result = confirm('Do you really want to remove this document?')
         if (!result) return
 
-        this.updateDocs({docs: docs.filter((_, i) => i !== currentIndex)})
-        this.updateCurrentIndex({currentIndex: Math.max(0, currentIndex - 1)})
+        this.updateDocs({docs: doclist.remove(docs, index)})
+        if (index === currentIndex) this.updateCurrentIndex({currentIndex: Math.max(0, index - 1)})
+    }
+
+    addNewDoc = () => {
+        let {docs} = this.state
+        let newDocs = doclist.append(docs, '')
+        
+        this.updateDocs({docs: newDocs})
+        this.updateCurrentIndex({currentIndex: newDocs.length - 1})
+        this.hideMenu()
+
+        this.setState({}, () => {
+            document.querySelector('.document-view-header h1 input').focus()
+        })
     }
 
     handleDocumentClick = ({index}) => {
@@ -219,6 +234,7 @@ export default class App extends Component {
                 docs={this.state.docs}
                 currentIndex={this.state.currentIndex}
 
+                onNewDocumentClick={this.addNewDoc}
                 onDocumentClick={this.handleDocumentClick}
                 onDocumentsChange={this.updateDocs}
                 onLogin={this.login}
