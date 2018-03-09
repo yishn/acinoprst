@@ -1,8 +1,9 @@
 import {h, Component} from 'preact'
-import * as outline from '../outline'
 import {parse, stringify} from '../doclist'
 import GitHub, {extractGistInfo} from '../github'
 import History from '../history'
+import * as outline from '../outline'
+import * as storage from '../storage'
 
 import {ToolbarButton} from './Toolbar'
 import MenuPanel from './MenuPanel'
@@ -31,8 +32,12 @@ export default class App extends Component {
     componentDidMount() {
         // Auto login
 
-        let credentials = localStorage.getItem('acinoprst_credentials')
-        if (credentials != null) this.login(JSON.parse(atob(credentials)))
+        try {
+            let credentials = JSON.parse(atob(storage.get('credentials')))
+            this.login(credentials)
+        } catch(_) {
+            storage.set('credentials', null)
+        }
 
         window.addEventListener('beforeunload', evt => {
             if (!this.state.changed) return
@@ -80,7 +85,7 @@ export default class App extends Component {
     login = ({gistUrl, accessToken}) => {
         this.startBusy()
 
-        localStorage.setItem('acinoprst_credentials', btoa(JSON.stringify({gistUrl, accessToken})))
+        storage.set('credentials', btoa(JSON.stringify({gistUrl, accessToken})))
 
         return Promise.resolve().then(() => {
             let {id, user, host} = extractGistInfo(gistUrl)
@@ -100,7 +105,7 @@ export default class App extends Component {
     }
 
     logout = () => {
-        localStorage.removeItem('acinoprst_credentials')
+        storage.set('credentials', null)
 
         this.client = null
         this.setState({user: null, docs: []})
