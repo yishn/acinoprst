@@ -262,12 +262,6 @@ export default class App extends Component {
                         icon={`./img/${this.state.busy.includes('push') ? 'sync' : 'up'}.svg`}
                         text="Push"
                         onClick={this.pushClick}
-                    />,
-                    <ToolbarButton
-                        key="remove"
-                        icon="./img/trash.svg"
-                        text="Remove"
-                        onClick={this.removeDoc}
                     />
                 ]}
 
