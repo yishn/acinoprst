@@ -145,7 +145,18 @@ kbd {
 .menu-panel .documents {
         list-style: none;
     }
-    .menu-panel .documents a {
+    .menu-panel .documents li {
+        display: grid;
+        grid-template-columns: 1fr auto;
+    }
+    .menu-panel .documents li.current {
+        background: rgba(255, 255, 255, .2);
+    }
+    .menu-panel .documents li:hover,
+    .menu-panel .documents li:focus {
+        background: rgba(255, 255, 255, .1);
+    }
+    .menu-panel .documents li a {
         display: grid;
         grid-template-columns: auto 1fr;
         grid-column-gap: .5rem;
@@ -154,23 +165,26 @@ kbd {
         color: inherit;
         text-decoration: inherit;
     }
-    .menu-panel .documents .current a {
-        background: rgba(255, 255, 255, .2);
+    .menu-panel .documents li .title:active {
+        background: rgba(0, 0, 0, .2);
     }
-    .menu-panel .documents a:hover,
-    .menu-panel .documents a:focus {
-        background: rgba(255, 255, 255, .1);
+    .menu-panel .documents li .remove {
+        grid-template-columns: 1fr;
     }
-    .menu-panel .documents a:active {
-        background: rgba(255, 255, 255, .05);
+    .menu-panel .documents li .remove:hover,
+    .menu-panel .documents li .remove:focus {
+        background: #E81123;
     }
-    .menu-panel .documents a img {
+    .menu-panel .documents li .remove:active {
+        background: #C60001;
+    }
+    .menu-panel .documents li a img {
         width: 16px;
         height: 16px;
         opacity: .95;
         filter: invert(100%);
     }
-    .menu-panel .documents a .text {
+    .menu-panel .documents li a .text {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

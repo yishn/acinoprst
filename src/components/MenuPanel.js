@@ -10,13 +10,24 @@ class DocumentListItem extends Component {
         onClick({index: this.props.index})
     }
 
+    handleRemoveClick = evt => {
+        evt.preventDefault()
+
+        let {onRemoveClick = () => {}} = this.props
+        onRemoveClick({index: this.props.index})
+    }
+
     render() {
         let {current, text} = this.props
 
         return <li class={classnames({current})}>
-            <a href="#" onClick={this.handleClick}>
+            <a class="title" href="#" onClick={this.handleClick}>
                 <img src="./img/document.svg" />
                 <span class="text">{text}</span>
+            </a>
+
+            <a class="remove" href="#" onClick={this.handleRemoveClick} title="Remove">
+                <img src="./img/trash.svg" alt="Remove" />
             </a>
         </li>
     }
@@ -81,6 +92,7 @@ export default class MenuPanel extends Component {
                             text={doc.title}
 
                             onClick={this.props.onDocumentClick}
+                            onRemoveClick={this.props.onDocumentRemove}
                         />
                     )}</ol>
                 </div>

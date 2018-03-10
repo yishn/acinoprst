@@ -198,10 +198,8 @@ export default class App extends Component {
         this.updateDocs({docs: doclist.update(docs, currentIndex, doc)})
     }
 
-    removeDoc = ({index = null} = {}) => {
+    removeDoc = ({index}) => {
         let {docs, currentIndex} = this.state
-        if (index == null) index = currentIndex
-
         let result = confirm('Do you really want to remove this document?')
         if (!result) return
 
@@ -239,6 +237,7 @@ export default class App extends Component {
 
                 onNewDocumentClick={this.addNewDoc}
                 onDocumentClick={this.handleDocumentClick}
+                onDocumentRemove={this.removeDoc}
                 onDocumentsChange={this.updateDocs}
                 onLogin={this.login}
                 onLogout={this.logout}
