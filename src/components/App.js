@@ -65,7 +65,10 @@ export default class App extends Component {
                 }
             })
 
-            this.updateDocs({docs: doclist.parse(content)})
+            let docs = doclist.parse(content)
+
+            this.updateDocs({docs})
+            this.updateCurrentIndex({currentIndex: Math.min(docs.length - 1, this.state.currentIndex)})
             this.setState({changed: false})
         })
     }
