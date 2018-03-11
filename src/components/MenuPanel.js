@@ -18,12 +18,19 @@ class DocumentListItem extends Component {
     }
 
     render() {
-        let {current, text} = this.props
+        let {index, current, text, dragging} = this.props
 
-        return <li class={classnames({current})}>
-            <a class="title" href="#" onClick={this.handleClick}>
+        return <li class={classnames({current, dragging})}>
+            <a
+                data-index={index}
+                class="title"
+                href="#"
+
+                onClick={this.handleClick}
+                onMouseDown={this.props.onMouseDown}
+            >
                 <img src="./img/document.svg" />
-                <span class="text">{text}</span>
+                <span>{text}</span>
             </a>
 
             <a class="remove" href="#" onClick={this.handleRemoveClick} title="Remove">
@@ -36,7 +43,10 @@ class DocumentListItem extends Component {
 export default class MenuPanel extends Component {
     state = {
         gistUrl: '',
-        accessToken: ''
+        accessToken: '',
+        dragIndex: null,
+        dragToIndex: null,
+        dragging: false
     }
 
     componentWillReceiveProps(nextProps) {
@@ -48,6 +58,22 @@ export default class MenuPanel extends Component {
                 this.gistUrlInput.focus()
             })
         }
+    }
+
+    componentDidMount() {
+        document.addEventListener('mouseup', this.handleDocumentMouseUp)
+        document.addEventListener('mousemove', this.handleDocumentMouseMove)
+    }
+
+    getDragPermutation() {
+        let dragPermutation = this.props.docs.map((_, i) => i)
+        
+        if (this.state.dragging) {
+            dragPermutation.splice(this.state.dragIndex, 1)
+            dragPermutation.splice(this.state.dragToIndex, 0, this.state.dragIndex)
+        }
+
+        return dragPermutation
     }
 
     handleLogin = evt => {
@@ -68,11 +94,51 @@ export default class MenuPanel extends Component {
         this.setState({accessToken: evt.currentTarget.value})
     }
 
+    handleDocumentClick = evt => {
+        if (this.state.dragging) return
+
+        let {onDocumentClick = () => {}} = this.props
+        onDocumentClick(evt)
+    }
+
+    handleDocumentMouseDown = evt => {
+        if (evt.button !== 0) return
+
+        this.setState({dragIndex: +evt.currentTarget.dataset.index})
+    }
+
+    handleDocumentMouseMove = evt => {
+        if (this.state.dragIndex == null) return
+
+        let documentElements = this.documentsElement.querySelectorAll('.documents > li')
+        let offsetTops = [...documentElements].map(el => el.offsetTop)
+        let dragToIndex = offsetTops.findIndex(top => top > evt.clientY) - 1
+        if (dragToIndex < -1) dragToIndex = Infinity
+
+        this.setState({
+            dragToIndex: Math.max(0, Math.min(this.props.docs.length - 1, dragToIndex)),
+            dragging: true
+        })
+    }
+
+    handleDocumentMouseUp = evt => {
+        if (this.state.dragIndex == null) return
+
+        let {onPermutation = () => {}} = this.props
+        onPermutation({permutation: this.getDragPermutation()})
+
+        this.setState({
+            dragIndex: null,
+            dragToIndex: null,
+            dragging: false
+        })
+    }
+
     render() {
         let {user, show, docs, currentIndex} = this.props
         let login = user == null
 
-        return <section class={classnames('menu-panel', {show, login})}>
+        return <section ref={el => this.element = el} class={classnames('menu-panel', {show, login})}>
             {!login ? (
                 <div>
                     <div class="user">
@@ -81,20 +147,33 @@ export default class MenuPanel extends Component {
                     </div>
 
                     <Toolbar>
-                        <ToolbarButton icon="./img/add.svg" text="New Document" onClick={this.props.onNewDocumentClick}/>
-                        <ToolbarButton icon="./img/logout.svg" text="Logout" onClick={this.props.onLogout}/>
+                        <ToolbarButton
+                            icon="./img/add.svg"
+                            text="New Document"
+                            onClick={this.props.onNewDocumentClick}
+                        />
+                        <ToolbarButton
+                            icon="./img/logout.svg"
+                            text="Logout"
+                            onClick={this.props.onLogout}
+                        />
                     </Toolbar>
 
-                    <ol class="documents">{docs.map((doc, i) =>
-                        <DocumentListItem
-                            index={i}
-                            current={i === currentIndex}
-                            text={doc.title}
+                    <ol ref={el => this.documentsElement = el} class="documents">
+                        {this.getDragPermutation().map(i =>
+                            <DocumentListItem
+                                key={docs[i].id}
+                                index={i}
+                                dragging={this.state.dragging && i === this.state.dragIndex}
+                                current={i === currentIndex}
+                                text={docs[i].title}
 
-                            onClick={this.props.onDocumentClick}
-                            onRemoveClick={this.props.onDocumentRemove}
-                        />
-                    )}</ol>
+                                onClick={this.handleDocumentClick}
+                                onRemoveClick={this.props.onDocumentRemove}
+                                onMouseDown={this.handleDocumentMouseDown}
+                            />
+                        )}
+                    </ol>
                 </div>
             ) : (
                 <div>

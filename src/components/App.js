@@ -176,6 +176,13 @@ export default class App extends Component {
         this.recordHistory()
     }
 
+    permutateDocs = ({permutation}) => {
+        if (permutation.every((x, i) => x === i)) return
+
+        this.updateDocs({docs: permutation.map(i => this.state.docs[i])})
+        this.updateCurrentIndex({currentIndex: permutation.indexOf(this.state.currentIndex)})
+    }
+
     updateCurrentIndex = ({currentIndex}) => {
         if (currentIndex === this.state.currentIndex) return
 
@@ -238,7 +245,7 @@ export default class App extends Component {
                 onNewDocumentClick={this.addNewDoc}
                 onDocumentClick={this.handleDocumentClick}
                 onDocumentRemove={this.removeDoc}
-                onDocumentsChange={this.updateDocs}
+                onPermutation={this.permutateDocs}
                 onLogin={this.login}
                 onLogout={this.logout}
             />

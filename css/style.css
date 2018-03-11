@@ -73,6 +73,7 @@ kbd {
         background: #222;
         box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
         color: #eee;
+        overflow: auto;
         transform: translateY(calc(-100% - 1rem));
         transition: transform .5s;
         z-index: 2;
@@ -148,6 +149,7 @@ kbd {
     .menu-panel .documents li {
         display: grid;
         grid-template-columns: 1fr auto;
+        transition: color .2s;
     }
     .menu-panel .documents li.current {
         background: rgba(255, 255, 255, .2);
@@ -155,6 +157,9 @@ kbd {
     .menu-panel .documents li:hover,
     .menu-panel .documents li:focus {
         background: rgba(255, 255, 255, .1);
+    }
+    .menu-panel .documents li.dragging {
+        color: #888;
     }
     .menu-panel .documents li a {
         display: grid;
@@ -165,7 +170,8 @@ kbd {
         color: inherit;
         text-decoration: inherit;
     }
-    .menu-panel .documents li .title:active {
+    .menu-panel .documents li .title:active,
+    .menu-panel .documents li.dragging .title {
         background: rgba(0, 0, 0, .2);
     }
     .menu-panel .documents li .remove {
@@ -183,11 +189,19 @@ kbd {
         height: 16px;
         opacity: .95;
         filter: invert(100%);
+        transition: opacity .2s;
     }
-    .menu-panel .documents li a .text {
+    .menu-panel .documents li.dragging a img {
+        opacity: .5;
+    }
+    .menu-panel .documents li .title span {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+    .menu-panel .documents li .title span::after {
+        content: '.';
+        visibility: hidden;
 }
 
 /* ================================= */

@@ -22,7 +22,7 @@ export function parse(content) {
         let title = headerIndex < 0 ? '' : docLines[headerIndex].slice(1).trim()
         let listContent = docLines.slice(headerIndex + 1).join('\n').trim()
 
-        return {title, list: outline.parse(listContent)}
+        return {id: j, title, list: outline.parse(listContent)}
     })
 }
 
@@ -56,5 +56,6 @@ export function move(docs, index1, index2) {
 }
 
 export function append(docs, title, list = []) {
-    return [...docs, {title, list}]
+    let id = Math.max(...docs.map(x => x.id)) + 1
+    return [...docs, {id, title, list}]
 }
