@@ -5,7 +5,7 @@ import History from '../history'
 import * as outline from '../outline'
 import * as storage from '../storage'
 
-import {ToolbarButton} from './Toolbar'
+import {ToolbarButton, ToolbarSeparator} from './Toolbar'
 import MenuPanel from './MenuPanel'
 import DocumentView from './DocumentView'
 import BusyScreen from './BusyScreen'
@@ -254,8 +254,6 @@ export default class App extends Component {
                 disabled={doc == null || this.state.user == null}
                 doc={doc || {title: '', list: []}}
                 selectedIds={this.state.selectedIds}
-                undoable={this.history.isUndoable()}
-                redoable={this.history.isRedoable()}
 
                 headerButtons={[
                     <ToolbarButton
@@ -271,6 +269,19 @@ export default class App extends Component {
                         icon={`./img/${this.state.busy.includes('push') ? 'sync' : 'up'}.svg`}
                         text="Push"
                         onClick={this.pushClick}
+                    />,
+                    <ToolbarSeparator/>,
+                    <ToolbarButton
+                        icon="./img/undo.svg"
+                        text="Undo"
+                        disabled={!this.history.isUndoable()}
+                        onClick={this.undo}
+                    />,
+                    <ToolbarButton
+                        icon="./img/redo.svg"
+                        text="Redo"
+                        disabled={!this.history.isRedoable()}
+                        onClick={this.redo}
                     />
                 ]}
 

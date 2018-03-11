@@ -121,19 +121,6 @@ export default class DocumentView extends Component {
 
             <Toolbar disabled={disabled}>
                 <ToolbarButton
-                    icon="./img/undo.svg"
-                    tooltip="Undo"
-                    disabled={!this.props.undoable}
-                    onClick={this.props.onUndo}
-                />
-                <ToolbarButton
-                    icon="./img/redo.svg"
-                    tooltip="Redo"
-                    disabled={!this.props.redoable}
-                    onClick={this.props.onRedo}
-                />
-                <ToolbarSeparator/>
-                <ToolbarButton
                     icon="./img/separate-items.svg"
                     tooltip="Move checked items to the bottom"
                     text="Separate"
