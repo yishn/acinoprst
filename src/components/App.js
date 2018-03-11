@@ -234,6 +234,10 @@ export default class App extends Component {
     handleDocumentClick = ({index}) => {
         this.updateCurrentIndex({currentIndex: index})
         this.hideMenu()
+
+        this.setState({}, () => {
+            document.querySelector('.document-view .outline-view').focus()
+        })
     }
 
     render() {
