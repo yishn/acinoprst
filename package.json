@@ -36,10 +36,13 @@
     "http-server": "^0.11.1",
     "webpack": "^3.11.0"
   },
+  "now": {
+    "alias": "acinoprst"
+  },
   "scripts": {
     "start": "http-server",
     "build": "webpack --progress -p",
     "watch": "webpack --progress --watch",
-    "deploy": "now --public && now alias acinoprst && now rm acinoprst -sy"
+    "deploy": "now --public && now alias && now rm acinoprst -sy"
   }
 }
