@@ -5,11 +5,17 @@
 }
 
 .menu-panel {
-    position: relative;
-    width: auto;
-    height: auto;
-    box-shadow: none;
-    transform: none;
+        position: relative;
+        width: auto;
+        height: auto;
+        box-shadow: none;
+        transform: none;
+    }
+    .menu-panel .documents > li:not(.dragging) .remove {
+        opacity: 0;
+    }
+    .menu-panel .documents > li:hover .remove {
+        opacity: 1;
 }
 
 .document-view {
