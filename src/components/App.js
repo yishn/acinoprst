@@ -5,7 +5,7 @@ import History from '../history'
 import * as outline from '../outline'
 import * as storage from '../storage'
 
-import {ToolbarButton, ToolbarSeparator} from './Toolbar'
+import Toolbar, {ToolbarButton, ToolbarSeparator} from './Toolbar'
 import MenuPanel from './MenuPanel'
 import DocumentView from './DocumentView'
 import BusyScreen from './BusyScreen'
@@ -155,7 +155,7 @@ export default class App extends Component {
         if (entry == null) return
 
         let {currentIndex, docs, selectedIds} = entry
-        this.setState({currentIndex, docs, selectedIds})
+        this.setState({currentIndex, docs, selectedIds, changed: true})
     }
 
     undo = () => this.stepInHistory(-1)
@@ -255,35 +255,39 @@ export default class App extends Component {
                 doc={doc || {title: '', list: []}}
                 selectedIds={this.state.selectedIds}
 
-                headerButtons={[
-                    <ToolbarButton
-                        key="pull"
-                        type={this.state.busy.includes('pull') && 'sync'}
-                        icon={`./img/${this.state.busy.includes('pull') ? 'sync' : 'down'}.svg`}
-                        text="Pull"
-                        onClick={this.pullClick}
-                    />,
-                    this.state.changed && <ToolbarButton
-                        key="push"
-                        type={this.state.busy.includes('push') && 'sync'}
-                        icon={`./img/${this.state.busy.includes('push') ? 'sync' : 'up'}.svg`}
-                        text="Push"
-                        onClick={this.pushClick}
-                    />,
-                    <ToolbarSeparator/>,
-                    <ToolbarButton
-                        icon="./img/undo.svg"
-                        text="Undo"
-                        disabled={!this.history.isUndoable()}
-                        onClick={this.undo}
-                    />,
-                    <ToolbarButton
-                        icon="./img/redo.svg"
-                        text="Redo"
-                        disabled={!this.history.isRedoable()}
-                        onClick={this.redo}
-                    />
-                ]}
+                headerToolbar={
+                    <Toolbar disabled={this.state.user == null}>
+                        <ToolbarButton
+                            key="pull"
+                            type={this.state.busy.includes('pull') && 'sync'}
+                            icon={`./img/${this.state.busy.includes('pull') ? 'sync' : 'down'}.svg`}
+                            text="Pull"
+                            onClick={this.pullClick}
+                        />
+                        {this.state.changed && <ToolbarButton
+                            key="push"
+                            type={this.state.busy.includes('push') && 'sync'}
+                            icon={`./img/${this.state.busy.includes('push') ? 'sync' : 'up'}.svg`}
+                            text="Push"
+                            onClick={this.pushClick}
+                        />}
+
+                        <ToolbarSeparator/>
+
+                        <ToolbarButton
+                            icon="./img/undo.svg"
+                            text="Undo"
+                            disabled={!this.history.isUndoable()}
+                            onClick={this.undo}
+                        />
+                        <ToolbarButton
+                            icon="./img/redo.svg"
+                            text="Redo"
+                            disabled={!this.history.isRedoable()}
+                            onClick={this.redo}
+                        />
+                    </Toolbar>
+                }
 
                 onMenuButtonClick={this.showMenu}
                 onChange={this.updateDoc}

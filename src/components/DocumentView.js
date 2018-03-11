@@ -71,9 +71,7 @@ class DocumentViewHeader extends Component {
                 />
             </h1>
 
-            <Toolbar disabled={disabled}>
-                {this.props.buttons}
-            </Toolbar>
+            {this.props.toolbar}
         </div>
     }
 }
@@ -112,7 +110,7 @@ export default class DocumentView extends Component {
             <DocumentViewHeader
                 disabled={disabled}
                 doc={doc}
-                buttons={this.props.headerButtons}
+                toolbar={this.props.headerToolbar}
 
                 onMenuButtonClick={this.props.onMenuButtonClick}
                 onSubmit={this.handleTitleSubmit}

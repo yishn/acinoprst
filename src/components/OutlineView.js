@@ -383,11 +383,12 @@ export default class OutlineView extends Component {
         >
             {list.length === 0 &&
                 <div class="message">
-                    <h2>No items</h2>
-                    
-                    {!disabled && 
+                    {!disabled ? [
+                        <h2>No items</h2>,
                         <p>Press <kbd>Shift</kbd>+<kbd>Enter</kbd> to insert an item</p>
-                    }
+                    ] : (
+                        <h2>No documents</h2>
+                    )}
                 </div>
             }
 
