@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/yishn/acinoprst/issues"
   },
-  "homepage": "https://github.com/yishn/acinoprst#readme",
+  "homepage": "https://github.com/yishn/acinoprst",
   "dependencies": {
     "classnames": "^2.2.5",
     "preact": "^8.2.7",
@@ -39,6 +39,7 @@
   "scripts": {
     "start": "http-server",
     "build": "webpack --progress -p",
-    "watch": "webpack --progress --watch"
+    "watch": "webpack --progress --watch",
+    "deploy": "now --public && now alias acinoprst && now rm acinoprst -sy"
   }
 }
