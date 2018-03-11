@@ -112,7 +112,7 @@ export default class MenuPanel extends Component {
 
         let documentElements = this.documentsElement.querySelectorAll('.documents > li')
         let offsetTops = [...documentElements].map(el => el.offsetTop)
-        let dragToIndex = offsetTops.findIndex(top => top > evt.clientY) - 1
+        let dragToIndex = offsetTops.findIndex(top => top > evt.clientY + this.element.scrollTop) - 1
         if (dragToIndex < -1) dragToIndex = Infinity
 
         this.setState({

@@ -211,7 +211,11 @@ export default class App extends Component {
         if (!result) return
 
         this.updateDocs({docs: doclist.remove(docs, index)})
-        if (index === currentIndex) this.updateCurrentIndex({currentIndex: Math.max(0, index - 1)})
+        this.updateCurrentIndex({
+            currentIndex: index === currentIndex
+                ? Math.max(0, currentIndex - 1)
+                : Math.min(currentIndex, docs.length - 2)
+        })
     }
 
     addNewDoc = () => {
