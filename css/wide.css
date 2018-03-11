@@ -14,7 +14,9 @@
     .menu-panel .documents > li:not(.dragging) .remove {
         opacity: 0;
     }
-    .menu-panel .documents > li:hover .remove {
+    .menu-panel .documents > li:hover .remove,
+    .menu-panel .documents > li .title:focus + .remove,
+    .menu-panel .documents > li .remove:focus {
         opacity: 1;
 }
 

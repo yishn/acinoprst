@@ -152,12 +152,12 @@ kbd {
         grid-template-columns: 1fr auto;
         transition: color .2s;
     }
-    .menu-panel .documents li.current {
-        background: rgba(255, 255, 255, .2);
-    }
     .menu-panel .documents li:hover,
     .menu-panel .documents li:focus {
         background: rgba(255, 255, 255, .1);
+    }
+    .menu-panel .documents li.current {
+        background: rgba(255, 255, 255, .2);
     }
     .menu-panel .documents li.dragging {
         color: #888;
