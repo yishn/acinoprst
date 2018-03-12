@@ -1,4 +1,4 @@
-import {h, Component} from 'preact'
+import {h, render, Component} from 'preact'
 import * as doclist from '../doclist'
 import GitHub, {extractGistInfo} from '../github'
 import History from '../history'
@@ -94,6 +94,7 @@ export default class App extends Component {
             let {id, user, host} = extractGistInfo(gistUrl)
             this.client = new GitHub({host, user, pass: accessToken})
             this.gistId = id
+            this.gistUrl = gistUrl
         }).then(() => {
             return this.pull()
         }).then(() => {
@@ -240,6 +241,15 @@ export default class App extends Component {
         })
     }
 
+    handleOpenGist = () => {
+        let a = render((
+            <a style={{display: 'none'}} href={this.gistUrl} target="_blank"/>
+        ), document.body)
+
+        a.click()
+        a.remove()
+    }
+
     render() {
         let doc = this.getCurrentDoc()
 
@@ -254,6 +264,7 @@ export default class App extends Component {
                 onDocumentClick={this.handleDocumentClick}
                 onDocumentRemove={this.removeDoc}
                 onPermutation={this.permutateDocs}
+                onOpenGistClick={this.handleOpenGist}
                 onLogin={this.login}
                 onLogout={this.logout}
             />

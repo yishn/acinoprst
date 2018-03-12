@@ -119,25 +119,32 @@ kbd {
 
 .menu-panel .user {
         display: grid;
-        grid-template-columns: auto 1fr;
+        grid-template-columns: auto 1fr auto;
         height: 40px;
     }
     .menu-panel .user img {
         height: 40px;
         width: 40px;
-        background: white;
     }
     .menu-panel.login .user img {
+        background: white;
         border: 5px solid white;
     }
     .menu-panel .user h2 {
-        padding: 0 1rem;
+        padding: 0 .8rem;
         overflow: hidden;
         font: inherit;
         font-weight: bold;
         line-height: 40px;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+    .menu-panel .user .tool-bar .buttons {
+        height: 100%;
+        background: transparent;
+    }
+    .menu-panel .user .tool-bar .buttons a {
+        height: 100%;
 }
 
 .menu-panel .tool-bar .buttons {
@@ -297,8 +304,10 @@ kbd {
     }
     .document-view-header .buttons {
         height: 100%;
-        padding: 0;
         background: transparent;
+    }
+    .document-view-header .tool-bar:first-child .buttons {
+        padding: 0;
     }
     .document-view-header .buttons a {
         height: 100%;

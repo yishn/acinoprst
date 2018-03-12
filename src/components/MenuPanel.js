@@ -142,8 +142,16 @@ export default class MenuPanel extends Component {
             {!login ? (
                 <div>
                     <div class="user">
-                        <img src={user.avatar}/>
+                        <img class="avatar" src={user.avatar}/>
                         <h2>{user.name}</h2>
+
+                        <Toolbar>
+                            <ToolbarButton
+                                icon="./img/link.svg"
+                                tooltip="Open Gist"
+                                onClick={this.props.onOpenGistClick}
+                            />
+                        </Toolbar>
                     </div>
 
                     <Toolbar>
