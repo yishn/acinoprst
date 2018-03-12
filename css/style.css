@@ -315,9 +315,6 @@ kbd {
     .document-view-header .buttons > li.menu a {
         padding: 0 .8rem;
     }
-    .document-view-header .buttons a .text {
-        display: none;
-    }
     .document-view-header h1 {
         font-size: 1rem;
     }

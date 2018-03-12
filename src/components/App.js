@@ -280,14 +280,14 @@ export default class App extends Component {
                             key="pull"
                             type={this.state.busy.includes('pull') && 'sync'}
                             icon={`./img/${this.state.busy.includes('pull') ? 'sync' : 'down'}.svg`}
-                            text="Pull"
+                            toolbar="Pull"
                             onClick={this.pullClick}
                         />
                         {this.state.changed && <ToolbarButton
                             key="push"
                             type={this.state.busy.includes('push') && 'sync'}
                             icon={`./img/${this.state.busy.includes('push') ? 'sync' : 'up'}.svg`}
-                            text="Push"
+                            toolbar="Push"
                             onClick={this.pushClick}
                         />}
 
@@ -295,13 +295,13 @@ export default class App extends Component {
 
                         <ToolbarButton
                             icon="./img/undo.svg"
-                            text="Undo"
+                            toolbar="Undo"
                             disabled={!this.history.isUndoable()}
                             onClick={this.undo}
                         />
                         <ToolbarButton
                             icon="./img/redo.svg"
-                            text="Redo"
+                            toolbar="Redo"
                             disabled={!this.history.isRedoable()}
                             onClick={this.redo}
                         />
