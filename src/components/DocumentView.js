@@ -52,7 +52,7 @@ class DocumentViewHeader extends Component {
             <Toolbar>
                 <ToolbarButton
                     type="menu"
-                    text="Menu"
+                    toolbar="Menu"
                     icon="./img/menu.svg"
                     onClick={this.props.onMenuButtonClick}
                 />
