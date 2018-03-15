@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import * as outline from '../outline'
 import InlineMarkdown from './InlineMarkdown'
 
-const DelSpan = ({children}) => <del><span>{children}</span></del>
+const SpanDel = ({children}) => <span><del>{children}</del></span>
 
 class OutlineItem extends Component {
     componentDidUpdate(prevProps) {
@@ -116,7 +116,7 @@ class OutlineItem extends Component {
                     ) : (
                         <InlineMarkdown
                             source={text}
-                            renderers={{root: checked ? DelSpan : 'span'}}
+                            renderers={{root: checked ? SpanDel : 'span'}}
                         />
                     )}
 

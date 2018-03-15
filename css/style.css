@@ -389,15 +389,31 @@ kbd {
     .outline-item.checked > .inner .text {
         opacity: .4;
     }
-    .outline-item > .inner .text span {
+    .outline-item > .inner .text > span {
         display: block;
         white-space: pre-wrap;
         word-break: break-word;
     }
-    .outline-item.edit > .inner .text span {
+    .outline-item > .inner .text > span code {
+        padding: 1px 5px;
+        background: rgba(0, 0, 0, .1);
+        font-family: Consolas, monospace;
+        line-height: 1;
+    }
+    .outline-item > .inner .text > span a {
+        color: #777;
+        cursor: pointer;
+        -webkit-user-drag: auto;
+        user-drag: auto;
+    }
+    .outline-item > .inner .text > span a:hover,
+    .outline-item > .inner .text > span a:focus {
+        color: #555;
+    }
+    .outline-item.edit > .inner .text > span {
         visibility: hidden;
     }
-    .outline-item > .inner .text textarea {
+    .outline-item > .inner .text > textarea {
         display: none;
         position: absolute;
         left: 0;
@@ -410,7 +426,7 @@ kbd {
         word-break: break-word;
         resize: none;
     }
-    .outline-item.edit > .inner .text textarea {
+    .outline-item.edit > .inner .text > textarea {
         display: block;
     }
     .outline-item > .inner .collapse {
