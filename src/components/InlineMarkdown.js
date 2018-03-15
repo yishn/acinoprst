@@ -8,43 +8,47 @@ const standardRenderers = {
     em: 'em'
 }
 
-function inlineMarkdown2jsx(source, renderers) {
-    let rules = [
-        {name: 'code', regex: /^`([^`]*)`/},
-        {name: 'link', regex: /^!?\[([^\]]*)\]\((((ht|f)tps?:|mailto:)[^)]*)\)/},
-        {name: 'emstrong', regex: /^\*\*\*(.*?)\*\*\*(?!\*)/},
-        {name: 'emstrong', regex: /^___(.*?)___(?!_)/},
-        {name: 'strong', regex: /^\*\*(.*?)\*\*(?!\*)/},
-        {name: 'strong', regex: /^__(.*?)__(?!_)/},
-        {name: 'em', regex: /^\*(.*?)\*(?!\*)/},
-        {name: 'em', regex: /^_(.*?)_(?!_)/}
-    ]
+const markdownRules = [
+    {name: 'code', regex: /^`([^`]*)`/},
+    {name: 'link', regex: /^!?\[([^\]]*)\]\((((ht|f)tps?:|mailto:)[^)]*)\)/},
+    {name: 'url', regex: /^((ht|f)tps?:\/\/[^\s<]+[^<.,:;"\')\]\s](\/\B|\b))/},
+    {name: 'email', regex: /^([^\s@<]+@[^\s@<]+)\b/},
+    {name: 'strong', regex: /^\*\*(\*?[^\*]([^\*](\*(?!\*))?)*\*?)\*\*/},
+    {name: 'strong', regex: /^__(_?[^_]([^_](_(?!_))?)*_?)__/},
+    {name: 'em', regex: /^\*(([^\*]|\*\*)+)\*/},
+    {name: 'em', regex: /^_(([^_]|__)+)_/}
+]
 
+function inlineMarkdown2jsx(source, renderers) {
     let render = source => inlineMarkdown2jsx(source, renderers)
     let result = []
 
     while (source.length > 0) {
         let rule = null
         let match = null
+        let quality = -Infinity
 
-        for (let {name, regex} of rules) {
-            match = source.match(regex)
+        for (let {name, regex} of markdownRules) {
+            let ruleMatch = source.match(regex)
 
-            if (match != null) {
+            if (ruleMatch != null && quality < ruleMatch[0].length) {
                 rule = {name, regex}
-                break
+                match = ruleMatch
+                quality = ruleMatch[0].length
             }
         }
 
         if (match != null) {
             if (rule.name === 'code') {
-                result.push(h(renderers[rule.name], {}, match[1]))
+                result.push(h(renderers.code, {}, match[1]))
             } else if (rule.name === 'link') {
-                result.push(h(renderers[rule.name], {href: match[2]}, render(match[1])))
+                result.push(h(renderers.link, {href: match[2]}, render(match[1])))
+            } else if (rule.name === 'url') {
+                result.push(h(renderers.link, {href: match[1]}, match[1]))
+            } else if (rule.name === 'email') {
+                result.push(h(renderers.link, {href: `mailto:${match[1]}`}, match[1]))
             } else if (rule.name === 'strong' || rule.name === 'em') {
                 result.push(h(renderers[rule.name], {}, render(match[1])))
-            } else if (rule.name === 'emstrong') {
-                result.push(h(renderers.em, {}, h(renderers.strong, {}, render(match[1]))))
             }
 
             source = source.slice(match[0].length)
@@ -52,9 +56,9 @@ function inlineMarkdown2jsx(source, renderers) {
             let lastToken = result[result.length - 1]
             if (typeof lastToken !== 'string') result.push('')
 
-            let match = source.match(/^[^`!\[\*_]+|./)
+            let match = source.match(/^[^`!\[\*_\w]+|\w+|./)
             result[result.length - 1] += source.slice(0, match[0].length)
-
+ 
             source = source.slice(match[0].length)
         }
     }
@@ -63,6 +67,12 @@ function inlineMarkdown2jsx(source, renderers) {
 }
 
 export default class InlineMarkdown extends Component {
+    shouldComponentUpdate({source, renderers}) {
+        return source !== this.props.source
+            || renderers !== this.props.renderers 
+            && Object.keys(standardRenderers).some(key => renderers[key] !== this.props.renderers[key])
+    }
+
     render() {
         let {source = '', renderers = {}} = this.props
 
