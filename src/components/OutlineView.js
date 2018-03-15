@@ -19,7 +19,7 @@ export default class OutlineView extends Component {
             this.setState({appendSelectionType: 0})
         }
     }
-    
+
     componentDidMount() {
         this.componentDidUpdate({})
     }
@@ -294,7 +294,7 @@ export default class OutlineView extends Component {
                 .filter(([item]) => selectedIds.includes(item.id))
                 .map(([item]) => item)
             let [lastSelectedItem] = orderedSelectedItems.slice(-1)
-            let insertSubitem = lastSelectedItem != null 
+            let insertSubitem = lastSelectedItem != null
                 && !lastSelectedItem.collapsed
                 && lastSelectedItem.sublist.length > 0
 
@@ -351,19 +351,6 @@ export default class OutlineView extends Component {
             ), list)
 
             onChange({list: newList})
-        } else if ([90, 89].includes(evt.keyCode)) {
-            // z, y
-            // Undo & Redo
-
-            evt.preventDefault()
-
-            let step = evt.keyCode === 90 ? -1 : 1
-            if (evt.shiftKey) step = -step
-
-            let {onUndo = () => {}, onRedo = () => {}} = this.props
-
-            if (step > 0) onRedo()
-            else onUndo()
         }
     }
 

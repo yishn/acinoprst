@@ -140,8 +140,6 @@ export default class DocumentView extends Component {
                 onBlur={this.handleOutlineBlur}
                 onChange={this.handleChange}
                 onSelectionChange={this.props.onSelectionChange}
-                onUndo={this.props.onUndo}
-                onRedo={this.props.onRedo}
             />
         </section>
     }

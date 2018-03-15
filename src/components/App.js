@@ -62,6 +62,16 @@ export default class App extends Component {
 
                 evt.preventDefault()
                 this.addNewDoc()
+            } else if ((evt.keyCode === 90 || evt.keyCode === 89) && evt.ctrlKey) {
+                // Ctrl+(Shift)+Z/Y
+                // Undo/Redo
+
+                evt.preventDefault()
+
+                let step = evt.keyCode === 90 ? -1 : 1
+                if (evt.shiftKey) step = -step
+
+                this.stepInHistory(step)
             }
         })
 
