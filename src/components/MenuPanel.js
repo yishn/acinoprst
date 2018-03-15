@@ -65,9 +65,14 @@ export default class MenuPanel extends Component {
         document.addEventListener('mousemove', this.handleDocumentMouseMove)
     }
 
+    componentWillUnmount() {
+        document.removeEventListener('mouseup', this.handleDocumentMouseUp)
+        document.removeEventListener('mousemove', this.handleDocumentMouseMove)
+    }
+
     getDragPermutation() {
         let dragPermutation = this.props.docs.map((_, i) => i)
-        
+
         if (this.state.dragging) {
             dragPermutation.splice(this.state.dragIndex, 1)
             dragPermutation.splice(this.state.dragToIndex, 0, this.state.dragIndex)
@@ -112,7 +117,7 @@ export default class MenuPanel extends Component {
 
         let documentElements = this.documentsElement.querySelectorAll('.documents > li')
         let offsetTops = [...documentElements].map(el => el.offsetTop)
-        let dragToIndex = offsetTops.findIndex(top => top > evt.clientY + this.element.scrollTop) - 1
+        let dragToIndex = offsetTops.findIndex(top => top > evt.clientY + this.documentsElement.scrollTop) - 1
         if (dragToIndex < -1) dragToIndex = Infinity
 
         this.setState({
@@ -140,7 +145,7 @@ export default class MenuPanel extends Component {
 
         return <section ref={el => this.element = el} class={classnames('menu-panel', {show, login})}>
             {!login ? (
-                <div>
+                <div class="inner">
                     <div class="user">
                         <img class="avatar" src={user.avatar}/>
                         <h2>{user.name}</h2>
@@ -184,7 +189,7 @@ export default class MenuPanel extends Component {
                     </ol>
                 </div>
             ) : (
-                <div>
+                <div class="inner">
                     <div class="user">
                         <img src="./img/github.svg"/>
                         <h2>Login</h2>

@@ -74,13 +74,24 @@ kbd {
         background: #222;
         box-shadow: 0 0 1rem rgba(0, 0, 0, .5);
         color: #eee;
-        overflow: auto;
+        overflow: hidden;
         transform: translateY(calc(-100% - 1rem));
         transition: transform .5s;
         z-index: 2;
     }
     .menu-panel.show {
         transform: translateY(0);
+    }
+    .menu-panel.login {
+        overflow: auto;
+    }
+    .menu-panel .inner {
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        height: 100%;
+    }
+    .menu-panel.login .inner {
+        grid-template-rows: auto 1fr;
     }
     .menu-panel form {
         margin: 1rem 0;
@@ -153,6 +164,7 @@ kbd {
 
 .menu-panel .documents {
         list-style: none;
+        overflow: auto;
     }
     .menu-panel .documents li {
         display: grid;
