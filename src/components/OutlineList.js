@@ -1,6 +1,9 @@
 import {h, Component} from 'preact'
 import classnames from 'classnames'
 import * as outline from '../outline'
+import InlineMarkdown from './InlineMarkdown'
+
+const DelSpan = ({children}) => <del><span>{children}</span></del>
 
 class OutlineItem extends Component {
     componentDidUpdate(prevProps) {
@@ -108,12 +111,14 @@ class OutlineItem extends Component {
                 }{' '}
 
                 <div class="text">
-                    <span ref={el => this.textElement = el}>
-                        {text !== ''
-                            ? (checked ? <del>{text}</del> : text)
-                            : <span style={{opacity: 0}}>_</span>
-                        }
-                    </span>
+                    {edit || text === '' ? (
+                        <span style={{visibility: 'hidden'}}>{text !== '' ? text : '_'}</span>
+                    ) : (
+                        <InlineMarkdown
+                            source={text}
+                            renderers={{root: checked ? DelSpan : 'span'}}
+                        />
+                    )}
 
                     <textarea
                         ref={el => this.inputElement = el}
