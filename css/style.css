@@ -380,6 +380,7 @@ kbd {
     .outline-item > .inner .text span {
         display: block;
         white-space: pre-wrap;
+        word-break: break-word;
     }
     .outline-item.edit > .inner .text span {
         visibility: hidden;
@@ -394,6 +395,7 @@ kbd {
         border: none;
         outline: none;
         background: transparent;
+        word-break: break-word;
         resize: none;
     }
     .outline-item.edit > .inner .text textarea {
