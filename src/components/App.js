@@ -39,6 +39,32 @@ export default class App extends Component {
             storage.set('credentials', null)
         }
 
+        // Events
+
+        document.addEventListener('keydown', evt => {
+            if (this.state.busy.length > 0) return
+
+            if (evt.keyCode === 83 && evt.ctrlKey) {
+                // Ctrl+S
+                // Push
+
+                evt.preventDefault()
+                this.pushClick()
+            } else if (evt.keyCode === 79 && evt.ctrlKey) {
+                // Ctrl+O
+                // Open menu panel
+
+                evt.preventDefault()
+                this.showMenu()
+            } else if (evt.keyCode === 78 && evt.ctrlKey) {
+                // Ctrl+N
+                // Add new document
+
+                evt.preventDefault()
+                this.addNewDoc()
+            }
+        })
+
         window.addEventListener('beforeunload', evt => {
             if (!this.state.changed) return
 
@@ -74,6 +100,8 @@ export default class App extends Component {
     }
 
     push = () => {
+        if (!this.state.changed) return
+
         return this.client.editGist(this.gistId, {
             files: {
                 [this.gistFilename]: {
@@ -222,7 +250,7 @@ export default class App extends Component {
     addNewDoc = () => {
         let {docs} = this.state
         let newDocs = doclist.append(docs, '')
-        
+
         this.updateDocs({docs: newDocs})
         this.updateCurrentIndex({currentIndex: newDocs.length - 1})
         this.hideMenu()
