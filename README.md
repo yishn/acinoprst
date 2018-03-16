@@ -1,2 +1,4 @@
 # acinoprst
-A simple outliner. This is a work in progress.
+A simple outliner synchronizing with Gist.
+
+![Screenshot](./screenshot.png)
