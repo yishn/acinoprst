@@ -1,4 +1,4 @@
-# <img src="./logo.png" alt="acinoprst" width="500"/>
+# <img src="./logo.svg" alt="acinoprst" width="500"/>
 
 A simple outliner synchronizing with Gist. This is a work in progress.
 
