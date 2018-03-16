@@ -4,7 +4,7 @@ import fetch from 'unfetch'
 export function extractGistInfo(url) {
     let obj = new URL(url)
     let [user, id] = obj.pathname.match(/[^\/]+/g).slice(-2)
-    let host = obj.hostname !== 'gist.github.com' ? `${obj.hostname}/api` : 'api.github.com'
+    let host = obj.hostname !== 'gist.github.com' ? `${obj.hostname}/api/v3` : 'api.github.com'
 
     return {id, user, host}
 }
