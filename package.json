@@ -24,8 +24,7 @@
     "classnames": "^2.2.5",
     "preact": "^8.2.7",
     "scroll-into-view-if-needed": "^1.5.0",
-    "string-hash": "^1.1.3",
-    "unfetch": "^3.0.0"
+    "string-hash": "^1.1.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

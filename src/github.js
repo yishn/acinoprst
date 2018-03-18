@@ -1,5 +1,4 @@
 import qs from 'querystring'
-import fetch from 'unfetch'
 
 export function extractGistInfo(url) {
     let obj = new URL(url)
