@@ -1,4 +1,5 @@
 import {h, render, Component} from 'preact'
+import hash from 'string-hash'
 import * as doclist from '../doclist'
 import GitHub, {extractGistInfo} from '../github'
 import History from '../history'
@@ -15,7 +16,7 @@ export default class App extends Component {
 
     state = {
         busy: [],
-        changed: false,
+        oldContentHash: null,
         user: null,
         showMenu: true,
         currentIndex: 0,
@@ -76,11 +77,15 @@ export default class App extends Component {
         })
 
         window.addEventListener('beforeunload', evt => {
-            if (!this.state.changed) return
+            if (this.state.oldContentHash === this.getContentHash()) return
 
             let message = 'You have made unsaved changes. Do you really want to leave?'
             evt.returnValue = message
         })
+    }
+
+    getContentHash() {
+        return hash(doclist.stringify(this.state.docs))
     }
 
     pull = () => {
@@ -105,12 +110,12 @@ export default class App extends Component {
 
             this.updateDocs({docs})
             this.updateCurrentIndex({currentIndex: Math.min(docs.length - 1, this.state.currentIndex)})
-            this.setState({changed: false})
+            this.setState({oldContentHash: this.getContentHash()})
         })
     }
 
     push = () => {
-        if (!this.state.changed) return
+        if (this.state.oldContentHash === this.getContentHash()) return
 
         return this.client.editGist(this.gistId, {
             files: {
@@ -119,7 +124,7 @@ export default class App extends Component {
                 }
             }
         }).then(() => {
-            this.setState({changed: false})
+            this.setState({oldContentHash: this.getContentHash()})
         })
     }
 
@@ -194,7 +199,7 @@ export default class App extends Component {
         if (entry == null) return
 
         let {currentIndex, docs, selectedIds} = entry
-        this.setState({currentIndex, docs, selectedIds, changed: true})
+        this.setState({currentIndex, docs, selectedIds})
     }
 
     undo = () => this.stepInHistory(-1)
@@ -211,7 +216,7 @@ export default class App extends Component {
     updateDocs = ({docs}) => {
         if (docs === this.state.docs) return
 
-        this.setState({docs, changed: true})
+        this.setState({docs})
         this.recordHistory()
     }
 
@@ -321,7 +326,7 @@ export default class App extends Component {
                             tooltip="Pull"
                             onClick={this.pullClick}
                         />
-                        {this.state.changed && <ToolbarButton
+                        {this.state.oldContentHash !== this.getContentHash() && <ToolbarButton
                             key="push"
                             type={this.state.busy.includes('push') && 'sync'}
                             icon={`./img/${this.state.busy.includes('push') ? 'sync' : 'up'}.svg`}
