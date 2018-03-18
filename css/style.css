@@ -1,3 +1,5 @@
+@import url('https://rsms.me/inter/inter-ui.css');
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -17,7 +19,7 @@ input, textarea {
 }
 
 body, html {
-    font: 100%/1.5 'Segoe UI', sans-serif;
+    font: 100%/1.5 'Inter UI', sans-serif;
     height: 100%;
 }
 
