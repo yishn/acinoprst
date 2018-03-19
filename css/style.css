@@ -81,6 +81,24 @@ kbd {
         transition: transform .5s;
         z-index: 2;
     }
+    .menu-panel::-webkit-scrollbar,
+    .menu-panel .documents::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+        background: transparent;
+    }
+    .menu-panel::-webkit-scrollbar-thumb,
+    .menu-panel .documents::-webkit-scrollbar-thumb {
+        background: #666;
+    }
+    .menu-panel::-webkit-scrollbar-thumb:hover,
+    .menu-panel .documents::-webkit-scrollbar-thumb:hover {
+        background: #777;
+    }
+    .menu-panel::-webkit-scrollbar-corner,
+    .menu-panel .documents::-webkit-scrollbar-corner {
+        background: transparent;
+    }
     .menu-panel.show {
         transform: translateY(0);
     }
