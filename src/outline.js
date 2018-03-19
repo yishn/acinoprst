@@ -1,7 +1,7 @@
 export function stringify(list, level = 0) {
     return list.map(item => {
         let indent = ' '.repeat(level * 4)
-        let bullet = item.collapsed ? '+' : '-'
+        let bullet = item.collapsed && item.sublist.length > 0 ? '+' : '-'
         let checkbox = item.checked ? '[x]' : '[ ]'
         let sublist = item.sublist.length > 0 ? '\n' + stringify(item.sublist, level + 1) : ''
 
