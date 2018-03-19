@@ -211,6 +211,7 @@ export default class MenuPanel extends Component {
                                 <label>
                                     <strong>Access Token:</strong>
                                     <input
+                                        type="password"
                                         value={this.state.accessToken}
                                         onInput={this.handleAccessTokenChange}
                                     />
