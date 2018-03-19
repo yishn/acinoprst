@@ -115,7 +115,8 @@ export default class App extends Component {
     }
 
     push = () => {
-        if (this.state.oldContentHash === this.getContentHash()) return
+        if (this.state.oldContentHash === this.getContentHash())
+            return Promise.resolve()
 
         return this.client.editGist(this.gistId, {
             files: {
