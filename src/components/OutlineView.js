@@ -44,9 +44,28 @@ export default class OutlineView extends Component {
     gotFocus = () => this.setState({focused: true})
     lostFocus = () => this.setState({focused: false})
 
-    scrollIntoView(id) {
+    scrollIntoView = id => {
         let element = this.element.querySelector(`.outline-item[data-id="${id}"] > .inner`)
         if (element != null) scrollIntoView(element)
+    }
+
+    startEdit = ({id}) => {
+        let {onSelectionChange = () => {}} = this.props
+        let {scrollTop} = this.element
+
+        onSelectionChange({selectedIds: [id]})
+        this.setState({editId: id}, () => {
+            this.element.scrollTop = scrollTop
+        })
+    }
+
+    cancelEdit = () => {
+        let {scrollTop} = this.element
+        this.element.focus()
+
+        this.setState({editId: null}, () => {
+            this.element.scrollTop = scrollTop
+        })
     }
 
     handleItemClick = evt => {
@@ -74,15 +93,6 @@ export default class OutlineView extends Component {
             .filter(id => outline.getItemTrail(list, id).length > 0)
 
         onSelectionChange({selectedIds: newSelectedIds})
-    }
-
-    handleCancelEdit = () => {
-        let {scrollTop} = this.element
-        this.element.focus()
-
-        this.setState({editId: null}, () => {
-            this.element.scrollTop = scrollTop
-        })
     }
 
     handleKeyDown = evt => {
@@ -240,7 +250,7 @@ export default class OutlineView extends Component {
             evt.preventDefault()
 
             let {editId} = this.state
-            this.handleCancelEdit()
+            this.cancelEdit()
 
             let targetIds = selectCollapsed(selectedIds)
             let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
@@ -271,7 +281,6 @@ export default class OutlineView extends Component {
 
             evt.preventDefault()
 
-            let {scrollTop} = this.element
             let orderedSelectedIds = outline
                 .getLinearItemTrails(list, {includeCollapsed: false})
                 .filter(([item]) => selectedIds.includes(item.id))
@@ -279,10 +288,7 @@ export default class OutlineView extends Component {
 
             if (orderedSelectedIds.length === 0) return
 
-            onSelectionChange({selectedIds: [orderedSelectedIds[0]]})
-            this.setState({editId: orderedSelectedIds[0]}, () => {
-                this.element.scrollTop = scrollTop
-            })
+            this.startEdit({id: orderedSelectedIds[0]})
         } else if (evt.keyCode === 13 && evt.shiftKey) {
             // Shift + Enter
             // Insert item
@@ -310,7 +316,7 @@ export default class OutlineView extends Component {
             }
 
             onChange({list: newList})
-            this.handleCancelEdit()
+            this.cancelEdit()
             this.forceUpdate()
 
             onSelectionChange({selectedIds: [newItem.id]})
@@ -387,8 +393,9 @@ export default class OutlineView extends Component {
                 editId={editId}
 
                 onItemClick={this.handleItemClick}
+                onItemDoubleClick={this.startEdit}
                 onChange={this.props.onChange}
-                onCancelEdit={this.handleCancelEdit}
+                onCancelEdit={this.cancelEdit}
             />
         </section>
     }

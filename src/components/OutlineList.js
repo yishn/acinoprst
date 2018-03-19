@@ -24,9 +24,9 @@ class OutlineItem extends Component {
         onClick({id, mouseEvent: evt})
     }
 
-    handleSubitemClick = evt => {
-        let {onClick = () => {}} = this.props
-        onClick(evt)
+    handleDoubleClick = evt => {
+        let {id, onDoubleClick = () => {}} = this.props
+        onDoubleClick({id, mouseEvent: evt})
     }
 
     handleToggleCollapse = () => {
@@ -93,6 +93,7 @@ class OutlineItem extends Component {
                 class="inner"
                 style={{paddingLeft: `${level * 1.5 + 1}rem`}}
                 onMouseDown={this.handleClick}
+                onDblClick={this.handleDoubleClick}
             >
                 {showCollapse &&
                     <span
@@ -140,7 +141,8 @@ class OutlineItem extends Component {
                     selectedIds={selectedIds}
                     editId={editId}
 
-                    onItemClick={this.handleSubitemClick}
+                    onItemClick={this.props.onClick}
+                    onItemDoubleClick={this.props.onDoubleClick}
                     onChange={this.handleSublistChange}
                     onCancelEdit={this.props.onCancelEdit}
                 />
@@ -175,6 +177,7 @@ export default class OutlineList extends Component {
                     sublist={sublist}
 
                     onClick={this.props.onItemClick}
+                    onDoubleClick={this.props.onItemDoubleClick}
                     onChange={this.updateItem}
                     onCancelEdit={this.props.onCancelEdit}
                 />

@@ -23,7 +23,7 @@ export default class GitHub {
 
     makeHeaders() {
         let headers = {
-            'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT',
+            'If-Modified-Since': 'Mon, 26 Jul 1997 05:00:00 GMT'
         }
 
         if (this.authorization != null) {
