@@ -20,6 +20,7 @@ input, textarea {
 
 body, html {
     font: 100%/1.5 'Inter UI', sans-serif;
+    font-feature-settings: "calt" off;
     height: 100%;
 }
 
