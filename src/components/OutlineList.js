@@ -93,7 +93,6 @@ class OutlineItem extends Component {
                 class="inner"
                 style={{paddingLeft: `${level * 1.5 + 1}rem`}}
                 onMouseDown={this.handleClick}
-                onDblClick={this.handleDoubleClick}
             >
                 {showCollapse &&
                     <span
@@ -111,7 +110,7 @@ class OutlineItem extends Component {
                     </span>
                 }{' '}
 
-                <div class="text">
+                <div class="text" onDblClick={this.handleDoubleClick}>
                     {edit || text === '' ? (
                         <span style={{visibility: 'hidden'}}>{text !== '' ? text : '_'}</span>
                     ) : (
