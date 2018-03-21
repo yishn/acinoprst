@@ -16,7 +16,8 @@ const markdownRules = [
     {name: 'strong', regex: /^\*\*(\*?[^\*]([^\*](\*(?!\*))?)*\*?)\*\*/},
     {name: 'strong', regex: /^__(_?[^_]([^_](_(?!_))?)*_?)__/},
     {name: 'em', regex: /^\*(([^\*]|\*\*)+)\*/},
-    {name: 'em', regex: /^_(([^_]|__)+)_/}
+    {name: 'em', regex: /^_(([^_]|__)+)_/},
+    {name: 'text', regex: /^[^`!\[\*_\w]+|\w+|./}
 ]
 
 function inlineMarkdown2jsx(source, renderers, ignore = []) {
@@ -39,29 +40,24 @@ function inlineMarkdown2jsx(source, renderers, ignore = []) {
             }
         }
 
-        if (match != null) {
-            if (rule.name === 'code') {
-                result.push(h(renderers.code, {}, match[1]))
-            } else if (rule.name === 'link') {
-                result.push(h(renderers.link, {href: match[2]}, render(match[1], ['url', 'email'])))
-            } else if (rule.name === 'url') {
-                result.push(h(renderers.link, {href: match[1]}, match[1]))
-            } else if (rule.name === 'email') {
-                result.push(h(renderers.link, {href: `mailto:${match[1]}`}, match[1]))
-            } else if (rule.name === 'strong' || rule.name === 'em') {
-                result.push(h(renderers[rule.name], {}, render(match[1], [rule.name])))
-            }
-
-            source = source.slice(match[0].length)
-        } else {
-            let lastToken = result[result.length - 1]
+        if (rule.name === 'code') {
+            result.push(h(renderers.code, {}, match[1]))
+        } else if (rule.name === 'link') {
+            result.push(h(renderers.link, {href: match[2]}, render(match[1], ['link', 'url', 'email'])))
+        } else if (rule.name === 'url') {
+            result.push(h(renderers.link, {href: match[1]}, match[1]))
+        } else if (rule.name === 'email') {
+            result.push(h(renderers.link, {href: `mailto:${match[1]}`}, match[1]))
+        } else if (rule.name === 'strong' || rule.name === 'em') {
+            result.push(h(renderers[rule.name], {}, render(match[1], [rule.name])))
+        } else if (rule.name === 'text') {
+            let [lastToken] = result.slice(-1)
             if (typeof lastToken !== 'string') result.push('')
 
-            let match = source.match(/^[^`!\[\*_\w]+|\w+|./)
             result[result.length - 1] += source.slice(0, match[0].length)
-
-            source = source.slice(match[0].length)
         }
+
+        source = source.slice(match[0].length)
     }
 
     return result
