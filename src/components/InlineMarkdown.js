@@ -19,8 +19,8 @@ const markdownRules = [
     {name: 'em', regex: /^_(([^_]|__)+)_/}
 ]
 
-function inlineMarkdown2jsx(source, renderers) {
-    let render = source => inlineMarkdown2jsx(source, renderers)
+function inlineMarkdown2jsx(source, renderers, ignore = []) {
+    let render = (source, ignoreMore) => inlineMarkdown2jsx(source, renderers, [...ignore, ...ignoreMore])
     let result = []
 
     while (source.length > 0) {
@@ -29,6 +29,7 @@ function inlineMarkdown2jsx(source, renderers) {
         let quality = -Infinity
 
         for (let {name, regex} of markdownRules) {
+            if (ignore.includes(name)) continue
             let ruleMatch = source.match(regex)
 
             if (ruleMatch != null && quality < ruleMatch[0].length) {
@@ -42,13 +43,13 @@ function inlineMarkdown2jsx(source, renderers) {
             if (rule.name === 'code') {
                 result.push(h(renderers.code, {}, match[1]))
             } else if (rule.name === 'link') {
-                result.push(h(renderers.link, {href: match[2]}, render(match[1])))
+                result.push(h(renderers.link, {href: match[2]}, render(match[1], ['url', 'email'])))
             } else if (rule.name === 'url') {
                 result.push(h(renderers.link, {href: match[1]}, match[1]))
             } else if (rule.name === 'email') {
                 result.push(h(renderers.link, {href: `mailto:${match[1]}`}, match[1]))
             } else if (rule.name === 'strong' || rule.name === 'em') {
-                result.push(h(renderers[rule.name], {}, render(match[1])))
+                result.push(h(renderers[rule.name], {}, render(match[1], [rule.name])))
             }
 
             source = source.slice(match[0].length)
@@ -58,7 +59,7 @@ function inlineMarkdown2jsx(source, renderers) {
 
             let match = source.match(/^[^`!\[\*_\w]+|\w+|./)
             result[result.length - 1] += source.slice(0, match[0].length)
- 
+
             source = source.slice(match[0].length)
         }
     }
@@ -69,7 +70,7 @@ function inlineMarkdown2jsx(source, renderers) {
 export default class InlineMarkdown extends Component {
     shouldComponentUpdate({source, renderers}) {
         return source !== this.props.source
-            || renderers !== this.props.renderers 
+            || renderers !== this.props.renderers
             && Object.keys(standardRenderers).some(key => renderers[key] !== this.props.renderers[key])
     }
 
