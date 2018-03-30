@@ -1,16 +1,31 @@
 import qs from 'querystring'
 
-export function extractGistInfo(url) {
-    let obj = new URL(url)
-    let [user, id] = obj.pathname.match(/[^\/]+/g).slice(-2)
-    let host = obj.hostname !== 'gist.github.com' ? `${obj.hostname}/api/v3` : 'api.github.com'
+export function extractUrlInfo(url, hasId = false) {
+    try {
+        let obj = new URL(url)
+        let segments = obj.pathname.match(/[^\/]+/g).slice(-2)
+        
+        return {
+            host: obj.hostname,
+            user: segments[hasId ? 0 : 1],
+            id: hasId ? segments[1] : null
+        }
+    } catch (err) {
+        if (hasId) throw err
+    }
 
-    return {id, user, host}
+    return {
+        host: 'gist.github.com',
+        user: url,
+        id: null
+    }
 }
 
 export default class GitHub {
-    constructor({user = null, pass = null, host = 'api.github.com'} = {}) {
+    constructor({user = null, pass = null, host = 'gist.github.com'} = {}) {
         this.host = host
+        this.apiEndpoint = host !== 'gist.github.com' ? `${host}/api/v3` : 'api.github.com'
+
         this.setAuthorization(user, pass)
     }
 
@@ -34,7 +49,7 @@ export default class GitHub {
     }
 
     getUser() {
-        return fetch(`https://${this.host}/user`, {
+        return fetch(`https://${this.apiEndpoint}/user`, {
             headers: this.makeHeaders()
         }).then(res => {
             if (!res.ok) throw new Error(res.statusText)
@@ -43,7 +58,7 @@ export default class GitHub {
     }
 
     getGist(id) {
-        return fetch(`https://${this.host}/gists/${id}`, {
+        return fetch(`https://${this.apiEndpoint}/gists/${id}`, {
             headers: this.makeHeaders()
         }).then(res => {
             if (!res.ok) throw new Error(res.statusText)
@@ -66,7 +81,7 @@ export default class GitHub {
     }
 
     createGist(options) {
-        return fetch(`https://${this.host}/gists`, {
+        return fetch(`https://${this.apiEndpoint}/gists`, {
             method: 'POST',
             headers: {
                 ...this.makeHeaders(),
@@ -80,7 +95,7 @@ export default class GitHub {
     }
 
     editGist(id, options) {
-        return fetch(`https://${this.host}/gists/${id}`, {
+        return fetch(`https://${this.apiEndpoint}/gists/${id}`, {
             method: 'PATCH',
             headers: {
                 ...this.makeHeaders(),

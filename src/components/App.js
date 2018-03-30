@@ -1,7 +1,7 @@
 import {h, render, Component} from 'preact'
 import hash from 'string-hash'
 import * as doclist from '../doclist'
-import GitHub, {extractGistInfo} from '../github'
+import GitHub, {extractUrlInfo} from '../github'
 import History from '../history'
 import * as outline from '../outline'
 import * as storage from '../storage'
@@ -129,13 +129,34 @@ export default class App extends Component {
         })
     }
 
-    login = ({gistUrl, accessToken}) => {
+    login = ({createGist = false, profileUrl, gistUrl, accessToken}) => {
         this.startBusy()
+
+        if (createGist) {
+            let {user, host} = extractUrlInfo(profileUrl, false)
+            let client = new GitHub({host, user, pass: accessToken})
+
+            return client.createGist({
+                description: 'Gist created by acinoprst',
+                files: {
+                    'acinoprst.md': {
+                        content: '# Untitled'
+                    }
+                }
+            }).then(({id}) => {
+                this.endBusy()
+
+                return this.login({
+                    gistUrl: `https://${host}/${user}/${id}`,
+                    accessToken
+                })
+            })
+        }
 
         storage.set('credentials', btoa(JSON.stringify({gistUrl, accessToken})))
 
         return Promise.resolve().then(() => {
-            let {id, user, host} = extractGistInfo(gistUrl)
+            let {id, user, host} = extractUrlInfo(gistUrl, true)
             this.client = new GitHub({host, user, pass: accessToken})
             this.gistId = id
             this.gistUrl = gistUrl

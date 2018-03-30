@@ -42,6 +42,8 @@ class DocumentListItem extends Component {
 
 export default class MenuPanel extends Component {
     state = {
+        createGist: false,
+        profileUrl: '',
         gistUrl: '',
         accessToken: '',
         dragIndex: null,
@@ -52,10 +54,12 @@ export default class MenuPanel extends Component {
     componentWillReceiveProps(nextProps) {
         if (this.props.user != null && nextProps.user == null) {
             this.setState({
+                profileUrl: '',
                 gistUrl: '',
-                accessToken: ''
+                accessToken: '',
+                createGist: false
             }, () => {
-                this.gistUrlInput.focus()
+                this.urlInput.focus()
             })
         }
     }
@@ -86,17 +90,11 @@ export default class MenuPanel extends Component {
         let {onLogin = () => {}} = this.props
 
         onLogin({
+            createGist: this.state.createGist,
+            profileUrl: this.state.profileUrl,
             gistUrl: this.state.gistUrl,
             accessToken: this.state.accessToken
         })
-    }
-
-    handleGistUrlChange = evt => {
-        this.setState({gistUrl: evt.currentTarget.value})
-    }
-
-    handleAccessTokenChange = evt => {
-        this.setState({accessToken: evt.currentTarget.value})
     }
 
     handleDocumentClick = evt => {
@@ -143,7 +141,10 @@ export default class MenuPanel extends Component {
         let {user, show, docs, currentIndex} = this.props
         let login = user == null
 
-        return <section ref={el => this.element = el} class={classnames('menu-panel', {show, login})}>
+        return <section 
+            ref={el => this.element = el}
+            class={classnames('menu-panel', {show, login})}
+        >
             {!login ? (
                 <div class="inner">
                     <div class="user">
@@ -195,15 +196,34 @@ export default class MenuPanel extends Component {
                         <h2>Login</h2>
                     </div>
 
+                    <Toolbar>
+                        <ToolbarButton
+                            icon="./img/load-gist.svg"
+                            text="Load Gist"
+                            checked={!this.state.createGist}
+                            onClick={() => this.setState({createGist: false})}
+                        />
+                        <ToolbarButton
+                            icon="./img/create-gist.svg"
+                            text="Create Gist"
+                            checked={this.state.createGist}
+                            onClick={() => this.setState({createGist: true})}
+                        />
+                    </Toolbar>
+
                     <form>
                         <ul>
                             <li>
                                 <label>
-                                    <strong>Gist URL:</strong>
+                                    <strong>{this.state.createGist ? 'Username or Profile URL:' : 'Gist URL:'}</strong>
                                     <input
-                                        ref={el => this.gistUrlInput = el}
-                                        value={this.state.gistUrl}
-                                        onInput={this.handleGistUrlChange}
+                                        ref={el => this.urlInput = el}
+                                        autofocus
+                                        value={this.state.createGist ? this.state.profileUrl : this.state.gistUrl}
+                                        onInput={evt => {
+                                            let key = this.state.createGist ? 'profileUrl' : 'gistUrl'
+                                            this.setState({[key]: evt.currentTarget.value})
+                                        }}
                                     />
                                 </label>
                             </li>
@@ -213,7 +233,7 @@ export default class MenuPanel extends Component {
                                     <input
                                         type="password"
                                         value={this.state.accessToken}
-                                        onInput={this.handleAccessTokenChange}
+                                        onInput={evt => this.setState({accessToken: evt.currentTarget.value})}
                                     />
                                 </label>
                             </li>
