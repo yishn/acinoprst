@@ -111,9 +111,6 @@ kbd {
         grid-template-rows: auto auto 1fr;
         height: 100%;
     }
-    .menu-panel.login .inner {
-        grid-template-rows: auto 1fr;
-    }
     .menu-panel form {
         margin: 1rem 0;
     }
@@ -270,6 +267,9 @@ kbd {
     .tool-bar .buttons .disabled a {
         opacity: .5;
         pointer-events: none;
+    }
+    .tool-bar .buttons .checked {
+        background: rgba(255, 255, 255, .2);
     }
     .tool-bar .buttons .separator {
         width: 2px;
