@@ -41,7 +41,7 @@ class OutlineItem extends Component {
 
     handleInput = evt => {
         let {id, onChange = () => {}} = this.props
-        onChange({id, text: evt.currentTarget.value})
+        onChange({id, text: evt.currentTarget.value.replace(/\r/g, '').replace(/\n/g, ' ')})
     }
 
     handleInputKeyDown = evt => {

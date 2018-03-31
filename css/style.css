@@ -444,6 +444,7 @@ kbd {
         border: none;
         outline: none;
         background: transparent;
+        overflow: hidden;
         word-break: break-word;
         resize: none;
     }
