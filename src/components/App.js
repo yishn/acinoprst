@@ -213,7 +213,9 @@ export default class App extends Component {
     }
 
     recordHistory = () => {
-        this.history.push({...this.state})
+        clearTimeout(this.recordId)
+
+        this.recordId = setTimeout(() => this.history.push({...this.state}), 20)
     }
 
     stepInHistory = step => {
