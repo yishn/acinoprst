@@ -380,14 +380,13 @@ export default class OutlineView extends Component {
 
             let clipboardData = reassignIds(this.clipboardData)
             let newList = [...list, ...clipboardData]
-            let newSelectedIds = clipboardData.map(item => item.id)
+            let pastedIds = clipboardData.map(item => item.id)
 
-            newList = newSelectedIds.reduce((list, id) => (
+            newList = pastedIds.reduce((list, id) => (
                 outline.move(list, id, 'before', selectedId)
             ), newList)
 
             onChange({list: newList})
-            onSelectionChange({selectedIds: newSelectedIds})
         } else if (evt.keyCode === 88) {
             // x
             // Toggle check items
