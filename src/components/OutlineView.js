@@ -98,15 +98,15 @@ export default class OutlineView extends Component {
     handleKeyDown = evt => {
         let {list, selectedIds, onChange = () => {}, onSelectionChange = () => {}} = this.props
 
-        function selectCollapsed(selectedIds) {
+        function selectChildren(selectedIds, onlyCollapsed = false) {
             let result = [...selectedIds]
 
             for (let id of selectedIds) {
                 let trail = outline.getItemTrail(list, id)
-                if (trail.length === 0 || !trail[0].collapsed) continue
+                if (trail.length === 0 || onlyCollapsed && !trail[0].collapsed) continue
 
                 for (let subtrail of outline.getDescendantTrails(list, trail)) {
-                    if (subtrail.length === 0) continue
+                    if (subtrail.length === 0 || result.includes(subtrail[0].id)) continue
                     result.push(subtrail[0].id)
                 }
             }
@@ -171,31 +171,24 @@ export default class OutlineView extends Component {
             evt.preventDefault()
 
             let direction = evt.keyCode === 38 ? -1 : 1
-            let targetIds = selectCollapsed(selectedIds)
-            let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
-            let lines = outline.stringify(list).split('\n')
-            let targetIndices = targetIds.map(id => linearIds.indexOf(id))
-            let newTargetIndices = targetIndices.map(i => i + direction)
-            if (newTargetIndices.some(i => i < 0 || i >= lines.length)) return
+            let newSelectedIds = selectChildren(selectedIds)
+            let targetIds = newSelectedIds.filter(id => (
+                outline.getItemTrail(list, id).slice(1)
+                .every(parent => !newSelectedIds.includes(parent.id))
+            ))
 
-            let remainingIndices = newTargetIndices.filter(i => !targetIndices.includes(i))
-            let revealIds = dedupe([...targetIds, ...remainingIndices.map(i => linearIds[i])])
-            let permutation = lines.map((_, i) =>
-                newTargetIndices.includes(i) ? i - direction
-                : targetIndices.includes(i) ? remainingIndices.shift()
-                : i
-            )
+            let newList = targetIds.reduce((list, id) => {
+                let itemTrail = outline.getItemTrail(list, id)
+                let sublist = itemTrail[1] == null ? list : itemTrail[1].sublist
+                let index = sublist.indexOf(itemTrail[0]) + direction
+                if (index < 0 || index >= sublist.length) return list
 
-            let newLines = permutation.map(i => lines[i])
-            let newLinearIds = permutation.map(i => linearIds[i])
-            let newList = outline.parse(newLines.join('\n'), {ids: newLinearIds})
-
-            newList = revealIds.reduce((list, id) => (
-                outline.reveal(list, id)
-            ), newList)
+                let op = direction > 0 ? 'after' : 'before'
+                return outline.move(list, itemTrail, op, sublist[index].id)
+            }, list)
 
             onChange({list: newList})
-            this.handleSelectionChange({selectedIds: targetIds})
+            this.handleSelectionChange({selectedIds: newSelectedIds})
         } else if ([37, 39].includes(evt.keyCode) && !evt.ctrlKey) {
             // Arrow Left/Right
             // Toggle collapse items
@@ -226,7 +219,7 @@ export default class OutlineView extends Component {
 
             evt.preventDefault()
 
-            let targetIds = selectCollapsed(selectedIds)
+            let targetIds = selectChildren(selectedIds)
             let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
             let newSelectedIndex = linearItemTrails.findIndex(([item]) => targetIds.includes(item.id)) - 1
             if (newSelectedIndex < 0)
@@ -248,7 +241,7 @@ export default class OutlineView extends Component {
             let {editId} = this.state
             this.cancelEdit()
 
-            let targetIds = selectCollapsed(selectedIds)
+            let targetIds = selectChildren(selectedIds)
             let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
             let lines = outline.stringify(list).split('\n')
             let targetIndices = targetIds.map(id => linearIds.indexOf(id))
@@ -270,6 +263,7 @@ export default class OutlineView extends Component {
             ), newList)
 
             onChange({list: newList})
+            this.handleSelectionChange({selectedIds: targetIds})
             this.setState({editId})
         } else if (evt.keyCode === 13 && !evt.shiftKey) {
             // Enter
@@ -346,7 +340,7 @@ export default class OutlineView extends Component {
             let firstSelectedItemElement = this.element.querySelector('.outline-item.selected')
             if (firstSelectedItemElement == null || selectedIds.length === 0) return
 
-            let targetIds = selectCollapsed(selectedIds)
+            let targetIds = selectChildren(selectedIds, true)
             let checked = !firstSelectedItemElement.classList.contains('checked')
             let newList = targetIds.reduce((list, id) => (
                 outline.update(list, id, {checked})
