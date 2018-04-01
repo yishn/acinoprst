@@ -233,13 +233,9 @@ export default class OutlineView extends Component {
                 newSelectedIndex = linearItemTrails.findIndex(([item]) => !targetIds.includes(item.id))
             let newSelectedIds = newSelectedIndex < 0 ? [] : [linearItemTrails[newSelectedIndex][0].id]
 
-            let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
-            let lines = outline.stringify(list).split('\n')
-            let targetIndices = targetIds.map(id => linearIds.indexOf(id))
-            let newLines = lines.map((x, i) => !targetIndices.includes(i) ? x : null).filter(x => x != null)
-            let newList = outline.parse(newLines.join('\n'), {
-                ids: linearIds.filter(id => !targetIds.includes(id))
-            })
+            let newList = selectedIds.reduce((list, id) => (
+                outline.remove(list, id)
+            ), list)
 
             onChange({list: newList})
             onSelectionChange({selectedIds: newSelectedIds})
