@@ -342,6 +342,8 @@ export default class OutlineView extends Component {
             // Ctrl + C, Ctrl + X
             // Copy & Cut
 
+            evt.preventDefault()
+
             let newSelectedIds = this.getDescendantItemIds(selectedIds)
             let targetIds = newSelectedIds.filter(id => (
                 outline.getItemTrail(list, id).slice(1)
@@ -353,12 +355,39 @@ export default class OutlineView extends Component {
 
             copyText(text)
             this.element.focus()
+            this.clipboardData = copyList
 
             if (evt.keyCode === 67) {
                 this.handleSelectionChange({selectedIds: newSelectedIds})
             } else {
                 this.removeItems()
             }
+        } else if (evt.keyCode === 86 && evt.ctrlKey) {
+            // Ctrl + V
+            // Paste
+
+            evt.preventDefault()
+            if (selectedIds.length === 0 || this.clipboardData == null) return
+            
+            let selectedId = selectedIds[0]
+            let maxId = outline.getMaxId(list)
+
+            let reassignIds = list => list.map(item => ({
+                ...item,
+                id: ++maxId,
+                sublist: reassignIds(item.sublist)
+            }))
+
+            let clipboardData = reassignIds(this.clipboardData)
+            let newList = [...list, ...clipboardData]
+            let newSelectedIds = clipboardData.map(item => item.id)
+
+            newList = newSelectedIds.reduce((list, id) => (
+                outline.move(list, id, 'before', selectedId)
+            ), newList)
+
+            onChange({list: newList})
+            onSelectionChange({selectedIds: newSelectedIds})
         } else if (evt.keyCode === 88) {
             // x
             // Toggle check items
