@@ -22,6 +22,7 @@
   "homepage": "https://github.com/yishn/acinoprst",
   "dependencies": {
     "classnames": "^2.2.5",
+    "copy-text-to-clipboard": "^1.0.4",
     "preact": "^8.2.7",
     "scroll-into-view-if-needed": "^1.5.0",
     "string-hash": "^1.1.3"

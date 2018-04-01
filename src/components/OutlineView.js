@@ -1,5 +1,6 @@
 import {h, Component} from 'preact'
 import classnames from 'classnames'
+import copyText from 'copy-text-to-clipboard'
 import scrollIntoView from 'scroll-into-view-if-needed'
 import * as outline from '../outline'
 import OutlineList from './OutlineList'
@@ -68,6 +69,41 @@ export default class OutlineView extends Component {
         })
     }
 
+    getDescendantItemIds(ids, onlyCollapsed = false) {
+        let {list} = this.props
+        let result = [...ids]
+
+        for (let id of ids) {
+            let trail = outline.getItemTrail(list, id)
+            if (trail.length === 0 || onlyCollapsed && !trail[0].collapsed) continue
+
+            for (let subtrail of outline.getDescendantTrails(list, trail)) {
+                if (subtrail.length === 0 || result.includes(subtrail[0].id)) continue
+                result.push(subtrail[0].id)
+            }
+        }
+
+        return result
+    }
+
+    removeItems = () => {
+        let {list, selectedIds, onChange = () => {}, onSelectionChange = () => {}} = this.props
+
+        let targetIds = this.getDescendantItemIds(selectedIds)
+        let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
+        let newSelectedIndex = linearItemTrails.findIndex(([item]) => targetIds.includes(item.id)) - 1
+        if (newSelectedIndex < 0)
+            newSelectedIndex = linearItemTrails.findIndex(([item]) => !targetIds.includes(item.id))
+        let newSelectedIds = newSelectedIndex < 0 ? [] : [linearItemTrails[newSelectedIndex][0].id]
+
+        let newList = selectedIds.reduce((list, id) => (
+            outline.remove(list, id)
+        ), list)
+
+        onChange({list: newList})
+        onSelectionChange({selectedIds: newSelectedIds})
+    }
+
     handleItemClick = evt => {
         let {ctrlKey, shiftKey} = evt.mouseEvent
         let {list, selectedIds} = this.props
@@ -97,22 +133,6 @@ export default class OutlineView extends Component {
 
     handleKeyDown = evt => {
         let {list, selectedIds, onChange = () => {}, onSelectionChange = () => {}} = this.props
-
-        function selectChildren(selectedIds, onlyCollapsed = false) {
-            let result = [...selectedIds]
-
-            for (let id of selectedIds) {
-                let trail = outline.getItemTrail(list, id)
-                if (trail.length === 0 || onlyCollapsed && !trail[0].collapsed) continue
-
-                for (let subtrail of outline.getDescendantTrails(list, trail)) {
-                    if (subtrail.length === 0 || result.includes(subtrail[0].id)) continue
-                    result.push(subtrail[0].id)
-                }
-            }
-
-            return result
-        }
 
         if ([38, 40, 36, 35].includes(evt.keyCode) && !evt.ctrlKey) {
             // Arrow Up/Down, Home, End
@@ -171,7 +191,7 @@ export default class OutlineView extends Component {
             evt.preventDefault()
 
             let direction = evt.keyCode === 38 ? -1 : 1
-            let newSelectedIds = selectChildren(selectedIds)
+            let newSelectedIds = this.getDescendantItemIds(selectedIds)
             let targetIds = newSelectedIds.filter(id => (
                 outline.getItemTrail(list, id).slice(1)
                 .every(parent => !newSelectedIds.includes(parent.id))
@@ -215,23 +235,10 @@ export default class OutlineView extends Component {
             this.handleSelectionChange({selectedIds: [parent.id]})
         } else if ([46, 8].includes(evt.keyCode)) {
             // Del, Backspace
-            // Remove item
+            // Remove items
 
             evt.preventDefault()
-
-            let targetIds = selectChildren(selectedIds)
-            let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
-            let newSelectedIndex = linearItemTrails.findIndex(([item]) => targetIds.includes(item.id)) - 1
-            if (newSelectedIndex < 0)
-                newSelectedIndex = linearItemTrails.findIndex(([item]) => !targetIds.includes(item.id))
-            let newSelectedIds = newSelectedIndex < 0 ? [] : [linearItemTrails[newSelectedIndex][0].id]
-
-            let newList = selectedIds.reduce((list, id) => (
-                outline.remove(list, id)
-            ), list)
-
-            onChange({list: newList})
-            onSelectionChange({selectedIds: newSelectedIds})
+            this.removeItems()
         } else if (evt.keyCode === 9 && !evt.ctrlKey) {
             // Tab
             // Indent/Unindent items
@@ -241,7 +248,7 @@ export default class OutlineView extends Component {
             let {editId} = this.state
             this.cancelEdit()
 
-            let targetIds = selectChildren(selectedIds)
+            let targetIds = this.getDescendantItemIds(selectedIds)
             let linearIds = outline.getLinearItemTrails(list).map(([item]) => item.id)
             let lines = outline.stringify(list).split('\n')
             let targetIndices = targetIds.map(id => linearIds.indexOf(id))
@@ -331,6 +338,27 @@ export default class OutlineView extends Component {
             let newList = number === 0 ? outline.expandAll(list) : outline.collapseLevel(list, number - 1)
 
             onChange({list: newList})
+        } else if ([67, 88].includes(evt.keyCode) && evt.ctrlKey) {
+            // Ctrl + C, Ctrl + X
+            // Copy & Cut
+
+            let newSelectedIds = this.getDescendantItemIds(selectedIds)
+            let targetIds = newSelectedIds.filter(id => (
+                outline.getItemTrail(list, id).slice(1)
+                .every(parent => !newSelectedIds.includes(parent.id))
+            ))
+
+            let copyList = targetIds.map(id => outline.getItemTrail(list, id)[0])
+            let text = outline.stringify(copyList)
+
+            copyText(text)
+            this.element.focus()
+
+            if (evt.keyCode === 67) {
+                this.handleSelectionChange({selectedIds: newSelectedIds})
+            } else {
+                this.removeItems()
+            }
         } else if (evt.keyCode === 88) {
             // x
             // Toggle check items
@@ -340,7 +368,7 @@ export default class OutlineView extends Component {
             let firstSelectedItemElement = this.element.querySelector('.outline-item.selected')
             if (firstSelectedItemElement == null || selectedIds.length === 0) return
 
-            let targetIds = selectChildren(selectedIds, true)
+            let targetIds = this.getDescendantItemIds(selectedIds, true)
             let checked = !firstSelectedItemElement.classList.contains('checked')
             let newList = targetIds.reduce((list, id) => (
                 outline.update(list, id, {checked})
