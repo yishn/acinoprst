@@ -112,7 +112,11 @@ export default class OutlineView extends Component {
         if (shiftKey) {
             newSelectedIds = outline.getIdsBetween(list, [evt.id, ...selectedIds])
         } else if (ctrlKey) {
-            newSelectedIds = [evt.id, ...selectedIds]
+            if (selectedIds.includes(evt.id)) {
+                newSelectedIds = selectedIds.filter(x => x !== evt.id)
+            } else {
+                newSelectedIds = [evt.id, ...selectedIds]
+            }
         } else {
             newSelectedIds = [evt.id]
         }
