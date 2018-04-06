@@ -367,8 +367,8 @@ export default class OutlineView extends Component {
             // Paste
 
             evt.preventDefault()
-            if (selectedIds.length === 0 || this.clipboardData == null) return
-            
+            if (this.clipboardData == null) return
+
             let selectedId = selectedIds[0]
             let maxId = outline.getMaxId(list)
 
@@ -382,9 +382,13 @@ export default class OutlineView extends Component {
             let newList = [...list, ...clipboardData]
             let pastedIds = clipboardData.map(item => item.id)
 
-            newList = pastedIds.reduce((list, id) => (
-                outline.move(list, id, 'before', selectedId)
-            ), newList)
+            if (selectedId != null) {
+                newList = pastedIds.reduce((list, id) => (
+                    outline.move(list, id, 'before', selectedId)
+                ), newList)
+            } else {
+                onSelectionChange({selectedIds: pastedIds})
+            }
 
             onChange({list: newList})
         } else if (evt.keyCode === 88) {
