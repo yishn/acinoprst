@@ -12,16 +12,16 @@ module.exports = {
     devtool: 'source-map',
 
     module: {
-        loaders: [
-            {
+        rules: [{
+            test: /\.js$/,
+            use: {
                 loader: 'babel-loader',
-                test: /\.js$/,
-                query: {
+                options: {
                     presets: [['env', {modules: false}], 'stage-1'],
                     plugins: [['transform-react-jsx', {pragma: 'h'}]]
                 }
             }
-        ]
+        }]
     },
 
     resolve: {
