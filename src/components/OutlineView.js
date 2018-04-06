@@ -192,22 +192,34 @@ export default class OutlineView extends Component {
 
             let direction = evt.keyCode === 38 ? -1 : 1
             let newSelectedIds = this.getDescendantItemIds(selectedIds)
-            let targetIds = newSelectedIds.filter(id => (
-                outline.getItemTrail(list, id).slice(1)
-                .every(parent => !newSelectedIds.includes(parent.id))
-            ))
+            let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
+            let targetIds = linearItemTrails.filter(([item, ...parents]) =>
+                newSelectedIds.includes(item.id)
+                && parents.every(parent => !newSelectedIds.includes(parent.id))
+            ).map(([item]) => item.id)
 
+            if (direction > 0) {
+                targetIds.reverse()
+            }
+
+            let cancel = false
             let newList = targetIds.reduce((list, id) => {
+                if (cancel) return list
+
                 let itemTrail = outline.getItemTrail(list, id)
                 let sublist = itemTrail[1] == null ? list : itemTrail[1].sublist
                 let index = sublist.indexOf(itemTrail[0]) + direction
-                if (index < 0 || index >= sublist.length) return list
+
+                if (index < 0 || index >= sublist.length) {
+                    cancel = true
+                    return list
+                }
 
                 let op = direction > 0 ? 'after' : 'before'
                 return outline.move(list, itemTrail, op, sublist[index].id)
             }, list)
 
-            onChange({list: newList})
+            onChange({list: cancel ? list : newList})
             this.handleSelectionChange({selectedIds: newSelectedIds})
         } else if ([37, 39].includes(evt.keyCode) && !evt.ctrlKey) {
             // Arrow Left/Right
