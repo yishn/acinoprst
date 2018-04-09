@@ -4,6 +4,7 @@ export function extractUrlInfo(url, hasId = false) {
     try {
         let obj = new URL(url)
         let segments = obj.pathname.match(/[^\/]+/g).slice(-2)
+        if (segments.length < 2) segments.unshift('')
         
         return {
             host: obj.hostname,
@@ -24,7 +25,7 @@ export function extractUrlInfo(url, hasId = false) {
 export default class GitHub {
     constructor({user = null, pass = null, host = 'gist.github.com'} = {}) {
         this.host = host
-        this.apiEndpoint = host !== 'gist.github.com' ? `${host}/api/v3` : 'api.github.com'
+        this.apiEndpoint = host.slice(-10) !== 'github.com' ? `${host}/api/v3` : 'api.github.com'
 
         this.setAuthorization(user, pass)
     }

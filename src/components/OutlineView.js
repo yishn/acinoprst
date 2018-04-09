@@ -26,7 +26,7 @@ export default class OutlineView extends Component {
     }
 
     componentDidMount() {
-        this.componentDidUpdate({})
+        this.componentDidUpdate({}, {})
     }
 
     componentDidUpdate(prevProps, prevState) {
