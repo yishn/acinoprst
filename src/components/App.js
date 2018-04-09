@@ -143,11 +143,13 @@ export default class App extends Component {
                         content: '# Untitled'
                     }
                 }
-            }).then(({id}) => {
+            }).then(({html_url, id}) => {
                 this.endBusy()
 
+                let {hostname} = new URL(html_url)
+
                 return this.login({
-                    gistUrl: `https://${host}/${user}/${id}`,
+                    gistUrl: `https://${hostname}/${user}/${id}`,
                     accessToken
                 })
             })

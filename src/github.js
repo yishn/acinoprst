@@ -7,7 +7,7 @@ export function extractUrlInfo(url, hasId = false) {
         if (segments.length < 2) segments.unshift('')
         
         return {
-            host: obj.hostname,
+            host: obj.hostname.slice(-10) === 'github.com' ? 'github.com' : obj.hostname,
             user: segments[hasId ? 0 : 1],
             id: hasId ? segments[1] : null
         }
@@ -16,16 +16,16 @@ export function extractUrlInfo(url, hasId = false) {
     }
 
     return {
-        host: 'gist.github.com',
+        host: 'github.com',
         user: url,
         id: null
     }
 }
 
 export default class GitHub {
-    constructor({user = null, pass = null, host = 'gist.github.com'} = {}) {
+    constructor({user = null, pass = null, host = 'github.com'} = {}) {
         this.host = host
-        this.apiEndpoint = host.slice(-10) !== 'github.com' ? `${host}/api/v3` : 'api.github.com'
+        this.apiEndpoint = host !== 'github.com' ? `${host}/api/v3` : 'api.github.com'
 
         this.setAuthorization(user, pass)
     }
