@@ -198,11 +198,10 @@ export default class OutlineView extends Component {
             evt.preventDefault()
 
             let direction = evt.keyCode === 38 ? -1 : 1
-            let newSelectedIds = this.getDescendantItemIds(selectedIds)
             let linearItemTrails = outline.getLinearItemTrails(list, {includeCollapsed: false})
             let targetIds = linearItemTrails.filter(([item, ...parents]) =>
-                newSelectedIds.includes(item.id)
-                && parents.every(parent => !newSelectedIds.includes(parent.id))
+                selectedIds.includes(item.id)
+                && parents.every(parent => !selectedIds.includes(parent.id))
             ).map(([item]) => item.id)
 
             if (direction > 0) {
@@ -227,10 +226,10 @@ export default class OutlineView extends Component {
             }, list)
 
             onChange({list: cancel ? list : newList})
-            this.handleSelectionChange({selectedIds: newSelectedIds})
+            this.handleSelectionChange({selectedIds: targetIds})
         } else if ([37, 39].includes(evt.keyCode) && !evt.ctrlKey) {
             // Arrow Left/Right
-            // Toggle collapse items
+            // Collapse/Expand items
 
             evt.preventDefault()
 
@@ -289,7 +288,6 @@ export default class OutlineView extends Component {
             ), newList)
 
             onChange({list: newList})
-            this.handleSelectionChange({selectedIds: targetIds})
             this.setState({editId})
         } else if (evt.keyCode === 13 && !evt.shiftKey) {
             // Enter
