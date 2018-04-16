@@ -36,7 +36,7 @@ export function parse(content, {ids = null} = {}) {
 
     let id = 0
     let items = content.split('\n')
-        .map(line => line.match(/^(\s*)([+*-])\s*(\[\s*[xX]?\s*\])?\s?(.*)$/))
+        .map(line => line.replace(/\r/g, '').match(/^(\s*)([+*-])\s*(\[\s*[xX]?\s*\])?\s?(.*)$/))
         .filter(match => match != null)
         .map(([, indent, bullet, x, text], i) => ({
             id: ids != null ? ids[i] : ++id,
