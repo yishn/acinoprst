@@ -30,7 +30,7 @@ export default class OutlineView extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.focusedItemId !== this.state.focusedItemId && this.state.focusedItemId != null) {
+        if (this.state.focusedItemId != null) {
             this.scrollIntoView(this.state.focusedItemId)
         }
     }
