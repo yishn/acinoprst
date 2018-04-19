@@ -146,10 +146,14 @@ export default class App extends Component {
             }).then(({html_url, id}) => {
                 this.endBusy()
 
-                let {hostname} = new URL(html_url)
+                let {hostname, pathname} = new URL(html_url)
+
+                pathname = pathname.split('/')
+                pathname.splice(-1, 1, user, id)
+                pathname = pathname.join('/')
 
                 return this.login({
-                    gistUrl: `https://${hostname}/${user}/${id}`,
+                    gistUrl: `https://${hostname}${pathname}`,
                     accessToken
                 })
             })
